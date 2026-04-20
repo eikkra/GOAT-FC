@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>GOAT FC ELITE BOARD</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+
+/* ================= BODY ================= */
+body{
+margin:0;
+font-family:'Oswald',sans-serif;
+background:linear-gradient(135deg,#02040a,#000);
+color:white;
+}
+
+/* ================= HEADER ================= */
+.header{text-align:center;padding:10px;}
+
+.header img{
+width:55px;
+animation:float 3s infinite ease-in-out;
+}
+
+@keyframes float{
+0%,100%{transform:translateY(0);}
+50%{transform:translateY(-6px);}
+}
+
+.header h1{
+color:#00eaff;
+margin:5px;
+}
+
+.description{
+font-size:13px;
+font-weight:600;
+background:linear-gradient(90deg,#00eaff,#00ff88,#ffd700);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+animation:shine 3s infinite linear;
+}
+
+@keyframes shine{
+0%{filter:brightness(1);}
+50%{filter:brightness(1.5);}
+100%{filter:brightness(1);}
+}
+
+/* ================= TABS ================= */
+.tabs{
+display:flex;
+justify-content:center;
+gap:8px;
+flex-wrap:nowrap;
+overflow-x:auto;
+padding:5px 10px;
+
+/* 🔥 FIX: scrollbar hide */
+scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none;}
+
+.tab{
+padding:6px 12px;
+background:rgba(255,255,255,0.05);
+border-radius:8px;
+cursor:pointer;
+font-size:12px;
+white-space:nowrap;
+transition:.3s;
+border:1px solid rgba(255,255,255,0.1);
+backdrop-filter:blur(6px);
+}
+
+.tab:hover{
+transform:translateY(-2px);
+box-shadow:0 4px 15px rgba(0,234,255,0.25);
+border-color:#00eaff;
+}
+
+.tab.active{
+background:linear-gradient(135deg,#00eaff,#00ff88);
+color:black;
+font-weight:600;
+}
+
+/* ================= FILTER ================= */
+.filter-box{
+display:flex;
+justify-content:center;
+gap:6px;
+max-width:900px;
+margin:0 auto;
+flex-wrap:nowrap;
+overflow-x:auto;
+padding:8px 10px;
+
+/* 🔥 FIX: scrollbar hide */
+scrollbar-width:none;
+}
+.filter-box::-webkit-scrollbar{display:none;}
+
+.filter-box select{
+flex:0 0 auto;
+padding:5px 8px;
+background:#111;
+color:white;
+border:1px solid #00eaff40;
+border-radius:6px;
+font-size:10px;
+outline:none;
+}
+
+/* ================= GRID ================= */
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+gap:12px;
+padding:15px;
+}
+
+/* ================= CARD ================= */
+.card{
+background:rgba(255,255,255,0.04);
+backdrop-filter:blur(10px);
+border:1px solid rgba(255,255,255,0.08);
+padding:10px;
+border-radius:14px;
+text-align:center;
+transition:.25s;
+}
+
+.card:hover{
+transform:translateY(-5px);
+box-shadow:0 8px 20px rgba(0,234,255,0.15);
+}
+
+/* TEAM COLORS */
+.management.available-card{border:1px solid gold;}
+.main.available-card{border:1px solid #00eaff;}
+.academy.available-card{border:1px solid #00ff88;}
+.youth.available-card{border:1px solid #a855f7;}
+.goat.available-card{border:1px solid #ff4d4d;}
+
+.card img{
+width:100%;
+aspect-ratio:1/1;
+border-radius:10px;
+object-fit:cover;
+}
+
+.name{color:#00eaff;font-size:14px;margin-top:5px;}
+.role{color:#ffcc00;font-size:10px;}
+
+.pos,.time{
+display:inline-block;
+margin-top:4px;
+padding:3px 7px;
+font-size:10px;
+border-radius:6px;
+background:#00eaff20;
+color:#00eaff;
+white-space:nowrap;
+}
+
+.status{margin-top:4px;font-size:10px;}
+.available{color:#00eaff;animation:blink 1.5s infinite;}
+.busy{color:#ff4d4d;}
+
+@keyframes blink{
+0%,100%{opacity:1;}
+50%{opacity:.4;}
+}
+
+.btn{
+margin-top:6px;
+display:inline-block;
+padding:4px 8px;
+border-radius:6px;
+font-size:10px;
+text-decoration:none;
+}
+
+.msg{background:#00eaff;color:black;}
+.call{background:#00ff88;color:black;}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<img src="https://i.imgur.com/LY3Bb9m.png">
+<h1>GOAT FC ELITE BOARD</h1>
+<div class="description">Our Honorable Management and Team Members</div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+<div class="tab active" onclick="showTab(event,'management')">Management</div>
+<div class="tab" onclick="showTab(event,'Main')">Main</div>
+<div class="tab" onclick="showTab(event,'Academy')">Academy</div>
+<div class="tab" onclick="showTab(event,'Youth')">Youth</div>
+<div class="tab" onclick="showTab(event,'Goat')">Goat</div>
+</div>
+
+<!-- FILTER -->
+<div class="filter-box">
+
+<select id="statusFilter">
+<option value="">All Status</option>
+<option>Available</option>
+<option>Busy (1-2 Days)</option>
+<option>Busy (3-7 Days)</option>
+<option>Busy (7-15 Days)</option>
+<option>Busy (15-30 Days)</option>
+</select>
+
+<select id="posFilter">
+<option value="">All Position</option>
+</select>
+
+<select id="timeFilter">
+<option value="">All Time</option>
+</select>
+
+</div>
+
+<!-- GRID -->
+<div id="content" class="grid"></div>
+
+<script>
+
+const url="https://docs.google.com/spreadsheets/d/1j8HRakCsKmB-GTdfKJ3kd7XNEwBfNEg3AvtWTpPpKK0/gviz/tq?tqx=out:json&sheet=Dashboard";
+
+let data=[];
+let currentTab="management";
+
+function loadData(){
+fetch(url)
+.then(res=>res.text())
+.then(d=>{
+const json=JSON.parse(d.substring(47).slice(0,-2));
+const rows=json.table.rows;
+
+data=rows.map((r,i)=>({
+index:i,
+name:r.c[0]?.v||"",
+role:r.c[1]?.v||"",
+status:r.c[3]?.v||"",
+fb:r.c[4]?.v||"#",
+phone:r.c[5]?.v||"",
+img:r.c[7]?.v||"",
+manage:r.c[8]?.v||"",
+team:(r.c[9]?.v||"").trim(),
+pos:r.c[10]?.v||"",
+time:r.c[11]?.v||""
+}));
+
+initFilters();
+renderCurrent();
+});
+}
+
+function showTab(e,type){
+currentTab=type;
+document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+e.target.classList.add("active");
+renderCurrent();
+}
+
+function initFilters(){
+
+let posSet=new Set();
+let timeSet=new Set();
+
+data.forEach(p=>{
+if(p.pos && p.pos.length<=10 && p.pos!="Position") posSet.add(p.pos.trim());
+if(p.time && p.time.length<=30 && p.time!="Time") timeSet.add(p.time.trim());
+});
+
+const pos=document.getElementById("posFilter");
+const time=document.getElementById("timeFilter");
+
+pos.innerHTML='<option value="">All Position</option>';
+time.innerHTML='<option value="">All Time</option>';
+
+[...posSet].sort().forEach(p=>{
+pos.innerHTML+=`<option>${p}</option>`;
+});
+
+[...timeSet].sort().forEach(t=>{
+time.innerHTML+=`<option>${t}</option>`;
+});
+}
+
+function renderCurrent(){
+
+let filtered=data.filter(p=>{
+if(currentTab==='management') return p.manage==='YES';
+return p.team===currentTab;
+});
+
+const s=document.getElementById("statusFilter").value;
+const p=document.getElementById("posFilter").value;
+const t=document.getElementById("timeFilter").value;
+
+filtered=filtered.filter(x=>{
+return (!s||x.status===s)&&(!p||x.pos===p)&&(!t||x.time===t);
+});
+
+filtered.sort((a,b)=>{
+let A=a.status.includes("Available");
+let B=b.status.includes("Available");
+return A===B?a.index-b.index:A?-1:1;
+});
+
+render(filtered);
+}
+
+function render(arr){
+
+const c=document.getElementById("content");
+c.innerHTML="";
+
+arr.forEach(p=>{
+
+let teamClass="";
+if(p.manage==="YES") teamClass="management";
+else if(p.team==="Main") teamClass="main";
+else if(p.team==="Academy") teamClass="academy";
+else if(p.team==="Youth") teamClass="youth";
+else if(p.team==="Goat") teamClass="goat";
+
+let isAvail=p.status.includes("Available");
+
+c.innerHTML+=`
+<div class="card ${teamClass} ${isAvail?'available-card':''}">
+<img src="${p.img}" onerror="this.src='https://via.placeholder.com/300'">
+
+<div class="name">${p.name}</div>
+<div class="role">${p.role}</div>
+
+<div class="pos">${p.pos}</div>
+<div class="time">${p.time}</div>
+
+<div class="status ${isAvail?'available':'busy'}">${p.status}</div>
+
+<a href="${p.fb}" target="_blank" class="btn msg">Message</a>
+<a href="tel:${p.phone}" class="btn call">Call</a>
+</div>
+`;
+});
+
+}
+
+document.querySelectorAll("select").forEach(s=>{
+s.addEventListener("change",renderCurrent);
+});
+
+loadData();
+setInterval(loadData,30000);
+
+</script>
+
+</body>
+</html>
