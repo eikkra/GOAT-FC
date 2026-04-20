@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>GOAT FC Managers</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+  margin:0;
+  font-family:'Orbitron', sans-serif;
+  background:radial-gradient(circle at top,#0f172a,#020617);
+  color:white;
+}
+
+/* HEADER */
+.header{
+  text-align:center;
+  padding:20px 10px 5px;
+  font-size:26px;
+  font-weight:700;
+  color:#00f5ff;
+  text-shadow:0 0 10px #00f5ff;
+}
+
+.desc{
+  text-align:center;
+  font-size:12px;
+  color:#94a3b8;
+  margin-bottom:15px;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:15px;
+  padding:20px;
+}
+
+/* RESPONSIVE */
+@media(max-width:1200px){
+  .grid{ grid-template-columns:repeat(3,1fr); }
+}
+@media(max-width:768px){
+  .grid{ grid-template-columns:repeat(2,1fr); }
+}
+@media(max-width:500px){
+  .grid{ grid-template-columns:repeat(1,1fr); }
+}
+
+/* CARD */
+.card{
+  background:linear-gradient(180deg,#0b1220,#020617);
+  border-radius:18px;
+  padding:15px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(0,255,255,0.15);
+  box-shadow:0 0 15px rgba(0,255,255,0.08);
+}
+
+/* NEON TOP LINE */
+.card::before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:3px;
+  background:linear-gradient(90deg,#00f5ff,#7c3aed,#ff00ff);
+  box-shadow:0 0 10px #00f5ff;
+}
+
+/* WATERMARK LOGO */
+.watermark{
+  position:absolute;
+  width:140px;
+  opacity:0.06;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+}
+
+/* PROFILE */
+.profile{
+  width:85px;
+  height:85px;
+  border-radius:50%;
+  border:2px solid #00f5ff;
+  object-fit:cover;
+  box-shadow:0 0 10px #00f5ff;
+}
+
+/* NAME */
+.name{
+  margin-top:8px;
+  font-size:16px;
+  font-weight:600;
+  text-align:center;
+}
+
+/* RANK NEON */
+.rank{
+  position:absolute;
+  top:10px;
+  right:10px;
+  font-size:11px;
+  padding:4px 8px;
+  border-radius:6px;
+  background:#000;
+  color:#00f5ff;
+  border:1px solid #00f5ff;
+  box-shadow:0 0 10px #00f5ff;
+  animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+  0%{box-shadow:0 0 5px #00f5ff;}
+  50%{box-shadow:0 0 15px #00f5ff;}
+  100%{box-shadow:0 0 5px #00f5ff;}
+}
+
+/* WIN */
+.win{
+  font-size:22px;
+  font-weight:700;
+  margin:8px 0;
+  text-shadow:0 0 10px currentColor;
+}
+
+/* STATS BOX */
+.stats{
+  background:rgba(0,255,255,0.05);
+  padding:8px;
+  border-radius:10px;
+  margin-top:6px;
+  font-size:12px;
+  border:1px solid rgba(0,255,255,0.15);
+  animation:glow 2s infinite alternate;
+}
+
+@keyframes glow{
+  from{box-shadow:0 0 5px rgba(0,255,255,0.1);}
+  to{box-shadow:0 0 12px rgba(0,255,255,0.25);}
+}
+
+/* PLAYER GRID */
+.players{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:5px;
+  margin-top:10px;
+}
+
+.player{
+  font-size:10px;
+  padding:4px;
+  border-radius:6px;
+  background:rgba(0,255,255,0.05);
+  border:1px solid rgba(0,255,255,0.1);
+  box-shadow:0 0 5px rgba(0,255,255,0.1);
+}
+
+/* CENTER TEXT */
+.center{
+  text-align:center;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">GOAT FC MANAGERS</div>
+<div class="desc">Esports ranking system powered by performance analytics</div>
+
+<div class="grid" id="grid"></div>
+
+<script>
+
+const sheetID = "1DSPKPaU1ZQYbFM4iYbE1VXgDAXU-FCT7--QhYJsNf1M";
+const sheetName = "Managers";
+const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
+
+let managers = [];
+
+fetch(url)
+.then(res=>res.text())
+.then(data=>{
+
+  const json = JSON.parse(data.substr(47).slice(0,-2));
+  const rows = json.table.rows;
+
+  rows.forEach(r=>{
+
+    managers.push({
+      name:r.c[0]?.v||"",
+      img:r.c[1]?.v||"",
+      logo:r.c[2]?.v||"",
+      players:r.c[3]?.v||"",
+      mMatch:Number(r.c[4]?.v)||0,
+      mWin:(Number(r.c[5]?.v)||0)*100,
+      oMatch:Number(r.c[6]?.v)||0,
+      oWin:(Number(r.c[7]?.v)||0)*100
+    });
+
+  });
+
+  render();
+
+});
+
+function rank(i){
+  if(i==0) return "🥇 1st";
+  if(i==1) return "🥈 2nd";
+  if(i==2) return "🥉 3rd";
+  return (i+1)+"th";
+}
+
+function winColor(v){
+  if(v>=80) return "#00ff88";
+  if(v>=60) return "#00f5ff";
+  if(v>=40) return "#a855f7";
+  return "#ff3b3b";
+}
+
+function render(){
+
+  managers.sort((a,b)=>b.oWin-a.oWin);
+
+  let html="";
+
+  managers.forEach((m,i)=>{
+
+    let players = m.players.split(",").map(p=>`<div class="player">${p}</div>`).join("");
+
+    html+=`
+    <div class="card">
+
+      <img src="${m.logo}" class="watermark">
+
+      <div class="rank">${rank(i)}</div>
+
+      <div class="center">
+        <img src="${m.img}" class="profile">
+        <div class="name">${m.name}</div>
+      </div>
+
+      <div class="win" style="color:${winColor(m.oWin)}">${m.oWin.toFixed(0)}%</div>
+
+      <div class="stats">Overall: ${m.mMatch} | ${m.mWin.toFixed(0)}%</div>
+      <div class="stats">Monthly: ${m.oMatch} | ${m.oWin.toFixed(0)}%</div>
+
+      <div class="players">${players}</div>
+
+    </div>
+    `;
+
+  });
+
+  document.getElementById("grid").innerHTML=html;
+}
+
+</script>
+
+</body>
+</html>
