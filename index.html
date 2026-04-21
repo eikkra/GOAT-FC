@@ -77,24 +77,24 @@ height:240px;
 overflow:hidden;
 }
 
-.ad-box{
+.slide-box{
 position:absolute;
 width:100%;
 height:100%;
 opacity:0;
-transition:all 0.8s ease;
+transition:all 0.9s ease;
 }
 
-.ad-box.active{opacity:1;}
+.slide-box.active{opacity:1;}
 
-.ad-box img{
+.slide-box img{
 width:100%;
 height:100%;
 object-fit:cover;
 filter:brightness(0.45);
 }
 
-.ad-content{
+.slide-content{
 z-index:5;
 position:absolute;
 top:50%;
@@ -108,13 +108,13 @@ width:90%;
 z-index:10;
 }
 
-.ad-content h1{
+.slide-content h1{
 font-size:18px;
 margin:4px 0;
 text-shadow:0 0 10px #8b5cf6;
 }
 
-.ad-content p{
+.slide-content p{
 font-size:12px;
 margin:5px 0;
 color:#cbd5f5;
@@ -302,8 +302,8 @@ width:100%;
 .hero{height:200px;}
 .logo span{font-size:14px;}
 .nav-links a{font-size:11px;padding:5px;}
-.ad-content h1{font-size:15px;}
-.ad-content p{font-size:11px;}
+.slide-content h1{font-size:15px;}
+.slide-content p{font-size:11px;}
 }
 
 </style>
@@ -356,18 +356,18 @@ Design By <a href="https://www.facebook.com/mdrashedulhasan02/">Md Rashedul Hasa
 
 const sheetID="1ZoXNHa5sYiP_HaPRyL5RDML7l3kC2IaGuQCAmYkERf8";
 
-let ads=[];
+let slides=[];
 let current=0;
 
-fetch(`https://opensheet.elk.sh/${sheetID}/ADS`)
+fetch(`https://opensheet.elk.sh/${sheetID}/SLIDES`)
 .then(r=>r.json())
 .then(data=>{
-ads=data;
-renderAds();
+slides=data;
+renderSlides();
 startAuto();
 });
 
-function renderAds(){
+function renderSlides(){
 let hero=document.querySelector(".hero");
 
 hero.innerHTML = `
@@ -375,13 +375,13 @@ hero.innerHTML = `
 <button class="arrow right" onclick="changeSlide(1)">›</button>
 `;
 
-hero.innerHTML += ads.map((ad,i)=>`
-<div class="ad-box ${i==0?'active':''}">
-<img src="${ad.image}">
-<div class="ad-content">
-<h1>${ad.title}</h1>
-<p>${ad.desc}</p>
-<a class="btn" href="${ad.link}" target="_blank">${ad.button}</a>
+hero.innerHTML += slides.map((item,i)=>`
+<div class="slide-box ${i==0?'active':''}">
+<img src="${item.image}">
+<div class="slide-content">
+<h1>${item.title}</h1>
+<p>${item.desc}</p>
+<a class="btn" href="${item.link}" target="_blank">${item.button}</a>
 </div>
 </div>
 `).join("");
@@ -392,7 +392,7 @@ setInterval(()=>changeSlide(1),7000);
 }
 
 function changeSlide(dir){
-let boxes=document.querySelectorAll(".ad-box");
+let boxes=document.querySelectorAll(".slide-box");
 boxes[current].classList.remove("active");
 current=(current+dir+boxes.length)%boxes.length;
 boxes[current].classList.add("active");
