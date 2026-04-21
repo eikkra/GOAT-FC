@@ -12,10 +12,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Orbitron',sans-serif;}
 
-body{
-background:#050505;
-color:#fff;
-}
+body{background:#050505;color:#fff;}
 
 /* HEADER */
 .header{
@@ -69,9 +66,7 @@ box-shadow:0 0 10px #00f7ff;
 }
 
 /* TABLE */
-.container{
-padding:10px;
-}
+.container{padding:10px;}
 
 table{
 width:100%;
@@ -94,7 +89,12 @@ tr:hover{
 background:rgba(0,247,255,0.08);
 }
 
-/* COLOR TEXT */
+/* LABEL COLOR */
+td::before{
+color:#00f7ff;
+}
+
+/* VALUE COLORS */
 .club{color:#00ff9d;text-shadow:0 0 6px #00ff9d;}
 .konami{color:#ff9f00;text-shadow:0 0 6px #ff9f00;}
 .device{color:#c77dff;text-shadow:0 0 6px #c77dff;}
@@ -113,7 +113,7 @@ background:#00f7ff;
 color:#000;
 }
 
-/* MOBILE FIX */
+/* MOBILE */
 @media(max-width:768px){
 
 table,thead,tbody,th,td,tr{
@@ -126,7 +126,6 @@ tr{
 margin-bottom:12px;
 background:#0b0b0b;
 border-radius:10px;
-/* IMPORTANT: remove extra glow line */
 box-shadow:0 0 8px rgba(0,247,255,0.2);
 padding:10px;
 }
@@ -134,12 +133,11 @@ padding:10px;
 td{
 text-align:left;
 padding:6px;
-border:none; /* remove extra line */
+border:none;
 }
 
 td::before{
 content:attr(data-label);
-color:#00f7ff;
 font-weight:bold;
 display:block;
 margin-bottom:2px;
@@ -160,28 +158,24 @@ margin-top:10px;
 
 <body>
 
-<!-- HEADER -->
 <div class="header">
 <img src="https://i.imgur.com/LY3Bb9m.png" class="logo">
 <div class="title">GOAT FC PLAY CARD</div>
 </div>
 
-<!-- DESC -->
 <div class="desc">
 Official GOAT FC tournament player database. Search players using Club ID and view their registered game details instantly.
 </div>
 
-<!-- SEARCH -->
 <div class="search-box">
 <input type="text" id="searchInput" placeholder="Search by Club ID...">
 </div>
 
-<!-- TABLE -->
 <div class="container">
 <table>
 <thead>
 <tr>
-<th>Name</th>
+<th>Player Name</th>
 <th>Club ID</th>
 <th>KONAMI ID</th>
 <th>Device</th>
@@ -192,13 +186,19 @@ Official GOAT FC tournament player database. Search players using Club ID and vi
 </table>
 </div>
 
-<!-- FOOTER -->
 <div class="footer">© GOAT FC Tournament System</div>
 
 <script>
 const csvURL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRxNxMgcwsp3k8B9jqnfObnnRfhSX3vUcEOuaPTsyEMaEVOZKE9OIcLiMQRJHHkAQiJWn-msKE6Cs80/pub?output=csv";
 
 let players=[];
+
+/* Normalize function */
+function normalize(str){
+return (str || "")
+.toLowerCase()
+.replace(/[^a-z0-9]/g,""); // remove dash, space
+}
 
 function loadData(){
 Papa.parse(csvURL,{
@@ -219,7 +219,7 @@ tbody.innerHTML="";
 data.forEach(p=>{
 tbody.innerHTML+=`
 <tr>
-<td data-label="Name">${p["Player Name"]||""}</td>
+<td data-label="Player Name">${p["Player Name"]||""}</td>
 <td data-label="Club ID" class="club">${p["Your Club ID"]||""}</td>
 <td data-label="KONAMI ID" class="konami">${p["KONAMI ID"]||""}</td>
 <td data-label="Device" class="device">${p["DEVICE NAME"]||""}</td>
@@ -232,11 +232,15 @@ tbody.innerHTML+=`
 });
 }
 
+/* SMART SEARCH */
 document.getElementById("searchInput").addEventListener("keyup",function(){
-let val=this.value.toLowerCase();
-let filtered=players.filter(p=>
-(p["Your Club ID"]||"").toLowerCase().includes(val)
-);
+let val=normalize(this.value);
+
+let filtered=players.filter(p=>{
+let club=normalize(p["Your Club ID"]);
+return club.includes(val);
+});
+
 render(filtered);
 });
 
