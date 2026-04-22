@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GOAT FC MATCH LOG</title>
+<link rel="icon" type="image/png" href="https://i.imgur.com/LY3Bb9m.png">
+
+<style>
+body{
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background:#020617;
+    color:#e2e8f0;
+}
+
+/* HEADER */
+.header{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    padding:15px;
+}
+
+.header img{
+    width:40px;
+}
+
+.header h1{
+    color:#00f5ff;
+    font-size:20px;
+    text-shadow:0 0 10px #00f5ff,0 0 20px #00f5ff;
+}
+
+/* FILTER */
+.filter-box{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:8px;
+    padding:10px;
+}
+
+select,input,button{
+    padding:8px;
+    border-radius:6px;
+    border:1px solid #00f5ff;
+    background:black;
+    color:#00f5ff;
+    box-shadow:0 0 10px #00f5ff;
+    font-size:12px;
+}
+
+button{
+    background:#00f5ff;
+    color:black;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+/* TABLE */
+.container{
+    padding:10px;
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:#020617;
+}
+
+th,td{
+    padding:8px;
+    text-align:center;
+    border-bottom:1px solid #0f172a;
+}
+
+th{
+    color:#00f5ff;
+    text-shadow:0 0 10px #00f5ff;
+}
+
+tr:hover{
+    background:#020617;
+    box-shadow:0 0 10px #00f5ff inset;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+    .header h1{
+        font-size:16px;
+    }
+    select,input,button{
+        font-size:11px;
+        padding:6px;
+    }
+    th,td{
+        font-size:11px;
+        padding:6px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <img src="https://i.imgur.com/LY3Bb9m.png">
+    <h1>GOAT FC MATCH LOG</h1>
+</div>
+
+<!-- FILTER -->
+<div class="filter-box">
+
+<select id="matchType">
+<option value="">All</option>
+<option>Friendly</option>
+<option>Solo Tournament</option>
+<option>Bid Tournament</option>
+<option>League</option>
+<option>Co-op</option>
+</select>
+
+<input type="date" id="startDate">
+<input type="date" id="endDate">
+
+<button onclick="applyFilter()">Apply</button>
+
+</div>
+
+<!-- TABLE -->
+<div class="container">
+<table>
+
+<thead>
+<tr>
+<th>Date</th>
+<th>Type</th>
+<th>Player 1</th>
+<th>Player 2</th>
+<th>Score</th>
+<th>Points</th>
+</tr>
+</thead>
+
+<tbody id="tableBody"></tbody>
+
+</table>
+</div>
+
+<script>
+
+// CSV LINK
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=1588171329&single=true&output=csv";
+
+let allData = [];
+
+// CSV → JSON
+function csvToJSON(csv){
+    const rows = csv.trim().split("\n");
+    const headers = rows[0].split(",");
+    let data = [];
+
+    for(let i=1;i<rows.length;i++){
+        let obj = {};
+        let row = rows[i].split(",");
+
+        headers.forEach((h,index)=>{
+            obj[h.trim()] = row[index];
+        });
+
+        data.push(obj);
+    }
+    return data;
+}
+
+// LOAD DATA
+async function loadData(){
+    const res = await fetch(CSV_URL);
+    const text = await res.text();
+    allData = csvToJSON(text);
+    applyFilter();
+}
+
+// FILTER
+function applyFilter(){
+
+    const type = document.getElementById("matchType").value;
+    const start = document.getElementById("startDate").value;
+    const end = document.getElementById("endDate").value;
+
+    const tbody = document.getElementById("tableBody");
+    tbody.innerHTML = "";
+
+    allData.forEach(row => {
+
+        if(!row.Match_Date) return;
+
+        // Only Approved
+        if(row.Approved.toLowerCase() !== "yes") return;
+
+        // Match Type
+        if(type && row.Match_Type !== type) return;
+
+        const matchDate = new Date(row.Match_Date);
+
+        if(start && matchDate < new Date(start)) return;
+        if(end && matchDate > new Date(end)) return;
+
+        const tr = `
+        <tr>
+            <td>${row.Match_Date}</td>
+            <td>${row.Match_Type}</td>
+            <td>${row.P1_ID}</td>
+            <td>${row.P2_ID}</td>
+            <td>${row.P1_Score} - ${row.P2_Score}</td>
+            <td>${row.P1_Point} - ${row.P2_Point}</td>
+        </tr>
+        `;
+
+        tbody.innerHTML += tr;
+    });
+}
+
+// INIT
+loadData();
+
+</script>
+
+</body>
+</html>
