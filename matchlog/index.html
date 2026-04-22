@@ -16,39 +16,43 @@ body{
 
 /* HEADER */
 .header{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-    padding:15px;
+    text-align:center;
+    padding:10px;
 }
 
 .header img{
-    width:40px;
+    width:45px;
 }
 
 .header h1{
+    margin:5px 0 0;
     color:#00f5ff;
+    text-shadow:0 0 15px #00f5ff;
     font-size:20px;
-    text-shadow:0 0 10px #00f5ff,0 0 20px #00f5ff;
+}
+
+.desc{
+    text-align:center;
+    font-size:12px;
+    color:#94a3b8;
+    margin-bottom:10px;
 }
 
 /* FILTER */
 .filter-box{
     display:flex;
+    gap:6px;
+    padding:10px;
     justify-content:center;
     flex-wrap:wrap;
-    gap:8px;
-    padding:10px;
 }
 
 select,input,button{
-    padding:8px;
+    padding:7px;
     border-radius:6px;
     border:1px solid #00f5ff;
     background:black;
     color:#00f5ff;
-    box-shadow:0 0 10px #00f5ff;
     font-size:12px;
 }
 
@@ -56,49 +60,38 @@ button{
     background:#00f5ff;
     color:black;
     font-weight:bold;
-    cursor:pointer;
 }
 
 /* TABLE */
 .container{
     padding:10px;
-    overflow-x:auto;
+    max-height:70vh;
+    overflow:auto;
 }
 
 table{
     width:100%;
     border-collapse:collapse;
-    background:#020617;
 }
 
 th,td{
-    padding:8px;
+    padding:7px;
+    font-size:12px;
     text-align:center;
-    border-bottom:1px solid #0f172a;
 }
 
 th{
     color:#00f5ff;
-    text-shadow:0 0 10px #00f5ff;
 }
 
-tr:hover{
-    background:#020617;
-    box-shadow:0 0 10px #00f5ff inset;
+tr{
+    border-bottom:1px solid #0f172a;
 }
 
 /* MOBILE */
 @media(max-width:768px){
-    .header h1{
-        font-size:16px;
-    }
-    select,input,button{
-        font-size:11px;
-        padding:6px;
-    }
     th,td{
         font-size:11px;
-        padding:6px;
     }
 }
 </style>
@@ -106,15 +99,16 @@ tr:hover{
 
 <body>
 
-<!-- HEADER -->
 <div class="header">
     <img src="https://i.imgur.com/LY3Bb9m.png">
     <h1>GOAT FC MATCH LOG</h1>
 </div>
 
-<!-- FILTER -->
-<div class="filter-box">
+<div class="desc">
+Live match records filtered by tournament type and date. Only approved matches are displayed for accurate tracking.
+</div>
 
+<div class="filter-box">
 <select id="matchType">
 <option value="">All</option>
 <option>Friendly</option>
@@ -127,14 +121,11 @@ tr:hover{
 <input type="date" id="startDate">
 <input type="date" id="endDate">
 
-<button onclick="applyFilter()">Apply</button>
-
+<button onclick="applyFilter()">Filter</button>
 </div>
 
-<!-- TABLE -->
 <div class="container">
 <table>
-
 <thead>
 <tr>
 <th>Date</th>
@@ -145,84 +136,97 @@ tr:hover{
 <th>Points</th>
 </tr>
 </thead>
-
 <tbody id="tableBody"></tbody>
-
 </table>
 </div>
 
 <script>
 
-// CSV LINK
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=1588171329&single=true&output=csv";
 
 let allData = [];
 
-// CSV → JSON
-function csvToJSON(csv){
-    const rows = csv.trim().split("\n");
-    const headers = rows[0].split(",");
-    let data = [];
+// ⚡ FAST CSV PARSER
+function fastCSV(csv){
+    const lines = csv.split("\n");
+    const headers = lines[0].split(",");
+    const result = [];
 
-    for(let i=1;i<rows.length;i++){
-        let obj = {};
-        let row = rows[i].split(",");
-
-        headers.forEach((h,index)=>{
-            obj[h.trim()] = row[index];
+    for(let i=1;i<lines.length;i++){
+        if(!lines[i]) continue;
+        const row = lines[i].split(",");
+        result.push({
+            Match_Date: row[11],
+            Match_Type: row[2],
+            P1_ID: row[0],
+            P2_ID: row[1],
+            P1_Score: row[3],
+            P2_Score: row[4],
+            P1_Point: row[5],
+            P2_Point: row[6],
+            Approved: row[9]
         });
-
-        data.push(obj);
     }
-    return data;
+    return result;
 }
 
-// LOAD DATA
+// ⚡ LOAD (only once)
 async function loadData(){
     const res = await fetch(CSV_URL);
     const text = await res.text();
-    allData = csvToJSON(text);
+    allData = fastCSV(text).filter(r => r.Approved === "yes"); // pre-filter
     applyFilter();
 }
 
-// FILTER
+// ⚡ FORMAT DATE ONLY
+function formatDate(d){
+    if(!d) return "";
+    return d.split(" ")[0];
+}
+
+// ⚡ FILTER FAST
 function applyFilter(){
 
     const type = document.getElementById("matchType").value;
     const start = document.getElementById("startDate").value;
     const end = document.getElementById("endDate").value;
 
+    let filtered = allData;
+
+    if(type){
+        filtered = filtered.filter(r => r.Match_Type === type);
+    }
+
+    if(start){
+        filtered = filtered.filter(r => r.Match_Date >= start);
+    }
+
+    if(end){
+        filtered = filtered.filter(r => r.Match_Date <= end);
+    }
+
+    renderTable(filtered);
+}
+
+// ⚡ RENDER (fast DOM)
+function renderTable(data){
     const tbody = document.getElementById("tableBody");
-    tbody.innerHTML = "";
 
-    allData.forEach(row => {
+    let html = "";
 
-        if(!row.Match_Date) return;
-
-        // Only Approved
-        if(row.Approved.toLowerCase() !== "yes") return;
-
-        // Match Type
-        if(type && row.Match_Type !== type) return;
-
-        const matchDate = new Date(row.Match_Date);
-
-        if(start && matchDate < new Date(start)) return;
-        if(end && matchDate > new Date(end)) return;
-
-        const tr = `
+    data.slice(0,500).forEach(row => {  // LIMIT = performance boost
+        html += `
         <tr>
-            <td>${row.Match_Date}</td>
+            <td>${formatDate(row.Match_Date)}</td>
             <td>${row.Match_Type}</td>
             <td>${row.P1_ID}</td>
             <td>${row.P2_ID}</td>
             <td>${row.P1_Score} - ${row.P2_Score}</td>
             <td>${row.P1_Point} - ${row.P2_Point}</td>
-        </tr>
-        `;
-
-        tbody.innerHTML += tr;
+        </tr>`;
     });
+
+    tbody.innerHTML = html;
 }
 
 // INIT
