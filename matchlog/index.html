@@ -71,7 +71,7 @@ button{
 table{
     width:100%;
     border-collapse:collapse;
-    table-layout:fixed; /* 🔥 FIX */
+    table-layout:fixed;
 }
 
 thead{
@@ -83,7 +83,6 @@ thead{
 
 th{
     color:#00f5ff;
-    text-shadow:0 0 10px #00f5ff;
     padding:8px;
     border-bottom:2px solid #00f5ff;
     white-space:nowrap;
@@ -92,9 +91,7 @@ th{
 td{
     padding:8px;
     text-align:center;
-    white-space:nowrap; /* 🔥 FIX */
-    overflow:hidden;
-    text-overflow:ellipsis;
+    white-space:nowrap;
 }
 
 tr{
@@ -109,15 +106,12 @@ tr{
 /* GOLD EFFECT */
 .gold{
     color:gold;
-    text-shadow:0 0 10px gold,0 0 20px gold;
-    font-weight:bold;
+    text-shadow:0 0 10px gold;
 }
 
 /* MOBILE */
 @media(max-width:768px){
-    th,td{
-        font-size:11px;
-    }
+    th,td{font-size:11px;}
 }
 </style>
 </head>
@@ -172,12 +166,17 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0X
 
 let allData = [];
 
-// DATE PARSE
+// SAFE DATE PARSER
 function parseDate(str){
     if(!str) return null;
-    let d = str.split(" ")[0];
-    let p = d.split("/");
-    return new Date(p[2], p[0]-1, p[1]);
+    try{
+        let d = str.split(" ")[0];
+        let p = d.split("/");
+        if(p.length !== 3) return null;
+        return new Date(p[2], p[0]-1, p[1]);
+    }catch{
+        return null;
+    }
 }
 
 // SHORT TYPE
@@ -187,42 +186,46 @@ function shortType(t){
     return t;
 }
 
-// FAST PARSER
+// FAST + SAFE CSV PARSER
 function fastCSV(csv){
     const lines = csv.split("\n");
     const result = [];
 
     for(let i=1;i<lines.length;i++){
-        if(!lines[i]) continue;
         const r = lines[i].split(",");
+        if(r.length < 12) continue; // 🔥 skip broken rows
+
+        const date = parseDate(r[11]);
+        if(!date) continue; // 🔥 skip invalid date
 
         result.push({
-            date: parseDate(r[11]),
-            raw: r[11],
+            date: date,
             type: r[2],
             p1: r[0],
             p2: r[1],
-            s1: parseInt(r[3]),
-            s2: parseInt(r[4]),
-            pt1: parseInt(r[5]),
-            pt2: parseInt(r[6]),
-            approved: r[9]
+            s1: Number(r[3]) || 0,
+            s2: Number(r[4]) || 0,
+            pt1: Number(r[5]) || 0,
+            pt2: Number(r[6]) || 0,
+            approved: (r[9] || "").trim().toLowerCase()
         });
     }
+
     return result;
 }
 
-// LOAD
+// LOAD (SUPER STABLE)
 async function loadData(){
-    const res = await fetch(CSV_URL);
-    const text = await res.text();
-    allData = fastCSV(text).filter(r=>r.approved==="yes");
-    applyFilter();
-}
+    try{
+        const res = await fetch(CSV_URL, {cache:"no-store"});
+        const text = await res.text();
 
-// FORMAT DATE
-function formatDate(d){
-    return d.toISOString().split("T")[0];
+        allData = fastCSV(text).filter(r=>r.approved==="yes");
+
+        render(allData);
+    }catch(err){
+        console.error("Load Error:", err);
+    }
 }
 
 // FILTER
@@ -248,12 +251,19 @@ function applyFilter(){
     render(filtered);
 }
 
-// RENDER
+// FORMAT DATE
+function formatDate(d){
+    return d.toISOString().slice(0,10);
+}
+
+// RENDER (FAST)
 function render(data){
     const tbody = document.getElementById("tableBody");
-    let html="";
 
-    data.slice(0,500).forEach(r=>{
+    let html = "";
+
+    for(let i=0;i<Math.min(data.length,500);i++){
+        const r = data[i];
 
         let p1Class="", p2Class="";
         if(r.s1 > r.s2){ p1Class="win"; p2Class="loss"; }
@@ -271,11 +281,12 @@ function render(data){
             <td class="${scoreClass}">${r.s1} - ${r.s2}</td>
             <td>${r.pt1} - ${r.pt2}</td>
         </tr>`;
-    });
+    }
 
     tbody.innerHTML = html;
 }
 
+// INIT
 loadData();
 
 </script>
