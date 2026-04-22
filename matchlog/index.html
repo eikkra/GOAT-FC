@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GOAT FC MATCH LOG</title>
+<title>GOAT FC MATCH LOGS</title>
 <link rel="icon" type="image/png" href="https://i.imgur.com/LY3Bb9m.png">
 
 <style>
@@ -23,9 +23,7 @@ body{
     padding:10px;
 }
 
-.header img{
-    width:40px;
-}
+.header img{ width:40px; }
 
 .header h1{
     color:#00f5ff;
@@ -33,7 +31,6 @@ body{
     font-size:20px;
 }
 
-/* DESCRIPTION */
 .desc{
     text-align:center;
     font-size:12px;
@@ -172,14 +169,16 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0X
 
 let allData = [];
 
-// 🔥 Convert sheet date → YYYY-MM-DD
-function convertSheetDate(d){
-    if(!d) return "";
-    const parts = d.split(" ")[0].split("/"); // remove time
-    let m = parts[0].padStart(2,"0");
-    let d2 = parts[1].padStart(2,"0");
-    let y = parts[2];
-    return `${y}-${m}-${d2}`;
+// 🔥 DATE PARSER FIX (MAIN SOLUTION)
+function parseDate(str){
+    if(!str) return null;
+
+    let d = str.split(" ")[0]; // remove time
+    let parts = d.split("/"); // MM/DD/YYYY
+
+    if(parts.length !== 3) return null;
+
+    return new Date(parts[2], parts[0]-1, parts[1]); // YYYY, MM, DD
 }
 
 // FAST PARSER
@@ -192,8 +191,8 @@ function fastCSV(csv){
         const r = lines[i].split(",");
 
         result.push({
-            dateRaw: r[11],
-            date: convertSheetDate(r[11]), // ✅ fixed
+            rawDate: r[11],
+            date: parseDate(r[11]),
             type: r[2],
             p1: r[0],
             p2: r[1],
@@ -215,11 +214,17 @@ async function loadData(){
     applyFilter();
 }
 
-// FILTER (NOW PERFECT)
+// FORMAT DATE
+function formatDate(d){
+    if(!d) return "";
+    return d.toISOString().split("T")[0];
+}
+
+// FILTER (FIXED)
 function applyFilter(){
     const type = document.getElementById("matchType").value;
-    const start = document.getElementById("startDate").value;
-    const end = document.getElementById("endDate").value;
+    const start = document.getElementById("startDate").value ? new Date(document.getElementById("startDate").value) : null;
+    const end = document.getElementById("endDate").value ? new Date(document.getElementById("endDate").value) : null;
 
     let filtered = allData;
 
@@ -228,11 +233,11 @@ function applyFilter(){
     }
 
     if(start){
-        filtered = filtered.filter(r => r.date >= start);
+        filtered = filtered.filter(r => r.date && r.date >= start);
     }
 
     if(end){
-        filtered = filtered.filter(r => r.date <= end);
+        filtered = filtered.filter(r => r.date && r.date <= end);
     }
 
     render(filtered);
@@ -259,7 +264,7 @@ function render(data){
 
         html += `
         <tr>
-            <td>${r.date}</td>
+            <td>${formatDate(r.date)}</td>
             <td>${r.type}</td>
             <td class="${p1Class}">${r.p1}</td>
             <td class="${p2Class}">${r.p2}</td>
