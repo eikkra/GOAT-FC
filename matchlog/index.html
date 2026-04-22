@@ -113,7 +113,6 @@ tr{
 /* MOBILE */
 @media(max-width:768px){
     .filter-box{
-        flex-wrap:nowrap;
         overflow-x:auto;
     }
     th,td{
@@ -125,7 +124,6 @@ tr{
 
 <body>
 
-<!-- HEADER -->
 <div class="header">
     <img src="https://i.imgur.com/LY3Bb9m.png">
     <h1>GOAT FC MATCH LOG</h1>
@@ -135,7 +133,6 @@ tr{
 Live approved match logs filtered by tournament type and date range.
 </div>
 
-<!-- FILTER -->
 <div class="filter-box">
 <select id="matchType">
 <option value="">All</option>
@@ -146,13 +143,12 @@ Live approved match logs filtered by tournament type and date range.
 <option>Co-op</option>
 </select>
 
-<input type="date" id="startDate" placeholder="Start">
-<input type="date" id="endDate" placeholder="End">
+<input type="date" id="startDate">
+<input type="date" id="endDate">
 
 <button onclick="applyFilter()">Filter</button>
 </div>
 
-<!-- TABLE -->
 <div class="container">
 <table>
 <thead>
@@ -176,6 +172,16 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0X
 
 let allData = [];
 
+// 🔥 Convert sheet date → YYYY-MM-DD
+function convertSheetDate(d){
+    if(!d) return "";
+    const parts = d.split(" ")[0].split("/"); // remove time
+    let m = parts[0].padStart(2,"0");
+    let d2 = parts[1].padStart(2,"0");
+    let y = parts[2];
+    return `${y}-${m}-${d2}`;
+}
+
 // FAST PARSER
 function fastCSV(csv){
     const lines = csv.split("\n");
@@ -186,7 +192,8 @@ function fastCSV(csv){
         const r = lines[i].split(",");
 
         result.push({
-            date: r[11],
+            dateRaw: r[11],
+            date: convertSheetDate(r[11]), // ✅ fixed
             type: r[2],
             p1: r[0],
             p2: r[1],
@@ -208,12 +215,7 @@ async function loadData(){
     applyFilter();
 }
 
-// DATE FORMAT
-function formatDate(d){
-    return d ? d.split(" ")[0] : "";
-}
-
-// FILTER FIXED
+// FILTER (NOW PERFECT)
 function applyFilter(){
     const type = document.getElementById("matchType").value;
     const start = document.getElementById("startDate").value;
@@ -226,11 +228,11 @@ function applyFilter(){
     }
 
     if(start){
-        filtered = filtered.filter(r => formatDate(r.date) >= start);
+        filtered = filtered.filter(r => r.date >= start);
     }
 
     if(end){
-        filtered = filtered.filter(r => formatDate(r.date) <= end);
+        filtered = filtered.filter(r => r.date <= end);
     }
 
     render(filtered);
@@ -257,7 +259,7 @@ function render(data){
 
         html += `
         <tr>
-            <td>${formatDate(r.date)}</td>
+            <td>${r.date}</td>
             <td>${r.type}</td>
             <td class="${p1Class}">${r.p1}</td>
             <td class="${p2Class}">${r.p2}</td>
