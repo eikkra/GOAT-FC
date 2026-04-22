@@ -9,7 +9,7 @@
 <style>
 body{
     margin:0;
-    font-family:'Segoe UI';
+    font-family: 'Segoe UI', sans-serif;
     background:#020617;
     color:#e2e8f0;
 }
@@ -22,14 +22,18 @@ body{
     gap:10px;
     padding:10px;
 }
-.header img{width:40px;}
-.header h1{
-    font-size:18px;
-    color:#00f5ff;
-    text-shadow:0 0 10px #00f5ff,0 0 20px #00f5ff;
+
+.header img{
+    width:40px;
 }
 
-/* DESC */
+.header h1{
+    color:#00f5ff;
+    text-shadow:0 0 15px #00f5ff,0 0 25px #00f5ff;
+    font-size:20px;
+}
+
+/* DESCRIPTION */
 .desc{
     text-align:center;
     font-size:12px;
@@ -39,11 +43,12 @@ body{
 /* FILTER */
 .filter-box{
     display:flex;
-    gap:5px;
-    padding:10px;
     justify-content:center;
-    flex-wrap:wrap;
+    gap:6px;
+    flex-wrap:nowrap;
+    padding:10px;
 }
+
 select,input,button{
     padding:6px;
     border-radius:6px;
@@ -52,6 +57,7 @@ select,input,button{
     color:#00f5ff;
     font-size:11px;
 }
+
 button{
     background:#00f5ff;
     color:black;
@@ -60,36 +66,36 @@ button{
 
 /* TABLE */
 .container{
-    padding:10px;
-    max-height:70vh;
+    max-height:75vh;
     overflow:auto;
 }
+
 table{
     width:100%;
     border-collapse:collapse;
 }
 
-/* STICKY HEADER */
 thead{
     position:sticky;
     top:0;
     background:#020617;
     z-index:10;
 }
+
 th{
     color:#00f5ff;
     text-shadow:0 0 10px #00f5ff;
+    padding:8px;
+    border-bottom:2px solid #00f5ff;
 }
 
-th,td{
-    padding:7px;
-    font-size:12px;
+td{
+    padding:8px;
     text-align:center;
 }
 
-/* ROW SEPARATOR */
 tr{
-    border-bottom:1px solid #1e293b;
+    border-bottom:1px solid #0f172a;
 }
 
 /* RESULT COLORS */
@@ -97,21 +103,22 @@ tr{
 .loss{color:#ef4444;}
 .draw{color:#facc15;}
 
-/* HIGH SCORE */
-.high{
-    animation:glow 1s infinite alternate;
+/* GOLD EFFECT */
+.gold{
     color:gold;
+    text-shadow:0 0 10px gold,0 0 20px gold;
     font-weight:bold;
-}
-@keyframes glow{
-    from{ text-shadow:0 0 5px gold;}
-    to{ text-shadow:0 0 20px gold;}
 }
 
 /* MOBILE */
 @media(max-width:768px){
-    th,td{font-size:11px;}
-    .header h1{font-size:15px;}
+    .filter-box{
+        flex-wrap:nowrap;
+        overflow-x:auto;
+    }
+    th,td{
+        font-size:11px;
+    }
 }
 </style>
 </head>
@@ -125,7 +132,7 @@ tr{
 </div>
 
 <div class="desc">
-Tournament-wise approved match logs. Filter by date and type to track player performance easily.
+Live approved match logs filtered by tournament type and date range.
 </div>
 
 <!-- FILTER -->
@@ -139,8 +146,8 @@ Tournament-wise approved match logs. Filter by date and type to track player per
 <option>Co-op</option>
 </select>
 
-<input type="date" id="startDate" placeholder="Start Date">
-<input type="date" id="endDate" placeholder="End Date">
+<input type="date" id="startDate" placeholder="Start">
+<input type="date" id="endDate" placeholder="End">
 
 <button onclick="applyFilter()">Filter</button>
 </div>
@@ -169,62 +176,64 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0X
 
 let allData = [];
 
-// FAST PARSE
+// FAST PARSER
 function fastCSV(csv){
     const lines = csv.split("\n");
-    let data = [];
+    const result = [];
 
     for(let i=1;i<lines.length;i++){
         if(!lines[i]) continue;
         const r = lines[i].split(",");
-        data.push({
-            P1:r[0], P2:r[1], Type:r[2],
-            S1:+r[3], S2:+r[4],
-            Pnt1:+r[5], Pnt2:+r[6],
-            Approved:r[9],
-            Date:r[11]?.split(" ")[0] // DATE ONLY
+
+        result.push({
+            date: r[11],
+            type: r[2],
+            p1: r[0],
+            p2: r[1],
+            s1: parseInt(r[3]),
+            s2: parseInt(r[4]),
+            pt1: parseInt(r[5]),
+            pt2: parseInt(r[6]),
+            approved: r[9]
         });
     }
-    return data;
+    return result;
 }
 
 // LOAD
 async function loadData(){
     const res = await fetch(CSV_URL);
-    const txt = await res.text();
-    allData = fastCSV(txt).filter(d => d.Approved==="yes");
+    const text = await res.text();
+    allData = fastCSV(text).filter(r=>r.approved==="yes");
     applyFilter();
+}
+
+// DATE FORMAT
+function formatDate(d){
+    return d ? d.split(" ")[0] : "";
 }
 
 // FILTER FIXED
 function applyFilter(){
-
     const type = document.getElementById("matchType").value;
     const start = document.getElementById("startDate").value;
     const end = document.getElementById("endDate").value;
 
-    let data = allData;
+    let filtered = allData;
 
     if(type){
-        data = data.filter(d => d.Type === type);
+        filtered = filtered.filter(r => r.type === type);
     }
 
     if(start){
-        data = data.filter(d => d.Date >= start);
+        filtered = filtered.filter(r => formatDate(r.date) >= start);
     }
 
     if(end){
-        data = data.filter(d => d.Date <= end);
+        filtered = filtered.filter(r => formatDate(r.date) <= end);
     }
 
-    render(data);
-}
-
-// RESULT COLOR
-function resultClass(a,b){
-    if(a>b) return "win";
-    if(a<b) return "loss";
-    return "draw";
+    render(filtered);
 }
 
 // RENDER
@@ -232,28 +241,35 @@ function render(data){
     const tbody = document.getElementById("tableBody");
     let html="";
 
-    data.slice(0,500).forEach(d=>{
+    data.slice(0,500).forEach(r=>{
 
-        const p1Class = resultClass(d.S1,d.S2);
-        const p2Class = resultClass(d.S2,d.S1);
+        let p1Class="", p2Class="";
 
-        const high1 = d.S1>=7 ? "high":"";
-        const high2 = d.S2>=7 ? "high":"";
+        if(r.s1 > r.s2){
+            p1Class="win"; p2Class="loss";
+        }else if(r.s1 < r.s2){
+            p1Class="loss"; p2Class="win";
+        }else{
+            p1Class="draw"; p2Class="draw";
+        }
 
-        html+=`
+        let scoreClass = (r.s1>=7 || r.s2>=7) ? "gold" : "";
+
+        html += `
         <tr>
-            <td>${d.Date}</td>
-            <td>${d.Type}</td>
-            <td class="${p1Class} ${high1}">${d.P1}</td>
-            <td class="${p2Class} ${high2}">${d.P2}</td>
-            <td>${d.S1} - ${d.S2}</td>
-            <td>${d.Pnt1} - ${d.Pnt2}</td>
+            <td>${formatDate(r.date)}</td>
+            <td>${r.type}</td>
+            <td class="${p1Class}">${r.p1}</td>
+            <td class="${p2Class}">${r.p2}</td>
+            <td class="${scoreClass}">${r.s1} - ${r.s2}</td>
+            <td>${r.pt1} - ${r.pt2}</td>
         </tr>`;
     });
 
     tbody.innerHTML = html;
 }
 
+// INIT
 loadData();
 
 </script>
