@@ -9,28 +9,30 @@
 <style>
 body{
     margin:0;
-    font-family: 'Segoe UI', sans-serif;
+    font-family:'Segoe UI',sans-serif;
     background:#020617;
     color:#e2e8f0;
 }
 
-/* HEADER */
+/* HEADER (logo + title same row) */
 .header{
-    text-align:center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
     padding:10px;
 }
-
 .header img{
-    width:45px;
+    width:40px;
 }
-
 .header h1{
-    margin:5px 0 0;
+    margin:0;
     color:#00f5ff;
     text-shadow:0 0 15px #00f5ff;
     font-size:20px;
 }
 
+/* DESCRIPTION */
 .desc{
     text-align:center;
     font-size:12px;
@@ -38,7 +40,7 @@ body{
     margin-bottom:10px;
 }
 
-/* FILTER */
+/* FILTER (one row mobile friendly) */
 .filter-box{
     display:flex;
     gap:6px;
@@ -64,9 +66,16 @@ button{
 
 /* TABLE */
 .container{
-    padding:10px;
     max-height:70vh;
     overflow:auto;
+}
+
+/* STICKY HEADER */
+thead th{
+    position:sticky;
+    top:0;
+    background:#020617;
+    z-index:2;
 }
 
 table{
@@ -75,23 +84,42 @@ table{
 }
 
 th,td{
-    padding:7px;
-    font-size:12px;
+    padding:8px;
     text-align:center;
+    font-size:12px;
 }
 
-th{
-    color:#00f5ff;
-}
-
+/* ROW SEPARATOR */
 tr{
-    border-bottom:1px solid #0f172a;
+    border-bottom:1px solid #1e293b;
+}
+
+/* POINT COLORS */
+.win{
+    color:#22c55e;
+    font-weight:bold;
+}
+.draw{
+    color:#eab308;
+    font-weight:bold;
+}
+
+/* BIG SCORE ANIMATION */
+.big-score{
+    color:#facc15;
+    font-weight:bold;
+    animation:glow 1s infinite alternate;
+}
+@keyframes glow{
+    from{ text-shadow:0 0 5px gold; }
+    to{ text-shadow:0 0 20px gold; }
 }
 
 /* MOBILE */
 @media(max-width:768px){
     th,td{
         font-size:11px;
+        padding:6px;
     }
 }
 </style>
@@ -99,15 +127,17 @@ tr{
 
 <body>
 
+<!-- HEADER -->
 <div class="header">
     <img src="https://i.imgur.com/LY3Bb9m.png">
     <h1>GOAT FC MATCH LOG</h1>
 </div>
 
 <div class="desc">
-Live match records filtered by tournament type and date. Only approved matches are displayed for accurate tracking.
+Track all approved matches by type and date. Filter tournament logs instantly and view player performance history.
 </div>
 
+<!-- FILTER -->
 <div class="filter-box">
 <select id="matchType">
 <option value="">All</option>
@@ -118,12 +148,13 @@ Live match records filtered by tournament type and date. Only approved matches a
 <option>Co-op</option>
 </select>
 
-<input type="date" id="startDate">
-<input type="date" id="endDate">
+<input type="date" id="startDate" placeholder="Start Date">
+<input type="date" id="endDate" placeholder="End Date">
 
 <button onclick="applyFilter()">Filter</button>
 </div>
 
+<!-- TABLE -->
 <div class="container">
 <table>
 <thead>
@@ -146,90 +177,89 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0X
 
 let allData = [];
 
-// ⚡ FAST CSV PARSER
+// FAST CSV
 function fastCSV(csv){
     const lines = csv.split("\n");
-    const headers = lines[0].split(",");
     const result = [];
 
     for(let i=1;i<lines.length;i++){
         if(!lines[i]) continue;
         const row = lines[i].split(",");
         result.push({
-            Match_Date: row[11],
-            Match_Type: row[2],
-            P1_ID: row[0],
-            P2_ID: row[1],
-            P1_Score: row[3],
-            P2_Score: row[4],
-            P1_Point: row[5],
-            P2_Point: row[6],
-            Approved: row[9]
+            date: row[11],
+            type: row[2],
+            p1: row[0],
+            p2: row[1],
+            s1: parseInt(row[3]),
+            s2: parseInt(row[4]),
+            pt1: row[5],
+            pt2: row[6],
+            approved: row[9]
         });
     }
     return result;
 }
 
-// ⚡ LOAD (only once)
 async function loadData(){
     const res = await fetch(CSV_URL);
     const text = await res.text();
-    allData = fastCSV(text).filter(r => r.Approved === "yes"); // pre-filter
+    allData = fastCSV(text).filter(r=>r.approved==="yes");
     applyFilter();
 }
 
-// ⚡ FORMAT DATE ONLY
 function formatDate(d){
-    if(!d) return "";
-    return d.split(" ")[0];
+    return d ? d.split(" ")[0] : "";
 }
 
-// ⚡ FILTER FAST
 function applyFilter(){
 
     const type = document.getElementById("matchType").value;
     const start = document.getElementById("startDate").value;
     const end = document.getElementById("endDate").value;
 
-    let filtered = allData;
+    let data = allData;
 
-    if(type){
-        filtered = filtered.filter(r => r.Match_Type === type);
-    }
+    if(type) data = data.filter(r=>r.type===type);
+    if(start) data = data.filter(r=>r.date>=start);
+    if(end) data = data.filter(r=>r.date<=end);
 
-    if(start){
-        filtered = filtered.filter(r => r.Match_Date >= start);
-    }
-
-    if(end){
-        filtered = filtered.filter(r => r.Match_Date <= end);
-    }
-
-    renderTable(filtered);
+    render(data);
 }
 
-// ⚡ RENDER (fast DOM)
-function renderTable(data){
+function render(data){
     const tbody = document.getElementById("tableBody");
 
-    let html = "";
+    let html="";
 
-    data.slice(0,500).forEach(row => {  // LIMIT = performance boost
-        html += `
+    data.slice(0,500).forEach(r=>{
+
+        // point color
+        let p1Class="", p2Class="";
+        if(r.pt1 > r.pt2) p1Class="win";
+        else if(r.pt1 < r.pt2) p2Class="win";
+        else { p1Class="draw"; p2Class="draw"; }
+
+        // big score check
+        let scoreClass="";
+        if((r.s1>=7 || r.s2>=7)) scoreClass="big-score";
+
+        html+=`
         <tr>
-            <td>${formatDate(row.Match_Date)}</td>
-            <td>${row.Match_Type}</td>
-            <td>${row.P1_ID}</td>
-            <td>${row.P2_ID}</td>
-            <td>${row.P1_Score} - ${row.P2_Score}</td>
-            <td>${row.P1_Point} - ${row.P2_Point}</td>
+            <td>${formatDate(r.date)}</td>
+            <td>${r.type}</td>
+            <td>${r.p1}</td>
+            <td>${r.p2}</td>
+            <td class="${scoreClass}">${r.s1} - ${r.s2}</td>
+            <td>
+                <span class="${p1Class}">${r.pt1}</span> - 
+                <span class="${p2Class}">${r.pt2}</span>
+            </td>
         </tr>`;
     });
 
     tbody.innerHTML = html;
 }
 
-// INIT
 loadData();
 
 </script>
