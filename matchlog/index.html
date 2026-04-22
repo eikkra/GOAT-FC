@@ -3,61 +3,55 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GOAT FC MATCH LOG</title>
-<link rel="icon" type="image/png" href="https://i.imgur.com/LY3Bb9m.png">
+<title>GOAT FC MATCH LOGS</title>
+<link rel="icon" type="image/png" href="https://i.imgur.com/LY3Bb9m.png"
 
 <style>
 body{
     margin:0;
-    font-family:'Segoe UI',sans-serif;
+    font-family:'Segoe UI';
     background:#020617;
     color:#e2e8f0;
 }
 
-/* HEADER (logo + title same row) */
+/* HEADER */
 .header{
     display:flex;
-    align-items:center;
     justify-content:center;
+    align-items:center;
     gap:10px;
     padding:10px;
 }
-.header img{
-    width:40px;
-}
+.header img{width:40px;}
 .header h1{
-    margin:0;
+    font-size:18px;
     color:#00f5ff;
-    text-shadow:0 0 15px #00f5ff;
-    font-size:20px;
+    text-shadow:0 0 10px #00f5ff,0 0 20px #00f5ff;
 }
 
-/* DESCRIPTION */
+/* DESC */
 .desc{
     text-align:center;
     font-size:12px;
     color:#94a3b8;
-    margin-bottom:10px;
 }
 
-/* FILTER (one row mobile friendly) */
+/* FILTER */
 .filter-box{
     display:flex;
-    gap:6px;
+    gap:5px;
     padding:10px;
     justify-content:center;
     flex-wrap:wrap;
 }
-
 select,input,button{
-    padding:7px;
+    padding:6px;
     border-radius:6px;
     border:1px solid #00f5ff;
     background:black;
     color:#00f5ff;
-    font-size:12px;
+    font-size:11px;
 }
-
 button{
     background:#00f5ff;
     color:black;
@@ -66,27 +60,31 @@ button{
 
 /* TABLE */
 .container{
+    padding:10px;
     max-height:70vh;
     overflow:auto;
 }
-
-/* STICKY HEADER */
-thead th{
-    position:sticky;
-    top:0;
-    background:#020617;
-    z-index:2;
-}
-
 table{
     width:100%;
     border-collapse:collapse;
 }
 
+/* STICKY HEADER */
+thead{
+    position:sticky;
+    top:0;
+    background:#020617;
+    z-index:10;
+}
+th{
+    color:#00f5ff;
+    text-shadow:0 0 10px #00f5ff;
+}
+
 th,td{
-    padding:8px;
-    text-align:center;
+    padding:7px;
     font-size:12px;
+    text-align:center;
 }
 
 /* ROW SEPARATOR */
@@ -94,33 +92,26 @@ tr{
     border-bottom:1px solid #1e293b;
 }
 
-/* POINT COLORS */
-.win{
-    color:#22c55e;
-    font-weight:bold;
-}
-.draw{
-    color:#eab308;
-    font-weight:bold;
-}
+/* RESULT COLORS */
+.win{color:#22c55e;}
+.loss{color:#ef4444;}
+.draw{color:#facc15;}
 
-/* BIG SCORE ANIMATION */
-.big-score{
-    color:#facc15;
-    font-weight:bold;
+/* HIGH SCORE */
+.high{
     animation:glow 1s infinite alternate;
+    color:gold;
+    font-weight:bold;
 }
 @keyframes glow{
-    from{ text-shadow:0 0 5px gold; }
-    to{ text-shadow:0 0 20px gold; }
+    from{ text-shadow:0 0 5px gold;}
+    to{ text-shadow:0 0 20px gold;}
 }
 
 /* MOBILE */
 @media(max-width:768px){
-    th,td{
-        font-size:11px;
-        padding:6px;
-    }
+    th,td{font-size:11px;}
+    .header h1{font-size:15px;}
 }
 </style>
 </head>
@@ -134,7 +125,7 @@ tr{
 </div>
 
 <div class="desc">
-Track all approved matches by type and date. Filter tournament logs instantly and view player performance history.
+Tournament-wise approved match logs. Filter by date and type to track player performance easily.
 </div>
 
 <!-- FILTER -->
@@ -167,6 +158,7 @@ Track all approved matches by type and date. Filter tournament logs instantly an
 <th>Points</th>
 </tr>
 </thead>
+
 <tbody id="tableBody"></tbody>
 </table>
 </div>
@@ -177,40 +169,34 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0X
 
 let allData = [];
 
-// FAST CSV
+// FAST PARSE
 function fastCSV(csv){
     const lines = csv.split("\n");
-    const result = [];
+    let data = [];
 
     for(let i=1;i<lines.length;i++){
         if(!lines[i]) continue;
-        const row = lines[i].split(",");
-        result.push({
-            date: row[11],
-            type: row[2],
-            p1: row[0],
-            p2: row[1],
-            s1: parseInt(row[3]),
-            s2: parseInt(row[4]),
-            pt1: row[5],
-            pt2: row[6],
-            approved: row[9]
+        const r = lines[i].split(",");
+        data.push({
+            P1:r[0], P2:r[1], Type:r[2],
+            S1:+r[3], S2:+r[4],
+            Pnt1:+r[5], Pnt2:+r[6],
+            Approved:r[9],
+            Date:r[11]?.split(" ")[0] // DATE ONLY
         });
     }
-    return result;
+    return data;
 }
 
+// LOAD
 async function loadData(){
     const res = await fetch(CSV_URL);
-    const text = await res.text();
-    allData = fastCSV(text).filter(r=>r.approved==="yes");
+    const txt = await res.text();
+    allData = fastCSV(txt).filter(d => d.Approved==="yes");
     applyFilter();
 }
 
-function formatDate(d){
-    return d ? d.split(" ")[0] : "";
-}
-
+// FILTER FIXED
 function applyFilter(){
 
     const type = document.getElementById("matchType").value;
@@ -219,41 +205,49 @@ function applyFilter(){
 
     let data = allData;
 
-    if(type) data = data.filter(r=>r.type===type);
-    if(start) data = data.filter(r=>r.date>=start);
-    if(end) data = data.filter(r=>r.date<=end);
+    if(type){
+        data = data.filter(d => d.Type === type);
+    }
+
+    if(start){
+        data = data.filter(d => d.Date >= start);
+    }
+
+    if(end){
+        data = data.filter(d => d.Date <= end);
+    }
 
     render(data);
 }
 
+// RESULT COLOR
+function resultClass(a,b){
+    if(a>b) return "win";
+    if(a<b) return "loss";
+    return "draw";
+}
+
+// RENDER
 function render(data){
     const tbody = document.getElementById("tableBody");
-
     let html="";
 
-    data.slice(0,500).forEach(r=>{
+    data.slice(0,500).forEach(d=>{
 
-        // point color
-        let p1Class="", p2Class="";
-        if(r.pt1 > r.pt2) p1Class="win";
-        else if(r.pt1 < r.pt2) p2Class="win";
-        else { p1Class="draw"; p2Class="draw"; }
+        const p1Class = resultClass(d.S1,d.S2);
+        const p2Class = resultClass(d.S2,d.S1);
 
-        // big score check
-        let scoreClass="";
-        if((r.s1>=7 || r.s2>=7)) scoreClass="big-score";
+        const high1 = d.S1>=7 ? "high":"";
+        const high2 = d.S2>=7 ? "high":"";
 
         html+=`
         <tr>
-            <td>${formatDate(r.date)}</td>
-            <td>${r.type}</td>
-            <td>${r.p1}</td>
-            <td>${r.p2}</td>
-            <td class="${scoreClass}">${r.s1} - ${r.s2}</td>
-            <td>
-                <span class="${p1Class}">${r.pt1}</span> - 
-                <span class="${p2Class}">${r.pt2}</span>
-            </td>
+            <td>${d.Date}</td>
+            <td>${d.Type}</td>
+            <td class="${p1Class} ${high1}">${d.P1}</td>
+            <td class="${p2Class} ${high2}">${d.P2}</td>
+            <td>${d.S1} - ${d.S2}</td>
+            <td>${d.Pnt1} - ${d.Pnt2}</td>
         </tr>`;
     });
 
