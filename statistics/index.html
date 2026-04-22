@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GOAT FC STATISTICS</title>
+
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:#020617;
+    color:white;
+}
+
+/* HEADER */
+.header{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    padding:12px;
+    flex-wrap:wrap;
+}
+.header img{
+    width:42px;
+    filter: drop-shadow(0 0 8px #00f5ff);
+}
+.header h1{
+    font-size:20px;
+    margin:0;
+    color:#00f5ff;
+    text-shadow:0 0 10px #00f5ff;
+}
+.desc{
+    width:100%;
+    text-align:center;
+    font-size:12px;
+    color:#94a3b8;
+}
+
+/* SEARCH */
+.search{
+    text-align:center;
+    margin:10px;
+}
+.search input{
+    padding:10px;
+    width:90%;
+    max-width:380px;
+    border-radius:10px;
+    border:1px solid #00f5ff;
+    background:black;
+    color:#00f5ff;
+    outline:none;
+}
+
+/* GRID */
+#data{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:10px;
+    padding:10px;
+}
+
+/* CARD */
+.card{
+    padding:14px;
+    border-radius:16px;
+    background:linear-gradient(145deg,#020617,#001f2f);
+    border:1px solid rgba(0,245,255,0.3);
+    box-shadow:0 0 10px rgba(0,245,255,0.15);
+    text-align:center;
+}
+
+/* TOP COLORS */
+.rank1{
+    border:1px solid gold;
+    box-shadow:0 0 15px gold;
+}
+.rank2{
+    border:1px solid silver;
+    box-shadow:0 0 15px silver;
+}
+.rank3{
+    border:1px solid #cd7f32;
+    box-shadow:0 0 15px #cd7f32;
+}
+.top10{
+    border:1px solid #a855f7;
+    box-shadow:0 0 12px #a855f7;
+}
+
+/* CLUB */
+.club{
+    font-size:15px;
+    font-weight:bold;
+    margin-bottom:12px;
+    color:#00f5ff;
+}
+
+/* GRID BOX */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+}
+
+.box{
+    padding:8px;
+    border-radius:10px;
+    font-size:12px;
+    background:rgba(0,245,255,0.06);
+    border:1px solid rgba(0,245,255,0.3);
+    box-shadow:0 0 5px rgba(0,245,255,0.4);
+}
+
+/* DOWNLOAD BUTTON */
+.download{
+    margin-top:10px;
+}
+.download button{
+    padding:6px 12px;
+    border:none;
+    border-radius:8px;
+    background:#00f5ff;
+    color:black;
+    font-size:12px;
+    cursor:pointer;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+    #data{
+        display:block;
+        padding:6px;
+    }
+    .grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+    .card{
+        margin-bottom:12px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<img src="https://i.imgur.com/LY3Bb9m.png">
+<h1>GOAT FC STATISTICS</h1>
+<div class="desc">
+Official performance dashboard showing wins, goals, win rate and match stats (Approved matches only)
+</div>
+</div>
+
+<div class="search">
+<input type="text" id="search" placeholder="Search Club ID..." oninput="render()">
+</div>
+
+<div id="data"></div>
+
+<script>
+
+const URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=1588171329&single=true&output=csv";
+
+let players={};
+
+function normalize(id){
+    return (id||"").toLowerCase().replace(/[^a-z0-9]/g,'');
+}
+
+async function load(){
+    let text = await fetch(URL + "&t=" + Date.now()).then(r=>r.text());
+    let rows = text.split("\n").slice(1);
+
+    rows.forEach(r=>{
+        let c = r.split(",");
+
+        let P1 = c[0];
+        let P2 = c[1];
+        let type = c[2];
+        let P1S = Number(c[3]);
+        let P2S = Number(c[4]);
+        let approved = (c[9]||"").toLowerCase();
+
+        if(approved !== "yes") return;
+
+        update(P1,P1S,P2S,type);
+        update(P2,P2S,P1S,type);
+    });
+
+    render();
+}
+
+function update(id,scored,conceded,type){
+
+    if(!players[id]){
+        players[id]={
+            match:0,win:0,loss:0,draw:0,
+            gs:0,gc:0,diff:0,
+            rate:0,seven:0,
+            friendly:0,other:0
+        };
+    }
+
+    let p=players[id];
+
+    p.match++;
+    p.gs+=scored;
+    p.gc+=conceded;
+    p.diff=p.gs-p.gc;
+
+    if(type==="Friendly") p.friendly++;
+    else p.other++;
+
+    if(scored>conceded) p.win++;
+    else if(scored<conceded) p.loss++;
+    else p.draw++;
+
+    if(scored>=7) p.seven++;
+
+    p.winp=(p.win/p.match)*100;
+    p.rate=(p.gs/p.match);
+}
+
+function render(){
+
+    let q=normalize(document.getElementById("search").value);
+
+    let sorted=Object.entries(players)
+        .sort((a,b)=>b[1].win-a[1].win);
+
+    let html="";
+
+    sorted.forEach(([id,p],index)=>{
+
+        if(q && !normalize(id).includes(q)) return;
+
+        let cls="card";
+        if(index===0) cls+=" rank1";
+        else if(index===1) cls+=" rank2";
+        else if(index===2) cls+=" rank3";
+        else if(index<10) cls+=" top10";
+
+        html+=`
+        <div class="${cls}">
+            <div class="club">PLAYER ID: ${id}</div>
+
+            <div class="grid">
+                <div class="box">🟢 Win : ${p.win}</div>
+                <div class="box">🔴 Loss : ${p.loss}</div>
+                <div class="box">🟡 Draw : ${p.draw}</div>
+
+                <div class="box">🎮 Match : ${p.match}</div>
+                <div class="box">📊 Win% : ${p.winp.toFixed(1)}</div>
+                <div class="box">⚽ Rate : ${p.rate.toFixed(2)}</div>
+
+                <div class="box">⚽ Scored : ${p.gs}</div>
+                <div class="box">🥅 Conceded : ${p.gc}</div>
+                <div class="box">📈 Difference : ${p.diff}</div>
+
+                <div class="box">👑 7+ Goals : ${p.seven}</div>
+                <div class="box">🤝 Friendly : ${p.friendly}</div>
+                <div class="box">🏆 Tournament : ${p.other}</div>
+            </div>
+
+            <div class="download">
+                <button onclick="downloadCard(this)">Download</button>
+            </div>
+        </div>`;
+    });
+
+    document.getElementById("data").innerHTML=html;
+}
+
+// DOWNLOAD IMAGE
+function downloadCard(btn){
+    let card = btn.closest(".card");
+
+    html2canvas(card).then(canvas=>{
+        let link=document.createElement("a");
+        link.download="GOAT_FC_STATS.jpg";
+        link.href=canvas.toDataURL("image/jpeg");
+        link.click();
+    });
+}
+
+load();
+
+</script>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+</body>
+</html>
