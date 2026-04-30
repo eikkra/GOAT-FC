@@ -218,8 +218,8 @@ Live competitive ranking based on performance, goals & consistency.
 </div>
 
 <div class="tabs">
-<button onclick="loadData('overall')" id="overallBtn" class="active">Overall</button>
-<button onclick="loadData('monthly')" id="monthlyBtn">Monthly</button>
+<button onclick="loadData('monthly')" id="monthlyBtn" class="active">Monthly</button>
+<button onclick="loadData('overall')" id="overallBtn">Overall</button>
 </div>
 
 <div class="stats">
@@ -354,7 +354,7 @@ document.getElementById("pm").innerText=per;
 
 }
 
-loadData("overall");
+loadData("monthly");
 setInterval(()=>loadData(type),30000);
 
 </script>
