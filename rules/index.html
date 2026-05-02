@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MATCH RULES</title>
+<link rel="icon" type="image/png" href="https://i.imgur.com/LY3Bb9m.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Noto Sans Bengali',sans-serif;
+  background:radial-gradient(circle at top,#0b1a33,#050816 70%);
+  color:#fff;
+  padding:12px;
+}
+.container{max-width:1200px;margin:auto}
+
+/* HEADER */
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+  text-align:center;
+  padding:14px;
+  border-radius:18px;
+  background:rgba(16,24,44,.75);
+  border:1px solid rgba(0,255,153,.25);
+  box-shadow:0 0 18px rgba(0,255,153,.12);
+}
+
+.logo{
+  width:52px;
+  height:52px;
+  animation:glow 3s infinite linear;
+  filter:drop-shadow(0 0 6px #00ff99)
+         drop-shadow(0 0 10px #00d9ff)
+         drop-shadow(0 0 14px #ff00d4);
+}
+@keyframes glow{
+  0%{filter:drop-shadow(0 0 6px #00ff99)}
+  50%{filter:drop-shadow(0 0 12px #00d9ff)}
+  100%{filter:drop-shadow(0 0 6px #ff00d4)}
+}
+
+.title{
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(22px,4vw,38px);
+  background:linear-gradient(90deg,#00ff99,#00d9ff,#ff00d4,#00ff99);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-size:300%;
+  animation:rgb 5s linear infinite;
+}
+@keyframes rgb{to{background-position:300%}}
+
+.subtitle{
+  width:100%;
+  text-align:center;
+  color:#b9c4d8;
+  font-size:13px;
+  margin-top:4px;
+}
+
+/* TABS */
+.tabs{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin:14px 0;
+}
+.tab-btn{
+  padding:10px 14px;
+  border:none;
+  border-radius:999px;
+  background:#16213a;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+  font-size:12px;
+  min-width:160px;
+  transition:.3s;
+}
+.tab-btn.active{
+  background:linear-gradient(135deg,#00ff99,#00d9ff);
+  color:#041018;
+  box-shadow:0 0 18px rgba(0,255,153,.35);
+}
+
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+.card{
+  background:rgba(16,24,44,.88);
+  padding:16px;
+  border-radius:16px;
+  border:1px solid rgba(29,53,87,.7);
+}
+
+.section-title{
+  color:#00ff99;
+  font-size:18px;
+  margin-bottom:10px;
+  font-weight:800;
+}
+
+.rule-item{
+  padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  line-height:1.8;
+  font-size:13px;
+  white-space: pre-line; /* 🔥 এটা add করো */
+}
+.rule-item:last-child{border-bottom:none}
+
+/* ROOM MOBILE CARD */
+.room-setting{
+  margin-top:14px;
+  border-top:1px solid rgba(0,255,153,.2);
+  padding-top:14px;
+}
+.room-type{
+  text-align:center;
+  font-size:13px;
+  margin-bottom:10px;
+  color:#b9c4d8;
+}
+.room-type span{color:#00ff99;font-weight:700}
+
+.room-wrap{
+  display:flex;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  gap:10px;
+}
+.room-card{
+  min-width:92%;
+  scroll-snap-align:center;
+  background:#0b1426;
+  border:1px solid rgba(0,217,255,.25);
+  border-radius:14px;
+  padding:10px;
+}
+.room-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:11px;
+}
+.room-table th,.room-table td{
+  border:1px solid #28456b;
+  padding:8px;
+  text-align:center;
+}
+.room-table th{
+  background:#16213a;
+  color:#00ff99;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+  .tab-btn{min-width:140px;font-size:11px}
+  .logo{width:46px;height:46px}
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- HEADER ROW -->
+<div class="header">
+<img class="logo" src="https://i.imgur.com/LY3Bb9m.png">
+<div class="title">MATCH RULES</div>
+<div class="subtitle">Official Competitive Gaming Rulebook</div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+<button class="tab-btn active" onclick="openTab('tour',this)">🏆 Tournament Rules</button>
+<button class="tab-btn" onclick="openTab('friendly',this)">🤝 Friendly Rules</button>
+</div>
+
+<!-- TOURNAMENT -->
+<div id="tour" class="tab-content active">
+<div class="card">
+
+<div class="section-title">টুর্নামেন্টের নিয়মাবলী:</div>
+
+<div class="rule-item"><strong>১) রেজিস্ট্রেশন তথ্য ও অ্যাকাউন্ট ভেরিফিকেশন:</strong> 
+টুর্নামেন্টে অংশগ্রহণের সময় যে Konami ID, Device ও Facebook ID দিয়ে রেজিস্ট্রেশন করা হবে, সম্পূর্ণ টুর্নামেন্টে সেই তথ্য দিয়েই খেলতে হবে। যেকোনো পরিবর্তনের প্রয়োজন হলে পূর্বে Admin Panel-কে জানিয়ে অনুমোদন নিতে হবে। নিজের সাবমিট করা তথ্য যাচাই করতে Website-এর Play Card চেক করুন।.</div>
+<div class="rule-item"><strong>২) ম্যাচ টাইমিং ও ডেডলাইন:</strong>  
+সকল ম্যাচ নির্ধারিত সময়সীমার মধ্যে সম্পন্ন করতে হবে। Priority Time-এর মধ্যে অবশ্যই রেসপন্স করতে হবে, অন্যথায় ডেডলাইনের পর 1-0 Loss গণ্য হবে।
+✅ডেডলাইনের শেষ ১৫ মিনিট = Priority Time
+✅উভয় পক্ষ অনুপস্থিত থাকলে ফলাফল হবে 0-0 Draw
+✅Knockout ম্যাচে Draw হলে Yellow Card ভিত্তিক Auto Spin হবে</div>
+<div class="rule-item"><strong>৩) ম্যাচ ভিডিও প্রমাণ (Mandatory):</strong>
+ম্যাচ শেষে Result Board Screen থাকা অবস্থায় ভিডিও রেকর্ড শুরু করে এক ভিডিওতে Match Result, Konami ID এবং Device Model দেখাতে হবে।
+✅Winner হলে শুধুমাত্র Winner ভিডিও দিবে, আর Match Draw হলে উভয় প্লেয়ার ভিডিও দিবে।
+✅WIN/DRAW এর ১৫ মিনিটের মধ্যে ভিডিও না দিলে Rematch বাধ্যতামূলক।
+✅যদি স্কোরে এগিয়ে থেকেও স্ক্রিনে LOSS দেখায়, তাহলে Konami ID ও Device Model সহ ভিডিও দিতে হবে।
+✅ভিডিও দিতে ব্যর্থ হলে সেই Goal Count হবে না এবং ম্যাচ 0-0 থেকে Rematch হবে।</div>
+<div class="rule-item"><strong>৪) Disconnected Match Policy:</strong>
+✅অযথা ম্যাচ থেকে বের হওয়া সম্পূর্ণ নিষিদ্ধ। Disconnected হলে ম্যাচ যেখানে শেষ হয়েছে সেখান থেকে পুনরায় শুরু করে ৯৩ মিনিট পূর্ণ করতে হবে।
+✅উভয় অংশের স্কোর যোগ করে Final Result Referee-কে mention করে Update দিতে হবে এবং উভয় Player এর Club ID যুক্ত থাকতে হবে।</div>
+<div class="rule-item"><strong>৫) Fixture & Sub-Swap Rules:</strong>
+✅League Matches-এ Home Team Fixture দিবে এবং Match শেষে Away Team Leave নিবে।
+✅Team Format Matches-এ 4v4 হলে ১টি Swap ও ২টি Sub, এবং 6v6 হলে ২টি Swap ও ২টি Sub ব্যবহার করা যাবে।
+✅Home Team রাত 12:00 AM – 1:00 AM এর মধ্যে Fixture Edit করে হোম গ্রুপে দিবে।
+✅যদি সময়ের মধ্যে Fixture দিতে ব্যর্থ হয় তাহলে Away Team Fixture দিতে পারবে।
+✅Fixture দেওয়ার পর Home Team আর Fixture Edit করতে পারবে না, এরপর শুধুমাত্র Formation অনুযায়ী Sub/Swap ব্যবহার করা যাবে।</div>
+<div class="rule-item"><strong>৬) Score Submission Rules:</strong>
+স্কোর অবশ্যই Website-এর Score Submit Panel থেকে সঠিকভাবে সাবমিট করতে হবে। স্কোর সাবমিটের পর উভয় পক্ষ Match Logs চেক করবে। পরবর্তীতে ভুল স্কোর সংক্রান্ত <strong>অভিযোগ গ্রহণযোগ্য হবে না।</strong></div>
+<div class="rule-item"><strong>৭) অভিযোগ ও আচরণবিধি:</strong>
+প্রমাণ ছাড়া কারো বিরুদ্ধে অভিযোগ গ্রহণযোগ্য নয়। যেকোনো সমস্যা হলে Match Admin-কে গ্রুপে জানাতে হবে এবং তার সিদ্ধান্তের জন্য অপেক্ষা করতে হবে। নিজেদের মধ্যে তর্ক/বিতর্কে জড়ালে Yellow Card প্রদান করা হবে এবং প্রয়োজনে Match Group থেকে Remove করা হবে। Match Admin-এর সিদ্ধান্তই চূড়ান্ত।✅</div>
+<div class="rule-item"><strong>৮) Sportsmanship & Respect:</strong>
+আমরা সবাই একে অপরের প্রতি সম্মান বজায় রেখে খেলবো।
+ম্যাচ শেষে প্রতিপক্ষকে ভালোভাবে উৎসাহ দিব। কারো Gameplay সম্পর্কে পরামর্শ থাকলে তা Personal Inbox-এ শেয়ার করুন। সবার সামনে কাউকে ছোট করা বা অপমান করা সম্পূর্ণ নিষিদ্ধ, আমরা কখনো কাউকে ছোট করার অধিকার রাখি না।</div>
+
+<!-- ROOM SETTING TAB STYLE -->
+<div class="room-setting">
+<div class="section-title">🎯 Match Room Setting</div>
+<div class="room-type">⚽ Match Type: <span>STANDARD</span></div>
+
+<div class="room-wrap">
+
+<div class="room-card">
+<table class="room-table">
+<tr><th>⚙️ Setting</th><th>🏁 Round</th><th>🔥 Knockout</th><th>🏆 Final</th></tr>
+<tr><td>⏱ Time</td><td>8</td><td>8</td><td>10</td></tr>
+<tr><td>🤕 Injury</td><td>ON</td><td>ON</td><td>ON</td></tr>
+<tr><td>🎯 ET/PK</td><td>OFF</td><td>ON</td><td>ON</td></tr>
+<tr><td>🔄 Sub</td><td>5/3</td><td>5/3</td><td>5/3</td></tr>
+<tr><td>🏠 H/A</td><td>Normal</td><td>Normal</td><td>Normal</td></tr>
+</table>
+</div>
+
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- FRIENDLY -->
+<div id="friendly" class="tab-content">
+<div class="card">
+
+<div class="section-title">🤝 Friendly Match Rules</div>
+
+<div class="rule-item">১)ম্যাচ শেষে বিজয়ী প্লেয়ার মূল গ্রুপে স্ক্রিনশট পোস্ট করবে, যেখানে উভয় প্লেয়ারের Club ID দৃশ্যমান থাকবে। এরপর একই স্ক্রিনশট Score Box-এ submit করতে হবে।</div>
+<div class="rule-item">২) জয়ী প্লেয়ার স্কোর submit করবে। ম্যাচ ড্র হলে যে কোড তৈরি করবে, সেই submit করবে।</div>
+<div class="rule-item">৩) Incomplete ম্যাচ Full Time (93min) পর্যন্ত খেলে মোট স্কোর যোগ করে Final Score Screenshot গ্রুপে দিতে হবে।</div>
+<div class="rule-item">৪) একই প্লেয়ারের সাথে মাসে সর্বোচ্চ ৫টি ম্যাচ খেলা যাবে। সকলের সাথে খেলে skill development নিশ্চিত করাই আমাদের লক্ষ্য।</div>
+<div class="rule-item">৫) প্রতি মাসে একজন প্লেয়ার সর্বোচ্চ ৫০টি ম্যাচ খেলতে পারবে (Friendly + Tournament মিলিয়ে)।</div>
+<div class="rule-item">৬) ৫০ ম্যাচ পূর্ণ হলে পরবর্তী প্রতিপক্ষকে আগে থেকেই জানাতে হবে যে ম্যাচটি count হবে না। এটি জানানো ৫০ ম্যাচ পূর্ণ করা প্লেয়ারের দায়িত্ব।</div>
+<div class="rule-item">৭)  প্রতিটি ম্যাচ শেষে Match Log-এ স্কোর সঠিকভাবে submit হয়েছে কিনা অবশ্যই যাচাই করতে হবে। পরে কোনো অভিযোগ গ্রহণযোগ্য হবে না।</div>
+<div class="rule-item">৮) Friendly Match নিয়ে গ্রুপে তর্ক-বিতর্ক করা যাবে না। ভুলত্রুটি বা gameplay feedback ব্যক্তিগতভাবে inbox-এ জানাতে হবে।</div>
+<div class="rule-item"><strong>Important Notes</strong> 
+✅ একই প্লেয়ারের সাথে ৫টির বেশি ম্যাচ খেললে ধরা পড়লে ২টি Win Match বাতিল করা হবে। 
+✅ ভুল Club ID দিয়ে score submit করলে Page এ Details উল্লেখ করতে হবে; Admin Team তা সংশোধন করবে, তবে একই ভুল বারবার গ্রহণযোগ্য নয়।</div>
+
+</div>
+</div>
+
+</div>
+
+<script>
+function openTab(id,btn){
+ document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
+ document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ btn.classList.add('active');
+}
+</script>
+
+</body>
+</html>
