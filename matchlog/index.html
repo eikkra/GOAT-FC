@@ -9,7 +9,7 @@
 <style>
 body{
     margin:0;
-    font-family: 'Segoe UI', sans-serif;
+    font-family:'Segoe UI',sans-serif;
     background:#020617;
     color:#e2e8f0;
 }
@@ -26,8 +26,8 @@ body{
 
 .header h1{
     color:#00f5ff;
-    text-shadow:0 0 15px #00f5ff,0 0 25px #00f5ff;
-    font-size:20px;
+    text-shadow:0 0 15px #00f5ff;
+    font-size:18px;
 }
 
 /* DESC */
@@ -42,7 +42,6 @@ body{
     display:flex;
     justify-content:center;
     gap:6px;
-    flex-wrap:nowrap;
     padding:10px;
     overflow-x:auto;
 }
@@ -62,18 +61,20 @@ button{
     font-weight:bold;
 }
 
-/* TABLE */
+/* TABLE WRAPPER */
 .container{
     max-height:75vh;
     overflow:auto;
 }
 
+/* TABLE */
 table{
     width:100%;
     border-collapse:collapse;
     table-layout:fixed;
 }
 
+/* HEADER STICKY */
 thead{
     position:sticky;
     top:0;
@@ -83,36 +84,47 @@ thead{
 
 th{
     color:#00f5ff;
-    padding:8px;
+    padding:10px 4px;
+    font-size:11px;
     border-bottom:2px solid #00f5ff;
-    white-space:nowrap;
-}
-
-td{
-    padding:8px;
     text-align:center;
+}
+
+/* BODY CELLS */
+td{
+    padding:6px 4px;
+    font-size:10px;
+    text-align:center;   /* ✅ ALL CENTER */
     white-space:nowrap;
 }
 
-tr{
-    border-bottom:1px solid #0f172a;
+/* DATE COLOR */
+.date{
+    color:#38bdf8;
+    font-weight:600;
+}
+
+/* SCORE + POINT STYLE */
+.score{
+    font-weight:700;
+    font-size:11px;
+}
+
+.point{
+    font-weight:700;
+    font-size:11px;
+}
+
+/* RIGHT SIDE SLIGHT PUSH (VISUAL BALANCE) */
+td.score, td.point{
+    text-align:center;
 }
 
 /* RESULT COLORS */
 .win{color:#22c55e;}
 .loss{color:#ef4444;}
 .draw{color:#facc15;}
-
-/* GOLD EFFECT */
-.gold{
-    color:gold;
-    text-shadow:0 0 10px gold;
-}
-
-/* MOBILE */
-@media(max-width:768px){
-    th,td{font-size:11px;}
-}
+.gold{color:gold;}
 </style>
 </head>
 
@@ -124,7 +136,7 @@ tr{
 </div>
 
 <div class="desc">
-Live approved match logs filtered by tournament type and date range.
+Live approved match logs filtered by Match type and date range.
 </div>
 
 <div class="filter-box">
@@ -152,7 +164,7 @@ Live approved match logs filtered by tournament type and date range.
 <th>Player 1</th>
 <th>Player 2</th>
 <th>Score</th>
-<th>Points</th>
+<th>Point</th>
 </tr>
 </thead>
 
@@ -166,97 +178,89 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0X
 
 let allData = [];
 
-// SAFE DATE PARSER
+/* FIX DATE (NO TRUNCATION / NO SHIFT) */
 function parseDate(str){
     if(!str) return null;
-    try{
-        let d = str.split(" ")[0];
-        let p = d.split("/");
-        if(p.length !== 3) return null;
-        return new Date(p[2], p[0]-1, p[1]);
-    }catch{
-        return null;
-    }
+    let d = str.split(" ")[0];
+    let p = d.split("/");
+    if(p.length !== 3) return null;
+    return new Date(p[2], p[0]-1, p[1], 12);
 }
 
-// SHORT TYPE
+/* FORMAT SAFE */
+function formatDate(d){
+    let y = d.getFullYear();
+    let m = String(d.getMonth()+1).padStart(2,'0');
+    let day = String(d.getDate()).padStart(2,'0');
+    return `${y}-${m}-${day}`;
+}
+
 function shortType(t){
     if(t==="Solo Tournament") return "Solo";
     if(t==="Bid Tournament") return "Bid";
     return t;
 }
 
-// FAST + SAFE CSV PARSER
+/* CSV PARSER */
 function fastCSV(csv){
     const lines = csv.split("\n");
     const result = [];
 
     for(let i=1;i<lines.length;i++){
         const r = lines[i].split(",");
-        if(r.length < 12) continue; // 🔥 skip broken rows
+        if(r.length < 12) continue;
 
         const date = parseDate(r[11]);
-        if(!date) continue; // 🔥 skip invalid date
+        if(!date) continue;
 
         result.push({
-            date: date,
-            type: r[2],
-            p1: r[0],
-            p2: r[1],
-            s1: Number(r[3]) || 0,
-            s2: Number(r[4]) || 0,
-            pt1: Number(r[5]) || 0,
-            pt2: Number(r[6]) || 0,
-            approved: (r[9] || "").trim().toLowerCase()
+            index:i,
+            date,
+            type:r[2],
+            p1:r[0],
+            p2:r[1],
+            s1:+r[3]||0,
+            s2:+r[4]||0,
+            pt1:+r[5]||0,
+            pt2:+r[6]||0,
+            approved:(r[9]||"").toLowerCase().trim()
         });
     }
 
     return result;
 }
 
-// LOAD (SUPER STABLE)
+/* LOAD */
 async function loadData(){
-    try{
-        const res = await fetch(CSV_URL, {cache:"no-store"});
-        const text = await res.text();
+    const res = await fetch(CSV_URL + "&t=" + Date.now(), {cache:"no-store"});
+    const text = await res.text();
 
-        allData = fastCSV(text).filter(r=>r.approved==="yes");
+    allData = fastCSV(text)
+        .filter(r=>r.approved==="yes")
+        .sort((a,b)=>{
+            if(b.date - a.date !== 0) return b.date - a.date;
+            return b.index - a.index;
+        });
 
-        render(allData);
-    }catch(err){
-        console.error("Load Error:", err);
-    }
+    render(allData);
 }
 
-// FILTER
+/* FILTER */
 function applyFilter(){
-    const type = document.getElementById("matchType").value;
-    const start = document.getElementById("startDate").value ? new Date(document.getElementById("startDate").value) : null;
-    const end = document.getElementById("endDate").value ? new Date(document.getElementById("endDate").value) : null;
+    let data = allData;
 
-    let filtered = allData;
+    const type = matchType.value;
+    const start = startDate.value ? new Date(startDate.value) : null;
+    const end = endDate.value ? new Date(endDate.value) : null;
 
-    if(type){
-        filtered = filtered.filter(r => r.type === type);
-    }
+    if(type) data = data.filter(r=>r.type===type);
+    if(start) data = data.filter(r=>r.date>=start);
+    if(end) data = data.filter(r=>r.date<=end);
 
-    if(start){
-        filtered = filtered.filter(r => r.date >= start);
-    }
-
-    if(end){
-        filtered = filtered.filter(r => r.date <= end);
-    }
-
-    render(filtered);
+    render(data);
 }
 
-// FORMAT DATE
-function formatDate(d){
-    return d.toISOString().slice(0,10);
-}
-
-// RENDER (FAST)
+/* RENDER */
 function render(data){
     const tbody = document.getElementById("tableBody");
 
@@ -265,28 +269,27 @@ function render(data){
     for(let i=0;i<Math.min(data.length,500);i++){
         const r = data[i];
 
-        let p1Class="", p2Class="";
-        if(r.s1 > r.s2){ p1Class="win"; p2Class="loss"; }
-        else if(r.s1 < r.s2){ p1Class="loss"; p2Class="win"; }
-        else{ p1Class="draw"; p2Class="draw"; }
+        let p1="",p2="";
+        if(r.s1>r.s2){p1="win";p2="loss";}
+        else if(r.s1<r.s2){p1="loss";p2="win";}
+        else{p1="draw";p2="draw";}
 
-        let scoreClass = (r.s1>=7 || r.s2>=7) ? "gold" : "";
+        let gold = (r.s1>=7||r.s2>=7)?"gold":"";
 
         html += `
         <tr>
-            <td>${formatDate(r.date)}</td>
+            <td class="date">${formatDate(r.date)}</td>
             <td>${shortType(r.type)}</td>
-            <td class="${p1Class}">${r.p1}</td>
-            <td class="${p2Class}">${r.p2}</td>
-            <td class="${scoreClass}">${r.s1} - ${r.s2}</td>
-            <td>${r.pt1} - ${r.pt2}</td>
+            <td class="${p1}">${r.p1}</td>
+            <td class="${p2}">${r.p2}</td>
+            <td class="score ${gold}">${r.s1}-${r.s2}</td>
+            <td class="point">${r.pt1}-${r.pt2}</td>
         </tr>`;
     }
 
     tbody.innerHTML = html;
 }
 
-// INIT
 loadData();
 
 </script>
