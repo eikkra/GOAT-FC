@@ -3,12 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GOAT FC Score Submit</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+<title>GOAT FC BID</title>
 
-<!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4134818762312221"
-     crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
 
 <style>
 *{
@@ -19,98 +16,66 @@
 }
 
 body{
-    background:#05070d;
+    background:#050008;
+    background-image:
+    radial-gradient(circle at 20% 20%,#2b0044 0%,transparent 35%),
+    radial-gradient(circle at 80% 0%,#001a44 0%,transparent 30%);
     min-height:100vh;
-    padding:15px;
-}
-
-/* AD BOX */
-.ad-box{
-    max-width:1100px;
-    margin:0 auto 20px;
-    padding:14px;
-    border-radius:18px;
-    background:linear-gradient(90deg,#00ffff22,#8b5cf622,#ff00ff22);
-    border:1px solid rgba(0,255,255,.25);
-    box-shadow:0 0 25px rgba(0,255,255,.12);
-    backdrop-filter:blur(8px);
-}
-
-/* FORM BUTTON */
-.open-btn{
-    width:100%;
-    max-width:1100px;
-    margin:auto;
-    display:block;
-    padding:22px;
-    border:none;
-    border-radius:18px;
-    font-size:18px;
-    font-weight:800;
-    cursor:pointer;
     color:#fff;
-    letter-spacing:1px;
-    background:linear-gradient(90deg,#00ffff,#8b5cf6,#ff00ff);
-    background-size:300%;
-    animation:rgbFlow 6s linear infinite;
-    box-shadow:
-        0 0 20px rgba(0,255,255,.3),
-        0 0 35px rgba(139,92,246,.2);
-    transition:.3s;
+    padding:12px;
 }
 
-.open-btn:hover{
-    transform:translateY(-2px) scale(1.01);
-}
-
-.preview-box{
-    max-width:1100px;
-    margin:20px auto 0;
-    padding:30px;
-    border-radius:18px;
-    background:#0b0f18;
+.header{
     text-align:center;
-    color:#9ca3af;
-    border:1px solid rgba(255,255,255,.05);
+    margin-bottom:15px;
 }
 
-@keyframes rgbFlow{
-    0%{background-position:0% 50%;}
-    100%{background-position:300% 50%;}
+.logo{
+    width:80px;
+    filter:drop-shadow(0 0 12px cyan);
 }
 
-@media(max-width:768px){
-    .open-btn{
-        font-size:16px;
-        padding:18px;
-    }
+.title{
+    margin-top:8px;
+    font-size:28px;
+    font-weight:900;
+    background:linear-gradient(90deg,#00f7ff,#ff00ea,#00ff66);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.sheet-wrapper{
+    width:100%;
+    height:85vh;
+    border-radius:18px;
+    overflow:hidden;
+    border:2px solid rgba(0,255,255,.35);
+    box-shadow:
+        0 0 20px rgba(0,255,255,.25),
+        0 0 40px rgba(255,0,255,.12);
+    background:#111;
+}
+
+.sheet-frame{
+    width:100%;
+    height:100%;
+    border:none;
+    background:#fff;
 }
 </style>
 </head>
 <body>
 
-<!-- TOP AD -->
-<div class="ad-box">
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-4134818762312221"
-         data-ad-slot="9931450669"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
+<div class="header">
+    <img class="logo" src="https://i.imgur.com/LY3Bb9m.png" alt="GOAT FC Logo">
+    <div class="title">GOAT FC BID</div>
 </div>
 
-<!-- FORM BUTTON -->
-<button class="open-btn"
-onclick="window.open('https://forms.gle/Ye9pfHMbs35AqQnW6','scoreSubmitWindow','width=900,height=900')">
-    OPEN SCORE SUBMIT FORM
-</button>
-
-<div class="preview-box">
-    Click the button above to submit your score.<br>
-    Form opens in popup for image upload compatibility.
+<div class="sheet-wrapper">
+    <iframe
+        class="sheet-frame"
+        src="https://docs.google.com/spreadsheets/d/1TJ4rnD5p9D309JDgvC8VxbZwQ-KtELWZcS8F7tP8Uq4/edit?gid=1013280552&single=true&widget=true&headers=false">
+    </iframe>
 </div>
 
 </body>
