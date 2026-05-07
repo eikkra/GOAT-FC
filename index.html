@@ -129,15 +129,54 @@ scroll-snap-type:x mandatory;
 .live-card{
 min-width:100%;
 scroll-snap-align:start;
+
 background:linear-gradient(135deg,rgba(34,211,238,.12),rgba(124,58,237,.10));
-border:1px solid rgba(34,211,238,.25);
-border-radius:16px;
-padding:14px;
+
+border:1px solid rgba(255,255,255,.08);
+border-radius:15px;
+
+padding:10px 12px;
+
 box-shadow:
 0 0 20px rgba(34,211,238,.12),
 inset 0 0 12px rgba(124,58,237,.08);
+
 position:relative;
 overflow:hidden;
+}
+
+/* GAMING RGB BORDER LIGHT */
+.live-card::before{
+content:"";
+position:absolute;
+inset:0;
+border-radius:15px;
+padding:1.5px;
+
+background:
+linear-gradient(
+90deg,
+transparent 0%,
+transparent 35%,
+#00ffff 45%,
+#ff00ff 50%,
+#00ffff 55%,
+transparent 65%,
+transparent 100%
+);
+
+background-size:300% 300%;
+
+-webkit-mask:
+linear-gradient(#000 0 0) content-box,
+linear-gradient(#000 0 0);
+
+-webkit-mask-composite:xor;
+mask-composite:exclude;
+
+animation:rgbBorderMove 3s linear infinite;
+
+pointer-events:none;
 }
 
 @media(min-width:768px){
@@ -163,19 +202,27 @@ margin-bottom:12px;
 
 .live-mid{
 display:grid;
-grid-template-columns:1fr auto 1fr;
-grid-template-rows:auto auto;
+grid-template-columns:110px 90px 110px;
 align-items:center;
+justify-content:center;
 text-align:center;
-row-gap:1px;     /* 🔥 gap কমানো */
-column-gap:6px;
+column-gap:8px;
 }
 
 .player{
 display:flex;
 flex-direction:column;
 align-items:center;
-gap:2px;   /* 🔥 সবকিছু কাছাকাছি */
+justify-content:center;
+min-height:70px;
+}
+
+.live-mid > div:nth-child(2){
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+min-height:70px;
 }
 
 .player-name{
@@ -188,10 +235,11 @@ line-height:1.05;
 }
 
 .player-id{
-font-size:9px;          /* 🔥 ছোট */
+font-size:9px;
 color:#f7058e;
 line-height:1.05;
-margin-top: 1px;        /* 🔥 কাছে আনছে */
+margin-top:1px;
+font-weight:600;   /* 🔥 bold */
 }
 
 .match-date{
@@ -199,7 +247,10 @@ font-size:9px;
 color:#05ebf7;
 font-weight:700;
 text-shadow:0 0 6px #00a5ad;
-margin-top:-2px;        /* 🔥 upore tule */
+margin-top:-2px;
+
+white-space:nowrap;   /* 🔥 এক লাইনে রাখবে */
+line-height:1.1;
 }
 
 .score-box{
@@ -381,6 +432,15 @@ gap:10px;
 .store-btn{
 font-size:11px;
 padding:8px;
+}
+}
+
+@keyframes rgbBorderMove{
+0%{
+background-position:0% 50%;
+}
+100%{
+background-position:300% 50%;
 }
 }
 
@@ -571,8 +631,8 @@ const p1=nameMap[m.P1_ID]||m.P1_ID;
 const p2=nameMap[m.P2_ID]||m.P2_ID;
 
 /* Rank Fetch */
-const p1Rank = rankMap[m.P1_ID] ? `#Rank ${rankMap[m.P1_ID]}` : '';
-const p2Rank = rankMap[m.P2_ID] ? `#Rank ${rankMap[m.P2_ID]}` : '';
+const p1Rank = rankMap[m.P1_ID] ? `Rank ${rankMap[m.P1_ID]}` : '';
+const p2Rank = rankMap[m.P2_ID] ? `Rank ${rankMap[m.P2_ID]}` : '';
 
 let p1Class='score-draw', p2Class='score-draw';
 
