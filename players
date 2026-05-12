@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>GOAT FC Players</title>
+
+<style>
+body{
+    background:#020617;
+    color:white;
+    font-family:Segoe UI;
+    margin:0;
+    padding:20px;
+}
+
+h2{
+    text-align:center;
+    color:#00f5ff;
+    margin-bottom:20px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:12px;
+}
+
+.card{
+    background:#0f172a;
+    border:1px solid #00f5ff33;
+    border-radius:12px;
+    padding:10px;
+    text-align:center;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.card:hover{
+    transform:scale(1.05);
+    box-shadow:0 0 15px #00f5ff33;
+}
+
+img{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    border:2px solid #00f5ff;
+    object-fit:cover;
+}
+
+.name{
+    margin-top:8px;
+    font-weight:700;
+}
+
+.id{
+    font-size:11px;
+    color:#00f5ff;
+    margin-top:3px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>GOAT FC PLAYERS</h2>
+
+<div id="grid" class="grid">Loading...</div>
+
+<script>
+
+const MEMBER_CSV =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=133947099&single=true&output=csv";
+
+function normalize(x){
+    return (x||"").toLowerCase().replace(/[^a-z0-9]/g,'');
+}
+
+function parseCSV(text){
+    return text.split("\n").map(r=>r.split(","));
+}
+
+async function loadPlayers(){
+
+const res = await fetch(MEMBER_CSV);
+const text = await res.text();
+const rows = parseCSV(text);
+
+let html = "";
+
+rows.slice(1).forEach(r=>{
+
+const name = r[0];
+const idRaw = r[1];
+const id = normalize(r[1]);
+const pic = r[4] || "https://i.imgur.com/LY3Bb9m.png";
+
+html += `
+<div class="card" onclick="openProfile('${idRaw}')">
+
+<img src="${pic}">
+
+<div class="name">${name}</div>
+<div class="id">${idRaw}</div>
+
+</div>
+`;
+
+});
+
+document.getElementById("grid").innerHTML = html;
+
+}
+
+function openProfile(id){
+    window.location.href = "profile.html?id=" + id;
+}
+
+loadPlayers();
+
+</script>
+
+</body>
+</html>
