@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GOAT FC PLAYER PROFILE</title>
+
+<title>Player Profile</title>
 
 <style>
 
@@ -116,7 +117,7 @@ body::before{
     color:#fff;
 }
 
-/* ID */
+/* CLUB ID */
 .clubid{
     margin-top:5px;
     color:#00f5ff;
@@ -135,6 +136,23 @@ body::before{
     color:#00f5ff;
     font-size:12px;
     box-shadow:0 0 15px #00f5ff44 inset;
+}
+
+/* DOWNLOAD */
+.download-wrap{
+    margin-top:10px;
+}
+
+.download-btn{
+    border:none;
+    background:#00f5ff;
+    color:black;
+    padding:7px 16px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 0 15px #00f5ff55;
 }
 
 /* GRID */
@@ -201,10 +219,20 @@ body::before{
     text-align:right;
 }
 
+.center{
+    text-align:center;
+}
+
 .score{
     font-weight:700;
     padding:5px 10px;
     border-radius:8px;
+}
+
+.type{
+    font-size:10px;
+    margin-top:4px;
+    color:#94a3b8;
 }
 
 .win{
@@ -242,7 +270,7 @@ body::before{
 
 <div class="header">
 <img class="logo" src="https://i.imgur.com/LY3Bb9m.png">
-<div class="title">GOAT FC PLAYER PROFILE</div>
+<div class="title">PLAYER PROFILE</div>
 </div>
 
 <div class="desc">
@@ -252,6 +280,8 @@ Live approved player statistics • Auto synced from GOAT FC database
 <div id="app">
 <div class="loader">Loading Profile...</div>
 </div>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <script>
 
@@ -266,7 +296,7 @@ const MEMBER_CSV =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=133947099&single=true&output=csv";
 
 /* =========================
-   PLAYER ID FROM URL
+   PLAYER ID
 ========================= */
 
 const params = new URLSearchParams(location.search);
@@ -335,24 +365,19 @@ function parseCSV(text){
 }
 
 /* =========================
-   DRIVE IMAGE FIX
+   IMAGE FIX
 ========================= */
 
 function fixImage(url){
 
-    if(!url) return "https://i.imgur.com/LY3Bb9m.png";
+    if(!url)
+    return "https://i.imgur.com/LY3Bb9m.png";
 
-    let idMatch = url.match(/[-\\w]{25,}/);
-
-    if(idMatch){
-        return `https://drive.google.com/thumbnail?id=${idMatch[0]}&sz=w1000`;
-    }
-
-    return url;
+    return url.trim();
 }
 
 /* =========================
-   LOAD DATA
+   LOAD
 ========================= */
 
 async function load(){
@@ -384,17 +409,17 @@ try{
 
         members[id] = {
             name:r[0] || "Unknown Player",
-            pic:fixImage(r[2]),
+            pic:fixImage(r[4]),
             club:r[1]
         };
 
     });
 
     /* =========================
-       MATCH STATS
+       LEADERBOARD
     ========================= */
 
-    let matches = [];
+    const board = {};
 
     matchRows.slice(1).forEach(r=>{
 
@@ -404,7 +429,78 @@ try{
         const p1 = normalize(r[0]);
         const p2 = normalize(r[1]);
 
-        if(p1 !== playerId && p2 !== playerId)
+        if(!board[p1]){
+            board[p1]={
+                points:0,
+                win:0,
+                gs:0,
+                gc:0
+            };
+        }
+
+        if(!board[p2]){
+            board[p2]={
+                points:0,
+                win:0,
+                gs:0,
+                gc:0
+            };
+        }
+
+        board[p1].points += (+r[5]||0);
+        board[p2].points += (+r[6]||0);
+
+        if(+r[3] > +r[4]) board[p1].win++;
+        if(+r[4] > +r[3]) board[p2].win++;
+
+        board[p1].gs += (+r[3]||0);
+        board[p1].gc += (+r[4]||0);
+
+        board[p2].gs += (+r[4]||0);
+        board[p2].gc += (+r[3]||0);
+
+    });
+
+    const ranking = Object.entries(board)
+    .map(([id,v])=>{
+
+        const gd = v.gs-v.gc;
+        const winp = v.win || 0;
+
+        return{
+            id,
+            points:v.points,
+            winp,
+            gd
+        };
+
+    })
+    .sort((a,b)=>
+
+        b.points - a.points ||
+        b.winp - a.winp ||
+        b.gd - a.gd
+
+    );
+
+    const rank =
+    ranking.findIndex(x=>x.id===playerId)+1;
+
+    /* =========================
+       PLAYER MATCHES
+    ========================= */
+
+    let matches=[];
+
+    matchRows.slice(1).forEach(r=>{
+
+        if((r[9] || "").toLowerCase() !== "yes")
+        return;
+
+        const p1 = normalize(r[0]);
+        const p2 = normalize(r[1]);
+
+        if(p1!==playerId && p2!==playerId)
         return;
 
         matches.push({
@@ -421,36 +517,7 @@ try{
     });
 
     /* =========================
-       ALL PLAYER RANK
-    ========================= */
-
-    let leaderboard = {};
-
-    matchRows.slice(1).forEach(r=>{
-
-        if((r[9] || "").toLowerCase() !== "yes")
-        return;
-
-        const p1 = normalize(r[0]);
-        const p2 = normalize(r[1]);
-
-        leaderboard[p1] =
-        (leaderboard[p1] || 0) + (+r[5] || 0);
-
-        leaderboard[p2] =
-        (leaderboard[p2] || 0) + (+r[6] || 0);
-
-    });
-
-    const ranking =
-    Object.entries(leaderboard)
-    .sort((a,b)=>b[1]-a[1]);
-
-    const rank =
-    ranking.findIndex(x=>x[0]===playerId)+1;
-
-    /* =========================
-       CALCULATE
+       STATS
     ========================= */
 
     let win=0,
@@ -523,7 +590,7 @@ try{
 
     document.getElementById("app").innerHTML = `
 
-    <div class="profile">
+    <div class="profile" id="downloadCard">
 
         <div class="cover"></div>
 
@@ -542,6 +609,13 @@ try{
 
             <div class="rank">
             🏆 Overall Rank #${rank || '-'}
+            </div>
+
+            <div class="download-wrap">
+                <button class="download-btn"
+                onclick="downloadCard()">
+                Download Card
+                </button>
             </div>
 
         </div>
@@ -616,7 +690,7 @@ try{
             Recent Matches
             </div>
 
-            ${matches.reverse().slice(0,20).map(m=>{
+            ${matches.reverse().slice(0,5).map(m=>{
 
                 let me,op,cls;
 
@@ -644,8 +718,16 @@ try{
                     ${m.p1}
                     </div>
 
-                    <div class="score ${cls}">
-                    ${m.s1} - ${m.s2}
+                    <div class="center">
+
+                        <div class="score ${cls}">
+                        ${m.s1} - ${m.s2}
+                        </div>
+
+                        <div class="type">
+                        ${m.type}
+                        </div>
+
                     </div>
 
                     <div class="right">
@@ -675,6 +757,32 @@ try{
     console.log(err);
 
 }
+
+}
+
+/* =========================
+   DOWNLOAD
+========================= */
+
+function downloadCard(){
+
+    const card =
+    document.getElementById("downloadCard");
+
+    html2canvas(card,{
+        backgroundColor:null,
+        scale:2
+    }).then(canvas=>{
+
+        const a=document.createElement("a");
+
+        a.download="goatfc-player-card.png";
+
+        a.href=canvas.toDataURL();
+
+        a.click();
+
+    });
 
 }
 
