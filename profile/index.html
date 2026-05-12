@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Player Profile</title>
+<title>GOAT FC Player Profile</title>
 
 <style>
 
@@ -46,11 +46,32 @@ body::before{
     filter:drop-shadow(0 0 15px #00f5ff);
 }
 
+/* RGB TITLE */
 .title{
-    color:#00f5ff;
-    font-size:18px;
-    font-weight:700;
-    text-shadow:0 0 12px #00f5ff;
+    font-size:22px;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    background:linear-gradient(
+    90deg,
+    #ff0000,
+    #00f5ff,
+    #00ff66,
+    #ff00ff,
+    #ff0000
+    );
+    background-size:400%;
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    animation:rgbMove 8s linear infinite;
+    text-shadow:
+    0 0 10px #00f5ff,
+    0 0 20px #00f5ff;
+}
+
+@keyframes rgbMove{
+    0%{background-position:0%}
+    100%{background-position:400%}
 }
 
 /* DESCRIPTION */
@@ -59,6 +80,15 @@ body::before{
     font-size:11px;
     color:#94a3b8;
     margin-bottom:12px;
+}
+
+/* POWERED */
+.powered{
+    text-align:center;
+    font-size:10px;
+    color:#64748b;
+    margin-top:8px;
+    letter-spacing:1px;
 }
 
 /* LOADER */
@@ -138,23 +168,6 @@ body::before{
     box-shadow:0 0 15px #00f5ff44 inset;
 }
 
-/* DOWNLOAD */
-.download-wrap{
-    margin-top:10px;
-}
-
-.download-btn{
-    border:none;
-    background:#00f5ff;
-    color:black;
-    padding:7px 16px;
-    border-radius:999px;
-    font-size:11px;
-    font-weight:700;
-    cursor:pointer;
-    box-shadow:0 0 15px #00f5ff55;
-}
-
 /* GRID */
 .grid{
     display:grid;
@@ -188,13 +201,14 @@ body::before{
 
 /* MATCHES */
 .matches{
-    padding:15px;
+    padding:10px 15px 15px;
 }
 
 .matches-title{
     text-align:center;
     color:#00f5ff;
-    margin-bottom:10px;
+    margin-bottom:8px;
+    font-size:13px;
     font-weight:700;
 }
 
@@ -202,13 +216,13 @@ body::before{
     display:grid;
     grid-template-columns:1fr auto 1fr;
     align-items:center;
-    gap:10px;
+    gap:8px;
     background:#0f172a;
     border:1px solid #1e293b;
-    border-radius:12px;
-    padding:10px;
-    margin-bottom:8px;
-    font-size:12px;
+    border-radius:10px;
+    padding:7px 10px;
+    margin-bottom:6px;
+    font-size:11px;
 }
 
 .left{
@@ -225,13 +239,14 @@ body::before{
 
 .score{
     font-weight:700;
-    padding:5px 10px;
-    border-radius:8px;
+    padding:4px 8px;
+    border-radius:7px;
+    font-size:11px;
 }
 
 .type{
-    font-size:10px;
-    margin-top:4px;
+    font-size:9px;
+    margin-top:2px;
     color:#94a3b8;
 }
 
@@ -250,11 +265,42 @@ body::before{
     color:#eab308;
 }
 
+/* DOWNLOAD */
+.download-wrap{
+    text-align:center;
+    padding-bottom:18px;
+}
+
+.download-btn{
+    border:none;
+    background:#00f5ff;
+    color:black;
+    padding:8px 18px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 0 15px #00f5ff55;
+}
+
 /* MOBILE */
 @media(max-width:768px){
 
 .grid{
-    grid-template-columns:repeat(2,1fr);
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+}
+
+.box{
+    padding:10px 6px;
+}
+
+.label{
+    font-size:10px;
+}
+
+.value{
+    font-size:16px;
 }
 
 .name{
@@ -277,6 +323,10 @@ body::before{
 Live approved player statistics • Auto synced from GOAT FC database
 </div>
 
+<div class="powered">
+POWERED BY GOAT FC
+</div>
+
 <div id="app">
 <div class="loader">Loading Profile...</div>
 </div>
@@ -285,9 +335,7 @@ Live approved player statistics • Auto synced from GOAT FC database
 
 <script>
 
-/* =========================
-   CSV LINKS
-========================= */
+/* CSV LINKS */
 
 const MATCH_CSV =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=1588171329&single=true&output=csv";
@@ -295,9 +343,7 @@ const MATCH_CSV =
 const MEMBER_CSV =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=133947099&single=true&output=csv";
 
-/* =========================
-   PLAYER ID
-========================= */
+/* PLAYER ID */
 
 const params = new URLSearchParams(location.search);
 
@@ -311,9 +357,7 @@ const playerId = normalize(
     params.get("id") || "GFC-001"
 );
 
-/* =========================
-   CSV PARSER
-========================= */
+/* CSV PARSER */
 
 function parseCSV(text){
 
@@ -364,9 +408,7 @@ function parseCSV(text){
     return rows;
 }
 
-/* =========================
-   IMAGE FIX
-========================= */
+/* IMAGE FIX */
 
 function fixImage(url){
 
@@ -376,9 +418,7 @@ function fixImage(url){
     return url.trim();
 }
 
-/* =========================
-   LOAD
-========================= */
+/* LOAD */
 
 async function load(){
 
@@ -397,9 +437,7 @@ try{
     const matchRows = parseCSV(matchText);
     const memberRows = parseCSV(memberText);
 
-    /* =========================
-       MEMBER DATA
-    ========================= */
+    /* MEMBER DATA */
 
     const members = {};
 
@@ -415,9 +453,7 @@ try{
 
     });
 
-    /* =========================
-       LEADERBOARD
-    ========================= */
+    /* LEADERBOARD */
 
     const board = {};
 
@@ -465,12 +501,11 @@ try{
     .map(([id,v])=>{
 
         const gd = v.gs-v.gc;
-        const winp = v.win || 0;
 
         return{
             id,
             points:v.points,
-            winp,
+            win:v.win,
             gd
         };
 
@@ -478,7 +513,7 @@ try{
     .sort((a,b)=>
 
         b.points - a.points ||
-        b.winp - a.winp ||
+        b.win - a.win ||
         b.gd - a.gd
 
     );
@@ -486,9 +521,7 @@ try{
     const rank =
     ranking.findIndex(x=>x.id===playerId)+1;
 
-    /* =========================
-       PLAYER MATCHES
-    ========================= */
+    /* PLAYER MATCHES */
 
     let matches=[];
 
@@ -509,16 +542,13 @@ try{
             p2:r[1],
             type:r[2],
             s1:+r[3],
-            s2:+r[4],
-            date:r[11]
+            s2:+r[4]
 
         });
 
     });
 
-    /* =========================
-       STATS
-    ========================= */
+    /* STATS */
 
     let win=0,
         loss=0,
@@ -571,9 +601,7 @@ try{
 
     const diff = gs-gc;
 
-    /* =========================
-       PLAYER INFO
-    ========================= */
+    /* PLAYER INFO */
 
     const info =
     members[playerId] || {
@@ -584,9 +612,7 @@ try{
 
     };
 
-    /* =========================
-       RENDER
-    ========================= */
+    /* RENDER */
 
     document.getElementById("app").innerHTML = `
 
@@ -597,6 +623,7 @@ try{
         <div class="top">
 
             <img class="avatar"
+            crossorigin="anonymous"
             src="${info.pic}">
 
             <div class="name">
@@ -609,13 +636,6 @@ try{
 
             <div class="rank">
             🏆 Overall Rank #${rank || '-'}
-            </div>
-
-            <div class="download-wrap">
-                <button class="download-btn"
-                onclick="downloadCard()">
-                Download Card
-                </button>
             </div>
 
         </div>
@@ -653,12 +673,12 @@ try{
             </div>
 
             <div class="box">
-                <div class="label">Goals Scored</div>
+                <div class="label">Scored</div>
                 <div class="value">${gs}</div>
             </div>
 
             <div class="box">
-                <div class="label">Goals Conceded</div>
+                <div class="label">Conceded</div>
                 <div class="value">${gc}</div>
             </div>
 
@@ -678,7 +698,7 @@ try{
             </div>
 
             <div class="box">
-                <div class="label">Tournaments</div>
+                <div class="label">Tournament</div>
                 <div class="value">${tour}</div>
             </div>
 
@@ -742,6 +762,15 @@ try{
 
         </div>
 
+        <div class="download-wrap">
+
+            <button class="download-btn"
+            onclick="downloadCard()">
+            Download Card
+            </button>
+
+        </div>
+
     </div>
 
     `;
@@ -760,9 +789,7 @@ try{
 
 }
 
-/* =========================
-   DOWNLOAD
-========================= */
+/* DOWNLOAD */
 
 function downloadCard(){
 
@@ -770,15 +797,22 @@ function downloadCard(){
     document.getElementById("downloadCard");
 
     html2canvas(card,{
-        backgroundColor:null,
+
+        backgroundColor:"#08111f",
+
+        useCORS:true,
+
+        allowTaint:true,
+
         scale:2
+
     }).then(canvas=>{
 
         const a=document.createElement("a");
 
         a.download="goatfc-player-card.png";
 
-        a.href=canvas.toDataURL();
+        a.href=canvas.toDataURL("image/png");
 
         a.click();
 
