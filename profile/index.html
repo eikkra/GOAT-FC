@@ -3,234 +3,253 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GOAT FC PLAYER PROFILE</title>
+<title>PLAYER PROFILE</title>
 
 <style>
 
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+margin:0;
+padding:0;
+box-sizing:border-box;
 }
 
 body{
-    font-family:'Segoe UI',sans-serif;
-    background:#020617;
-    color:white;
-    overflow-x:hidden;
+font-family:'Segoe UI',sans-serif;
+background:#020617;
+color:#fff;
+overflow-x:hidden;
 }
 
-/* BG EFFECT */
+/* BG */
 body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-    background:
-    radial-gradient(circle at top left,#00f5ff22,transparent 25%),
-    radial-gradient(circle at bottom right,#00f5ff11,transparent 25%);
-    z-index:-1;
+content:"";
+position:fixed;
+inset:0;
+background:
+radial-gradient(circle at top left,#00f5ff22,transparent 30%),
+radial-gradient(circle at bottom right,#00f5ff11,transparent 30%);
+z-index:-1;
 }
 
 /* HEADER */
 .header{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:10px;
-    padding:15px 10px 5px;
+display:flex;
+justify-content:center;
+align-items:center;
+gap:10px;
+padding:14px 10px 6px;
 }
 
 .logo{
-    width:42px;
-    filter:drop-shadow(0 0 15px #00f5ff);
+width:42px;
+filter:drop-shadow(0 0 15px #00f5ff);
 }
 
 .title{
-    color:#00f5ff;
-    font-size:18px;
-    font-weight:700;
-    text-shadow:0 0 12px #00f5ff;
+font-size:18px;
+font-weight:700;
+color:#00f5ff;
+text-shadow:0 0 12px #00f5ff;
 }
 
-/* DESCRIPTION */
+/* DESC */
 .desc{
-    text-align:center;
-    font-size:11px;
-    color:#94a3b8;
-    margin-bottom:12px;
+text-align:center;
+font-size:11px;
+color:#94a3b8;
+margin-bottom:12px;
 }
 
-/* LOADER */
-.loader{
-    text-align:center;
-    padding:40px;
-    color:#00f5ff;
-}
-
-/* PROFILE CARD */
+/* PROFILE */
 .profile{
-    width:min(100% - 20px,900px);
-    margin:auto;
-    border-radius:18px;
-    overflow:hidden;
-    border:1px solid #00f5ff55;
-    background:#08111f;
-    box-shadow:0 0 25px #00f5ff22;
+width:min(100% - 20px,900px);
+margin:auto;
+border-radius:20px;
+overflow:hidden;
+background:#08111f;
+border:1px solid #00f5ff44;
+box-shadow:0 0 25px #00f5ff22;
 }
 
 /* COVER */
 .cover{
-    height:140px;
-    background:
-    linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.65)),
-    url('https://c4.wallpaperflare.com/wallpaper/398/874/541/champions-league-stadium-wallpaper-preview.jpg');
-    background-size:cover;
-    background-position:center;
+height:140px;
+background:
+linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.75)),
+url('https://c4.wallpaperflare.com/wallpaper/398/874/541/champions-league-stadium-wallpaper-preview.jpg');
+background-size:cover;
+background-position:center;
 }
 
 /* TOP */
 .top{
-    text-align:center;
-    margin-top:-55px;
-    padding:0 15px 15px;
+text-align:center;
+margin-top:-55px;
+padding:0 15px 15px;
 }
 
 /* AVATAR */
 .avatar{
-    width:105px;
-    height:105px;
-    border-radius:50%;
-    object-fit:cover;
-    border:3px solid #00f5ff;
-    box-shadow:
-    0 0 15px #00f5ff,
-    0 0 35px #00f5ff55;
-    background:#0f172a;
+width:105px;
+height:105px;
+border-radius:50%;
+object-fit:cover;
+border:3px solid #00f5ff;
+background:#0f172a;
+box-shadow:
+0 0 15px #00f5ff,
+0 0 40px #00f5ff55;
 }
 
 /* NAME */
 .name{
-    margin-top:10px;
-    font-size:20px;
-    font-weight:700;
-    color:#fff;
+font-size:20px;
+font-weight:700;
+margin-top:10px;
 }
 
-/* ID */
+/* CLUB */
 .clubid{
-    margin-top:5px;
-    color:#00f5ff;
-    font-weight:600;
-    text-shadow:0 0 10px #00f5ff;
+margin-top:5px;
+font-size:13px;
+color:#00f5ff;
+text-shadow:0 0 10px #00f5ff;
 }
 
 /* RANK */
 .rank{
-    margin-top:10px;
-    display:inline-block;
-    padding:6px 14px;
-    border-radius:999px;
-    background:#00f5ff22;
-    border:1px solid #00f5ff;
-    color:#00f5ff;
-    font-size:12px;
-    box-shadow:0 0 15px #00f5ff44 inset;
+margin-top:10px;
+display:inline-block;
+padding:6px 14px;
+border-radius:999px;
+background:#00f5ff22;
+border:1px solid #00f5ff;
+font-size:12px;
+color:#00f5ff;
+box-shadow:0 0 10px #00f5ff33 inset;
 }
 
 /* GRID */
 .grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:10px;
-    padding:15px;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:8px;
+padding:15px;
 }
 
 /* BOX */
 .box{
-    background:#0f172a;
-    border:1px solid #00f5ff33;
-    border-radius:14px;
-    padding:12px 10px;
-    text-align:center;
-    box-shadow:0 0 15px #00f5ff11 inset;
+background:#0f172a;
+border:1px solid #00f5ff33;
+border-radius:12px;
+padding:10px 6px;
+text-align:center;
+box-shadow:0 0 10px #00f5ff11 inset;
 }
 
 .label{
-    font-size:11px;
-    color:#94a3b8;
+font-size:10px;
+color:#94a3b8;
 }
 
 .value{
-    margin-top:6px;
-    font-size:18px;
-    font-weight:700;
-    color:#00f5ff;
-    text-shadow:0 0 10px #00f5ff33;
+margin-top:5px;
+font-size:15px;
+font-weight:700;
+color:#00f5ff;
+text-shadow:0 0 10px #00f5ff33;
+}
+
+/* DOWNLOAD */
+.download-wrap{
+padding:0 15px 15px;
+text-align:center;
+}
+
+.download-btn{
+padding:10px 18px;
+border:none;
+border-radius:10px;
+background:#00f5ff;
+color:#000;
+font-weight:700;
+cursor:pointer;
+box-shadow:0 0 15px #00f5ff;
 }
 
 /* MATCHES */
 .matches{
-    padding:15px;
+padding:15px;
 }
 
 .matches-title{
-    text-align:center;
-    color:#00f5ff;
-    margin-bottom:10px;
-    font-weight:700;
+text-align:center;
+margin-bottom:10px;
+color:#00f5ff;
+font-weight:700;
 }
 
 .match{
-    display:grid;
-    grid-template-columns:1fr auto 1fr;
-    align-items:center;
-    gap:10px;
-    background:#0f172a;
-    border:1px solid #1e293b;
-    border-radius:12px;
-    padding:10px;
-    margin-bottom:8px;
-    font-size:12px;
+display:grid;
+grid-template-columns:1fr auto 1fr;
+align-items:center;
+gap:8px;
+background:#0f172a;
+border:1px solid #1e293b;
+padding:10px;
+border-radius:12px;
+margin-bottom:8px;
+font-size:11px;
 }
 
 .left{
-    text-align:left;
+text-align:left;
 }
 
 .right{
-    text-align:right;
+text-align:right;
+}
+
+.center{
+text-align:center;
+}
+
+.type{
+font-size:9px;
+margin-top:4px;
+color:#94a3b8;
 }
 
 .score{
-    font-weight:700;
-    padding:5px 10px;
-    border-radius:8px;
+padding:5px 10px;
+border-radius:8px;
+font-weight:700;
 }
 
 .win{
-    background:#22c55e22;
-    color:#22c55e;
+background:#22c55e22;
+color:#22c55e;
 }
 
 .loss{
-    background:#ef444422;
-    color:#ef4444;
+background:#ef444422;
+color:#ef4444;
 }
 
 .draw{
-    background:#eab30822;
-    color:#eab308;
+background:#eab30822;
+color:#eab308;
 }
 
 /* MOBILE */
 @media(max-width:768px){
 
 .grid{
-    grid-template-columns:repeat(2,1fr);
+grid-template-columns:repeat(2,1fr);
 }
 
 .name{
-    font-size:18px;
+font-size:18px;
 }
 
 }
@@ -246,17 +265,17 @@ body::before{
 </div>
 
 <div class="desc">
-Live approved player statistics • Auto synced from GOAT FC database
+Live player profile synced with official GOAT FC leaderboard
 </div>
 
-<div id="app">
-<div class="loader">Loading Profile...</div>
-</div>
+<div id="app"></div>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <script>
 
 /* =========================
-   CSV LINKS
+   LINKS
 ========================= */
 
 const MATCH_CSV =
@@ -265,20 +284,23 @@ const MATCH_CSV =
 const MEMBER_CSV =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=133947099&single=true&output=csv";
 
+const RANK_CSV =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=1033046915&single=true&output=csv";
+
 /* =========================
-   PLAYER ID FROM URL
+   PLAYER ID
 ========================= */
 
 const params = new URLSearchParams(location.search);
 
 function normalize(x){
-    return (x || "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g,'');
+return (x||"")
+.toLowerCase()
+.replace(/[^a-z0-9]/g,'');
 }
 
 const playerId = normalize(
-    params.get("id") || "GFC-001"
+params.get("id") || "GFC-001"
 );
 
 /* =========================
@@ -287,394 +309,392 @@ const playerId = normalize(
 
 function parseCSV(text){
 
-    const rows = [];
-    let row = [];
-    let current = '';
-    let inside = false;
+const rows=[];
+let row=[];
+let current='';
+let inside=false;
 
-    for(let i=0;i<text.length;i++){
+for(let i=0;i<text.length;i++){
 
-        const c = text[i];
-        const next = text[i+1];
+const c=text[i];
+const next=text[i+1];
 
-        if(c === '"'){
+if(c === '"'){
 
-            if(inside && next === '"'){
-                current += '"';
-                i++;
-            }else{
-                inside = !inside;
-            }
+if(inside && next === '"'){
+current += '"';
+i++;
+}else{
+inside=!inside;
+}
 
-        }else if(c === ',' && !inside){
+}else if(c===',' && !inside){
 
-            row.push(current);
-            current='';
+row.push(current);
+current='';
 
-        }else if((c === '\n' || c === '\r') && !inside){
+}else if((c==='\n'||c==='\r') && !inside){
 
-            if(current || row.length){
-                row.push(current);
-                rows.push(row);
-            }
+if(current || row.length){
+row.push(current);
+rows.push(row);
+}
 
-            row=[];
-            current='';
+row=[];
+current='';
 
-        }else{
-            current += c;
-        }
-    }
+}else{
+current+=c;
+}
+}
 
-    if(current || row.length){
-        row.push(current);
-        rows.push(row);
-    }
+if(current || row.length){
+row.push(current);
+rows.push(row);
+}
 
-    return rows;
+return rows;
 }
 
 /* =========================
-   DRIVE IMAGE FIX
+   FIX IMAGE
 ========================= */
 
 function fixImage(url){
 
-    if(!url) return "https://i.imgur.com/LY3Bb9m.png";
+if(!url)
+return "https://i.imgur.com/LY3Bb9m.png";
 
-    let idMatch = url.match(/[-\\w]{25,}/);
+const id = url.match(/[-\\w]{25,}/);
 
-    if(idMatch){
-        return `https://drive.google.com/thumbnail?id=${idMatch[0]}&sz=w1000`;
-    }
+if(id){
+return `https://drive.google.com/thumbnail?id=${id[0]}&sz=w1000`;
+}
 
-    return url;
+return url;
 }
 
 /* =========================
-   LOAD DATA
+   LOAD
 ========================= */
 
 async function load(){
 
 try{
 
-    const [matchText,memberText] = await Promise.all([
+const [matchTxt,memberTxt,rankTxt] =
+await Promise.all([
 
-        fetch(MATCH_CSV + "&t=" + Date.now())
-        .then(r=>r.text()),
+fetch(MATCH_CSV+"?t="+Date.now())
+.then(r=>r.text()),
 
-        fetch(MEMBER_CSV + "&t=" + Date.now())
-        .then(r=>r.text())
+fetch(MEMBER_CSV+"?t="+Date.now())
+.then(r=>r.text()),
 
-    ]);
+fetch(RANK_CSV+"?t="+Date.now())
+.then(r=>r.text())
 
-    const matchRows = parseCSV(matchText);
-    const memberRows = parseCSV(memberText);
+]);
 
-    /* =========================
-       MEMBER DATA
-    ========================= */
+const matches = parseCSV(matchTxt);
+const members = parseCSV(memberTxt);
+const ranks = parseCSV(rankTxt);
 
-    const members = {};
+/* =========================
+   MEMBER MAP
+========================= */
 
-    memberRows.slice(1).forEach(r=>{
+const memberMap={};
 
-        const id = normalize(r[1]);
+members.slice(1).forEach(r=>{
 
-        members[id] = {
-            name:r[0] || "Unknown Player",
-            pic:fixImage(r[2]),
-            club:r[1]
-        };
+memberMap[normalize(r[1])] = {
 
-    });
+name:r[0],
+club:r[1],
+pic:fixImage(r[2])
 
-    /* =========================
-       MATCH STATS
-    ========================= */
+};
 
-    let matches = [];
+});
 
-    matchRows.slice(1).forEach(r=>{
+/* =========================
+   LEADERBOARD MAP
+========================= */
 
-        if((r[9] || "").toLowerCase() !== "yes")
-        return;
+let rankInfo=null;
 
-        const p1 = normalize(r[0]);
-        const p2 = normalize(r[1]);
+ranks.slice(1).forEach(r=>{
 
-        if(p1 !== playerId && p2 !== playerId)
-        return;
+if(normalize(r[0])===playerId){
 
-        matches.push({
+rankInfo={
 
-            p1:r[0],
-            p2:r[1],
-            type:r[2],
-            s1:+r[3],
-            s2:+r[4],
-            date:r[11]
+monthlyRank:r[1],
+overallRank:r[2],
 
-        });
+monthlyPoint:r[4],
+monthlyPL:r[5],
+monthlyWin:r[6],
 
-    });
+overallPoint:r[10],
+overallPL:r[11],
+overallWin:r[12],
 
-    /* =========================
-       ALL PLAYER RANK
-    ========================= */
+gf:r[13],
+ga:r[14],
+gd:r[15],
 
-    let leaderboard = {};
+friendly:r[16],
+tournament:r[17]
 
-    matchRows.slice(1).forEach(r=>{
+};
 
-        if((r[9] || "").toLowerCase() !== "yes")
-        return;
+}
 
-        const p1 = normalize(r[0]);
-        const p2 = normalize(r[1]);
+});
 
-        leaderboard[p1] =
-        (leaderboard[p1] || 0) + (+r[5] || 0);
+/* =========================
+   RECENT MATCHES
+========================= */
 
-        leaderboard[p2] =
-        (leaderboard[p2] || 0) + (+r[6] || 0);
+let recent=[];
 
-    });
+matches.slice(1).forEach(r=>{
 
-    const ranking =
-    Object.entries(leaderboard)
-    .sort((a,b)=>b[1]-a[1]);
+if((r[9]||"").toLowerCase()!=="yes")
+return;
 
-    const rank =
-    ranking.findIndex(x=>x[0]===playerId)+1;
+const p1=normalize(r[0]);
+const p2=normalize(r[1]);
 
-    /* =========================
-       CALCULATE
-    ========================= */
+if(p1!==playerId && p2!==playerId)
+return;
 
-    let win=0,
-        loss=0,
-        draw=0,
-        gs=0,
-        gc=0,
-        seven=0,
-        friendly=0,
-        tour=0;
+recent.push({
 
-    matches.forEach(m=>{
+p1:r[0],
+p2:r[1],
+type:r[2],
+s1:r[3],
+s2:r[4]
 
-        let me,op;
+});
 
-        if(normalize(m.p1)===playerId){
+});
 
-            me=m.s1;
-            op=m.s2;
+/* =========================
+   PLAYER INFO
+========================= */
 
-        }else{
+const info =
+memberMap[playerId] || {
 
-            me=m.s2;
-            op=m.s1;
+name:"Unknown Player",
+club:params.get("id") || "N/A",
+pic:"https://i.imgur.com/LY3Bb9m.png"
 
-        }
+};
 
-        gs += me;
-        gc += op;
+/* =========================
+   RENDER
+========================= */
 
-        if(me>=7) seven++;
+document.getElementById("app").innerHTML = `
 
-        if(me>op) win++;
-        else if(me<op) loss++;
-        else draw++;
+<div class="profile" id="capture">
 
-        if(m.type==="Friendly")
-        friendly++;
-        else
-        tour++;
+<div class="cover"></div>
 
-    });
+<div class="top">
 
-    const total = matches.length;
+<img class="avatar"
+src="${info.pic}"
+onerror="this.src='https://i.imgur.com/LY3Bb9m.png'">
 
-    const winRate =
-    ((win/(total||1))*100).toFixed(1);
+<div class="name">
+${info.name}
+</div>
 
-    const goalRate =
-    (gs/(total||1)).toFixed(2);
+<div class="clubid">
+${info.club}
+</div>
 
-    const diff = gs-gc;
+<div class="rank">
+🏆 Overall Rank #${rankInfo?.overallRank || '-'}
+</div>
 
-    /* =========================
-       PLAYER INFO
-    ========================= */
+</div>
 
-    const info =
-    members[playerId] || {
+<div class="grid">
 
-        name:"Unknown Player",
-        pic:"https://i.imgur.com/LY3Bb9m.png",
-        club:params.get("id") || "N/A"
+<div class="box">
+<div class="label">Monthly Rank</div>
+<div class="value">${rankInfo?.monthlyRank || 0}</div>
+</div>
 
-    };
+<div class="box">
+<div class="label">Monthly Win%</div>
+<div class="value">${rankInfo?.monthlyWin || 0}</div>
+</div>
 
-    /* =========================
-       RENDER
-    ========================= */
+<div class="box">
+<div class="label">Overall Win%</div>
+<div class="value">${rankInfo?.overallWin || 0}</div>
+</div>
 
-    document.getElementById("app").innerHTML = `
+<div class="box">
+<div class="label">Matches</div>
+<div class="value">${rankInfo?.overallPL || 0}</div>
+</div>
 
-    <div class="profile">
+<div class="box">
+<div class="label">Goals Scored</div>
+<div class="value">${rankInfo?.gf || 0}</div>
+</div>
 
-        <div class="cover"></div>
+<div class="box">
+<div class="label">Goals Against</div>
+<div class="value">${rankInfo?.ga || 0}</div>
+</div>
 
-        <div class="top">
+<div class="box">
+<div class="label">Difference</div>
+<div class="value">${rankInfo?.gd || 0}</div>
+</div>
 
-            <img class="avatar"
-            src="${info.pic}">
+<div class="box">
+<div class="label">Monthly Point</div>
+<div class="value">${rankInfo?.monthlyPoint || 0}</div>
+</div>
 
-            <div class="name">
-            ${info.name}
-            </div>
+<div class="box">
+<div class="label">Overall Point</div>
+<div class="value">${rankInfo?.overallPoint || 0}</div>
+</div>
 
-            <div class="clubid">
-            ${info.club}
-            </div>
+<div class="box">
+<div class="label">Friendly Point</div>
+<div class="value">${rankInfo?.friendly || 0}</div>
+</div>
 
-            <div class="rank">
-            🏆 Overall Rank #${rank || '-'}
-            </div>
+<div class="box">
+<div class="label">Tournament Point</div>
+<div class="value">${rankInfo?.tournament || 0}</div>
+</div>
 
-        </div>
+<div class="box">
+<div class="label">Monthly Played</div>
+<div class="value">${rankInfo?.monthlyPL || 0}</div>
+</div>
 
-        <div class="grid">
+</div>
 
-            <div class="box">
-                <div class="label">Wins</div>
-                <div class="value">${win}</div>
-            </div>
+<div class="download-wrap">
+<button class="download-btn"
+onclick="downloadProfile()">
+Download Profile
+</button>
+</div>
 
-            <div class="box">
-                <div class="label">Losses</div>
-                <div class="value">${loss}</div>
-            </div>
+<div class="matches">
 
-            <div class="box">
-                <div class="label">Draws</div>
-                <div class="value">${draw}</div>
-            </div>
+<div class="matches-title">
+Recent Matches
+</div>
 
-            <div class="box">
-                <div class="label">Matches</div>
-                <div class="value">${total}</div>
-            </div>
+${recent.reverse().slice(0,5).map(m=>{
 
-            <div class="box">
-                <div class="label">Win Rate</div>
-                <div class="value">${winRate}%</div>
-            </div>
+let me,op,cls;
 
-            <div class="box">
-                <div class="label">Goal Rate</div>
-                <div class="value">${goalRate}</div>
-            </div>
+if(normalize(m.p1)===playerId){
 
-            <div class="box">
-                <div class="label">Goals Scored</div>
-                <div class="value">${gs}</div>
-            </div>
+me=+m.s1;
+op=+m.s2;
 
-            <div class="box">
-                <div class="label">Goals Conceded</div>
-                <div class="value">${gc}</div>
-            </div>
+}else{
 
-            <div class="box">
-                <div class="label">Difference</div>
-                <div class="value">${diff}</div>
-            </div>
+me=+m.s2;
+op=+m.s1;
 
-            <div class="box">
-                <div class="label">7+ Goals</div>
-                <div class="value">${seven}</div>
-            </div>
+}
 
-            <div class="box">
-                <div class="label">Friendly</div>
-                <div class="value">${friendly}</div>
-            </div>
+if(me>op) cls='win';
+else if(me<op) cls='loss';
+else cls='draw';
 
-            <div class="box">
-                <div class="label">Tournaments</div>
-                <div class="value">${tour}</div>
-            </div>
+return `
 
-        </div>
+<div class="match">
 
-        <div class="matches">
+<div class="left">
+${m.p1}
+</div>
 
-            <div class="matches-title">
-            Recent Matches
-            </div>
+<div class="center">
 
-            ${matches.reverse().slice(0,20).map(m=>{
+<div class="score ${cls}">
+${m.s1} - ${m.s2}
+</div>
 
-                let me,op,cls;
+<div class="type">
+${m.type}
+</div>
 
-                if(normalize(m.p1)===playerId){
+</div>
 
-                    me=m.s1;
-                    op=m.s2;
+<div class="right">
+${m.p2}
+</div>
 
-                }else{
+</div>
 
-                    me=m.s2;
-                    op=m.s1;
+`;
 
-                }
+}).join('')}
 
-                if(me>op) cls='win';
-                else if(me<op) cls='loss';
-                else cls='draw';
+</div>
 
-                return `
+</div>
 
-                <div class="match">
-
-                    <div class="left">
-                    ${m.p1}
-                    </div>
-
-                    <div class="score ${cls}">
-                    ${m.s1} - ${m.s2}
-                    </div>
-
-                    <div class="right">
-                    ${m.p2}
-                    </div>
-
-                </div>
-
-                `;
-
-            }).join('')}
-
-        </div>
-
-    </div>
-
-    `;
+`;
 
 }catch(err){
 
-    document.getElementById("app").innerHTML = `
-    <div class="loader">
-    Failed to load profile
-    </div>
-    `;
+document.getElementById("app").innerHTML = `
+<div style="
+text-align:center;
+padding:50px;
+color:#00f5ff;
+">
+Failed to load profile
+</div>
+`;
 
-    console.log(err);
+console.log(err);
 
 }
+
+}
+
+/* =========================
+   DOWNLOAD
+========================= */
+
+function downloadProfile(){
+
+html2canvas(
+document.getElementById("capture")
+).then(canvas=>{
+
+const a=document.createElement("a");
+
+a.download="goatfc-profile.png";
+a.href=canvas.toDataURL();
+
+a.click();
+
+});
 
 }
 
