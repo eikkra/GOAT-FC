@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GOAT FC PLAYER PROFILE</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:#020617;
+    color:white;
+    overflow-x:hidden;
+}
+
+/* BG EFFECT */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+    radial-gradient(circle at top left,#00f5ff22,transparent 25%),
+    radial-gradient(circle at bottom right,#00f5ff11,transparent 25%);
+    z-index:-1;
+}
+
+/* HEADER */
+.header{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    padding:15px 10px 5px;
+}
+
+.logo{
+    width:42px;
+    filter:drop-shadow(0 0 15px #00f5ff);
+}
+
+.title{
+    color:#00f5ff;
+    font-size:18px;
+    font-weight:700;
+    text-shadow:0 0 12px #00f5ff;
+}
+
+/* DESCRIPTION */
+.desc{
+    text-align:center;
+    font-size:11px;
+    color:#94a3b8;
+    margin-bottom:12px;
+}
+
+/* LOADER */
+.loader{
+    text-align:center;
+    padding:40px;
+    color:#00f5ff;
+}
+
+/* PROFILE CARD */
+.profile{
+    width:min(100% - 20px,900px);
+    margin:auto;
+    border-radius:18px;
+    overflow:hidden;
+    border:1px solid #00f5ff55;
+    background:#08111f;
+    box-shadow:0 0 25px #00f5ff22;
+}
+
+/* COVER */
+.cover{
+    height:140px;
+    background:
+    linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.65)),
+    url('https://c4.wallpaperflare.com/wallpaper/398/874/541/champions-league-stadium-wallpaper-preview.jpg');
+    background-size:cover;
+    background-position:center;
+}
+
+/* TOP */
+.top{
+    text-align:center;
+    margin-top:-55px;
+    padding:0 15px 15px;
+}
+
+/* AVATAR */
+.avatar{
+    width:105px;
+    height:105px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid #00f5ff;
+    box-shadow:
+    0 0 15px #00f5ff,
+    0 0 35px #00f5ff55;
+    background:#0f172a;
+}
+
+/* NAME */
+.name{
+    margin-top:10px;
+    font-size:20px;
+    font-weight:700;
+    color:#fff;
+}
+
+/* ID */
+.clubid{
+    margin-top:5px;
+    color:#00f5ff;
+    font-weight:600;
+    text-shadow:0 0 10px #00f5ff;
+}
+
+/* RANK */
+.rank{
+    margin-top:10px;
+    display:inline-block;
+    padding:6px 14px;
+    border-radius:999px;
+    background:#00f5ff22;
+    border:1px solid #00f5ff;
+    color:#00f5ff;
+    font-size:12px;
+    box-shadow:0 0 15px #00f5ff44 inset;
+}
+
+/* GRID */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    padding:15px;
+}
+
+/* BOX */
+.box{
+    background:#0f172a;
+    border:1px solid #00f5ff33;
+    border-radius:14px;
+    padding:12px 10px;
+    text-align:center;
+    box-shadow:0 0 15px #00f5ff11 inset;
+}
+
+.label{
+    font-size:11px;
+    color:#94a3b8;
+}
+
+.value{
+    margin-top:6px;
+    font-size:18px;
+    font-weight:700;
+    color:#00f5ff;
+    text-shadow:0 0 10px #00f5ff33;
+}
+
+/* MATCHES */
+.matches{
+    padding:15px;
+}
+
+.matches-title{
+    text-align:center;
+    color:#00f5ff;
+    margin-bottom:10px;
+    font-weight:700;
+}
+
+.match{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:10px;
+    background:#0f172a;
+    border:1px solid #1e293b;
+    border-radius:12px;
+    padding:10px;
+    margin-bottom:8px;
+    font-size:12px;
+}
+
+.left{
+    text-align:left;
+}
+
+.right{
+    text-align:right;
+}
+
+.score{
+    font-weight:700;
+    padding:5px 10px;
+    border-radius:8px;
+}
+
+.win{
+    background:#22c55e22;
+    color:#22c55e;
+}
+
+.loss{
+    background:#ef444422;
+    color:#ef4444;
+}
+
+.draw{
+    background:#eab30822;
+    color:#eab308;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+
+.grid{
+    grid-template-columns:repeat(2,1fr);
+}
+
+.name{
+    font-size:18px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<img class="logo" src="https://i.imgur.com/LY3Bb9m.png">
+<div class="title">GOAT FC PLAYER PROFILE</div>
+</div>
+
+<div class="desc">
+Live approved player statistics • Auto synced from GOAT FC database
+</div>
+
+<div id="app">
+<div class="loader">Loading Profile...</div>
+</div>
+
+<script>
+
+/* =========================
+   CSV LINKS
+========================= */
+
+const MATCH_CSV =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=1588171329&single=true&output=csv";
+
+const MEMBER_CSV =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=133947099&single=true&output=csv";
+
+/* =========================
+   PLAYER ID FROM URL
+========================= */
+
+const params = new URLSearchParams(location.search);
+
+function normalize(x){
+    return (x || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g,'');
+}
+
+const playerId = normalize(
+    params.get("id") || "GFC-001"
+);
+
+/* =========================
+   CSV PARSER
+========================= */
+
+function parseCSV(text){
+
+    const rows = [];
+    let row = [];
+    let current = '';
+    let inside = false;
+
+    for(let i=0;i<text.length;i++){
+
+        const c = text[i];
+        const next = text[i+1];
+
+        if(c === '"'){
+
+            if(inside && next === '"'){
+                current += '"';
+                i++;
+            }else{
+                inside = !inside;
+            }
+
+        }else if(c === ',' && !inside){
+
+            row.push(current);
+            current='';
+
+        }else if((c === '\n' || c === '\r') && !inside){
+
+            if(current || row.length){
+                row.push(current);
+                rows.push(row);
+            }
+
+            row=[];
+            current='';
+
+        }else{
+            current += c;
+        }
+    }
+
+    if(current || row.length){
+        row.push(current);
+        rows.push(row);
+    }
+
+    return rows;
+}
+
+/* =========================
+   DRIVE IMAGE FIX
+========================= */
+
+function fixImage(url){
+
+    if(!url) return "https://i.imgur.com/LY3Bb9m.png";
+
+    let idMatch = url.match(/[-\\w]{25,}/);
+
+    if(idMatch){
+        return `https://drive.google.com/thumbnail?id=${idMatch[0]}&sz=w1000`;
+    }
+
+    return url;
+}
+
+/* =========================
+   LOAD DATA
+========================= */
+
+async function load(){
+
+try{
+
+    const [matchText,memberText] = await Promise.all([
+
+        fetch(MATCH_CSV + "&t=" + Date.now())
+        .then(r=>r.text()),
+
+        fetch(MEMBER_CSV + "&t=" + Date.now())
+        .then(r=>r.text())
+
+    ]);
+
+    const matchRows = parseCSV(matchText);
+    const memberRows = parseCSV(memberText);
+
+    /* =========================
+       MEMBER DATA
+    ========================= */
+
+    const members = {};
+
+    memberRows.slice(1).forEach(r=>{
+
+        const id = normalize(r[1]);
+
+        members[id] = {
+            name:r[0] || "Unknown Player",
+            pic:fixImage(r[2]),
+            club:r[1]
+        };
+
+    });
+
+    /* =========================
+       MATCH STATS
+    ========================= */
+
+    let matches = [];
+
+    matchRows.slice(1).forEach(r=>{
+
+        if((r[9] || "").toLowerCase() !== "yes")
+        return;
+
+        const p1 = normalize(r[0]);
+        const p2 = normalize(r[1]);
+
+        if(p1 !== playerId && p2 !== playerId)
+        return;
+
+        matches.push({
+
+            p1:r[0],
+            p2:r[1],
+            type:r[2],
+            s1:+r[3],
+            s2:+r[4],
+            date:r[11]
+
+        });
+
+    });
+
+    /* =========================
+       ALL PLAYER RANK
+    ========================= */
+
+    let leaderboard = {};
+
+    matchRows.slice(1).forEach(r=>{
+
+        if((r[9] || "").toLowerCase() !== "yes")
+        return;
+
+        const p1 = normalize(r[0]);
+        const p2 = normalize(r[1]);
+
+        leaderboard[p1] =
+        (leaderboard[p1] || 0) + (+r[5] || 0);
+
+        leaderboard[p2] =
+        (leaderboard[p2] || 0) + (+r[6] || 0);
+
+    });
+
+    const ranking =
+    Object.entries(leaderboard)
+    .sort((a,b)=>b[1]-a[1]);
+
+    const rank =
+    ranking.findIndex(x=>x[0]===playerId)+1;
+
+    /* =========================
+       CALCULATE
+    ========================= */
+
+    let win=0,
+        loss=0,
+        draw=0,
+        gs=0,
+        gc=0,
+        seven=0,
+        friendly=0,
+        tour=0;
+
+    matches.forEach(m=>{
+
+        let me,op;
+
+        if(normalize(m.p1)===playerId){
+
+            me=m.s1;
+            op=m.s2;
+
+        }else{
+
+            me=m.s2;
+            op=m.s1;
+
+        }
+
+        gs += me;
+        gc += op;
+
+        if(me>=7) seven++;
+
+        if(me>op) win++;
+        else if(me<op) loss++;
+        else draw++;
+
+        if(m.type==="Friendly")
+        friendly++;
+        else
+        tour++;
+
+    });
+
+    const total = matches.length;
+
+    const winRate =
+    ((win/(total||1))*100).toFixed(1);
+
+    const goalRate =
+    (gs/(total||1)).toFixed(2);
+
+    const diff = gs-gc;
+
+    /* =========================
+       PLAYER INFO
+    ========================= */
+
+    const info =
+    members[playerId] || {
+
+        name:"Unknown Player",
+        pic:"https://i.imgur.com/LY3Bb9m.png",
+        club:params.get("id") || "N/A"
+
+    };
+
+    /* =========================
+       RENDER
+    ========================= */
+
+    document.getElementById("app").innerHTML = `
+
+    <div class="profile">
+
+        <div class="cover"></div>
+
+        <div class="top">
+
+            <img class="avatar"
+            src="${info.pic}">
+
+            <div class="name">
+            ${info.name}
+            </div>
+
+            <div class="clubid">
+            ${info.club}
+            </div>
+
+            <div class="rank">
+            🏆 Overall Rank #${rank || '-'}
+            </div>
+
+        </div>
+
+        <div class="grid">
+
+            <div class="box">
+                <div class="label">Wins</div>
+                <div class="value">${win}</div>
+            </div>
+
+            <div class="box">
+                <div class="label">Losses</div>
+                <div class="value">${loss}</div>
+            </div>
+
+            <div class="box">
+                <div class="label">Draws</div>
+                <div class="value">${draw}</div>
+            </div>
+
+            <div class="box">
+                <div class="label">Matches</div>
+                <div class="value">${total}</div>
+            </div>
+
+            <div class="box">
+                <div class="label">Win Rate</div>
+                <div class="value">${winRate}%</div>
+            </div>
+
+            <div class="box">
+                <div class="label">Goal Rate</div>
+                <div class="value">${goalRate}</div>
+            </div>
+
+            <div class="box">
+                <div class="label">Goals Scored</div>
+                <div class="value">${gs}</div>
+            </div>
+
+            <div class="box">
+                <div class="label">Goals Conceded</div>
+                <div class="value">${gc}</div>
+            </div>
+
+            <div class="box">
+                <div class="label">Difference</div>
+                <div class="value">${diff}</div>
+            </div>
+
+            <div class="box">
+                <div class="label">7+ Goals</div>
+                <div class="value">${seven}</div>
+            </div>
+
+            <div class="box">
+                <div class="label">Friendly</div>
+                <div class="value">${friendly}</div>
+            </div>
+
+            <div class="box">
+                <div class="label">Tournaments</div>
+                <div class="value">${tour}</div>
+            </div>
+
+        </div>
+
+        <div class="matches">
+
+            <div class="matches-title">
+            Recent Matches
+            </div>
+
+            ${matches.reverse().slice(0,20).map(m=>{
+
+                let me,op,cls;
+
+                if(normalize(m.p1)===playerId){
+
+                    me=m.s1;
+                    op=m.s2;
+
+                }else{
+
+                    me=m.s2;
+                    op=m.s1;
+
+                }
+
+                if(me>op) cls='win';
+                else if(me<op) cls='loss';
+                else cls='draw';
+
+                return `
+
+                <div class="match">
+
+                    <div class="left">
+                    ${m.p1}
+                    </div>
+
+                    <div class="score ${cls}">
+                    ${m.s1} - ${m.s2}
+                    </div>
+
+                    <div class="right">
+                    ${m.p2}
+                    </div>
+
+                </div>
+
+                `;
+
+            }).join('')}
+
+        </div>
+
+    </div>
+
+    `;
+
+}catch(err){
+
+    document.getElementById("app").innerHTML = `
+    <div class="loader">
+    Failed to load profile
+    </div>
+    `;
+
+    console.log(err);
+
+}
+
+}
+
+load();
+
+</script>
+
+</body>
+</html>
