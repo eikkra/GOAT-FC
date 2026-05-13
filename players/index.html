@@ -10,7 +10,157 @@ content="width=device-width, initial-scale=1.0">
 <title>GOAT FC Players</title>
 <link rel="icon" type="image/png" href="https://i.imgur.com/LY3Bb9m.png">
 
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
 <style>
+
+/* =========================
+TOPBAR
+========================= */
+
+.topbar{
+
+position:sticky;
+top:0;
+z-index:9999;
+
+height:46px;
+
+padding:0 14px;
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+text-decoration:none;
+
+background:rgba(2,6,23,.88);
+
+backdrop-filter:blur(10px);
+
+border-bottom:1px solid #00f5ff22;
+
+box-shadow:
+0 0 15px #00f5ff11;
+
+}
+
+/* LEFT */
+
+.topbar-left{
+
+display:flex;
+align-items:center;
+gap:8px;
+
+}
+
+/* LOGO */
+
+.topbar-logo{
+
+width:26px;
+
+filter:
+drop-shadow(0 0 6px #00f5ff);
+
+}
+
+/* TEXT */
+
+.topbar-text{
+
+font-size:13px;
+font-weight:800;
+
+letter-spacing:1px;
+
+background:
+linear-gradient(
+90deg,
+#00f5ff,
+#00ff88
+);
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+}
+
+/* HOME ICON */
+
+.topbar-right{
+
+width:28px;
+height:28px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+border-radius:50%;
+
+background:#00f5ff11;
+
+border:1px solid #00f5ff33;
+
+color:#00f5ff;
+
+font-size:12px;
+
+transition:.25s;
+
+box-shadow:
+0 0 10px #00f5ff11;
+
+}
+
+/* HOVER */
+
+.topbar-right:hover{
+
+transform:scale(1.08);
+
+box-shadow:
+0 0 18px #00f5ff55;
+
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.topbar{
+
+height:42px;
+
+padding:0 10px;
+
+}
+
+.topbar-logo{
+
+width:23px;
+
+}
+
+.topbar-text{
+
+font-size:12px;
+
+}
+
+.topbar-right{
+
+width:26px;
+height:26px;
+
+font-size:11px;
+
+}
+
+}
 
 *{
     margin:0;
@@ -38,138 +188,6 @@ body::before{
     radial-gradient(circle at bottom right,#00ff8811,transparent 25%);
 
     z-index:-1;
-}
-
-/* =========================
-TOPBAR
-========================= */
-
-.topbar{
-
-position:sticky;
-
-top:0;
-
-z-index:9999;
-
-height:44px;
-
-margin:-14px -14px 14px -14px;
-
-padding:0 12px;
-
-display:flex;
-
-align-items:center;
-
-justify-content:space-between;
-
-text-decoration:none;
-
-background:
-rgba(2,6,23,.92);
-
-backdrop-filter:blur(12px);
-
-border-bottom:
-1px solid #00f5ff22;
-
-box-shadow:
-0 0 12px #00f5ff11;
-
-}
-
-.topbar-left{
-
-display:flex;
-
-align-items:center;
-
-gap:8px;
-
-}
-
-.topbar-logo{
-
-width:24px;
-
-filter:
-drop-shadow(0 0 5px #00f5ff);
-
-}
-
-.topbar-text{
-
-font-size:12px;
-
-font-weight:800;
-
-letter-spacing:1px;
-
-background:
-linear-gradient(
-90deg,
-#00f5ff,
-#00ff88
-);
-
--webkit-background-clip:text;
-
--webkit-text-fill-color:
-transparent;
-
-}
-
-.topbar-home{
-
-width:26px;
-height:26px;
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-border-radius:50%;
-
-background:#00f5ff11;
-
-border:1px solid #00f5ff33;
-
-font-size:12px;
-
-color:#00f5ff;
-
-box-shadow:
-0 0 8px #00f5ff22;
-
-}
-
-/* MOBILE */
-
-@media(max-width:768px){
-
-.topbar{
-
-height:42px;
-
-padding:0 10px;
-
-}
-
-.topbar-logo{
-
-width:22px;
-
-}
-
-.topbar-text{
-
-font-size:11px;
-
-}
-
 }
 
 /* HEADER */
@@ -485,13 +503,11 @@ font-size:18px;
 
 <body>
 
-<a href="https://goatfcbd.com"
-class="topbar">
+<a href="https://goatfcbd.com" class="topbar">
 
 <div class="topbar-left">
 
-<img
-src="https://i.imgur.com/LY3Bb9m.png"
+<img src="https://i.imgur.com/LY3Bb9m.png"
 class="topbar-logo">
 
 <div class="topbar-text">
@@ -500,9 +516,9 @@ GOAT FC
 
 </div>
 
-<div class="topbar-home">
+<div class="topbar-right">
 
-🏠
+<i class="fa-solid fa-house"></i>
 
 </div>
 
