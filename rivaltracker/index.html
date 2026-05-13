@@ -8,7 +8,124 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
 <style>
+
+/* =========================
+TOPBAR
+========================= */
+
+.topbar{
+
+position:sticky;
+top:0;
+z-index:9999;
+
+height:46px;
+
+padding:0 14px;
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+text-decoration:none;
+
+background:rgba(2,6,23,.88);
+
+backdrop-filter:blur(10px);
+
+border-bottom:1px solid #00f5ff22;
+
+box-shadow:
+0 0 15px #00f5ff11;
+
+}
+
+.topbar-left{
+
+display:flex;
+align-items:center;
+gap:8px;
+
+}
+
+.topbar-logo{
+
+width:26px;
+
+filter:
+drop-shadow(0 0 6px #00f5ff);
+
+}
+
+.topbar-text{
+
+font-size:13px;
+font-weight:800;
+
+letter-spacing:1px;
+
+background:
+linear-gradient(
+90deg,
+#00f5ff,
+#00ff88
+);
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+}
+
+.topbar-right{
+
+width:28px;
+height:28px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+border-radius:50%;
+
+background:#00f5ff11;
+
+border:1px solid #00f5ff33;
+
+color:#00f5ff;
+
+font-size:12px;
+
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.topbar{
+
+height:42px;
+
+padding:0 10px;
+
+}
+
+.topbar-logo{
+
+width:23px;
+
+}
+
+.topbar-text{
+
+font-size:12px;
+
+}
+
+}
+
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Orbitron',sans-serif;}
 body{background:linear-gradient(135deg,#050b14,#0b1320,#101b2d);color:#fff;padding:8px;}
 .container{max-width:1100px;margin:auto;background:rgba(255,255,255,.03);border:1px solid rgba(0,255,183,.12);border-radius:18px;padding:12px;box-shadow:0 0 20px rgba(0,255,183,.05);}
@@ -41,6 +158,24 @@ td{font-size:9px;padding:7px 3px;}
 </style>
 </head>
 <body>
+
+<a href="https://goatfcbd.com" class="topbar">
+
+<div class="topbar-left">
+
+<img src="https://i.imgur.com/LY3Bb9m.png" class="topbar-logo">
+
+<div class="topbar-text">
+GOAT FC
+</div>
+
+</div>
+
+<div class="topbar-right">
+<i class="fa-solid fa-house"></i>
+</div>
+
+</a>
 
 <div class="container">
 <div class="header">
