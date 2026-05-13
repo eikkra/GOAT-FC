@@ -8,7 +8,82 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
 <style>
+
+/* ================= TOPBAR FIX ================= */
+
+.topbar{
+    position:sticky;
+    top:0;
+    left:0;
+
+    width:100%;
+    height:48px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 12px;
+
+    background:rgba(2,6,23,0.92);
+    backdrop-filter:blur(10px);
+
+    border-bottom:1px solid #00f5ff22;
+
+    text-decoration:none;
+
+    z-index:9999;
+}
+
+.topbar-left{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.topbar-logo{
+    width:26px;
+    height:26px;
+    filter:drop-shadow(0 0 6px #00f5ff);
+}
+
+.topbar-text{
+    font-size:13px;
+    font-weight:800;
+    letter-spacing:1px;
+
+    background:linear-gradient(90deg,#00f5ff,#00ff88);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+/* HOME ICON FIX */
+.topbar-right i{
+    font-size:16px;
+    color:#00f5ff;
+
+    width:32px;
+    height:32px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:#00f5ff11;
+    border:1px solid #00f5ff33;
+}
+
+/* hover effect */
+.topbar-right i:hover{
+    background:#00f5ff22;
+    box-shadow:0 0 10px #00f5ff55;
+}
+
 body{margin:0;font-family:'Rajdhani',sans-serif;background:#020617;color:white;}
 .header{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;flex-wrap:wrap;}
 .header img{width:42px;filter: drop-shadow(0 0 8px #00f5ff);}
@@ -74,8 +149,25 @@ body{margin:0;font-family:'Rajdhani',sans-serif;background:#020617;color:white;}
 
 <body>
 
+<a href="https://goatfcbd.com" class="topbar">
+
+<div class="topbar-left">
+
+<img src="https://i.imgur.com/LY3Bb9m.png" class="topbar-logo">
+
+<div class="topbar-text">
+GOAT FC
+</div>
+
+</div>
+
+<div class="topbar-right">
+<i class="fa-solid fa-house"></i>
+</div>
+
+</a>
+
 <div class="header">
-<img src="https://i.imgur.com/LY3Bb9m.png">
 <h1>GOAT FC STATISTICS</h1>
 <div class="desc">
 Official performance dashboard showing wins, goals, win rate and match stats (Approved matches only)
