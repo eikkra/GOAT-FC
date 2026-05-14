@@ -161,7 +161,16 @@ PROFILE
 ===================== */
 
 .profile{
+
+/* OLD */
 width:calc(100% - 10px);
+
+/* REMOVE THIS */
+/* width:calc(100% - 10px); */
+
+/* NEW */
+width:100%;
+max-width:620px;
 
 margin:auto;
 
@@ -175,6 +184,49 @@ overflow:hidden;
 
 box-shadow:
 0 0 20px #000;
+
+}
+
+/* =====================
+MAIN APP WRAP ADD
+===================== */
+
+#app{
+width:100%;
+padding:0 12px 20px;
+}
+
+/* =====================
+PC VIEW FIX
+===================== */
+
+@media(min-width:768px){
+
+#app{
+padding-top:10px;
+}
+
+.profile{
+max-width:680px;
+}
+
+}
+
+/* =====================
+LARGE PC FIX
+===================== */
+
+@media(min-width:1200px){
+
+.profile{
+max-width:720px;
+}
+
+}
+
+#app{
+width:100%;
+padding:0 12px 20px;
 }
 
 /* COVER */
@@ -644,6 +696,35 @@ font-weight:700;
 
 color:var(--cyan);
 }
+
+@media(min-width:768px){
+
+#app{
+padding-top:10px;
+}
+
+.profile{
+max-width:680px;
+}
+
+}
+
+@media(min-width:1200px){
+
+.profile{
+max-width:720px;
+}
+
+}
+
+@media(min-width:1200px){
+
+.profile{
+max-width:720px;
+}
+
+}
+
 
 </style>
 </head>
