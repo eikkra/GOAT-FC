@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>PLAYER ROSTER</title>
+
+<link rel="icon"
+type="image/png"
+href="https://i.imgur.com/LY3Bb9m.png">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Rajdhani:wght@400;500;600;700&display=swap"
+rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<style>
+
+:root{
+--bg:#050816;
+--card:#0f172a;
+--cyan:#00f5ff;
+--green:#00ff88;
+--purple:#c084fc;
+--yellow:#fbbf24;
+--white:#f8fafc;
+--muted:#94a3b8;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+background:var(--bg);
+font-family:'Rajdhani',sans-serif;
+color:var(--white);
+overflow-x:hidden;
+padding-bottom:25px;
+}
+
+body::before{
+content:"";
+position:fixed;
+inset:0;
+
+background:
+radial-gradient(circle at top left,#00f5ff12,transparent 25%),
+radial-gradient(circle at bottom right,#00ff8810,transparent 25%);
+
+z-index:-1;
+}
+
+/* =========================
+TOPBAR
+========================= */
+
+.topbar{
+height:52px;
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+padding:0 14px;
+
+background:rgba(5,8,22,.88);
+
+backdrop-filter:blur(10px);
+
+border-bottom:1px solid #00f5ff15;
+
+position:sticky;
+top:0;
+z-index:999;
+
+text-decoration:none;
+}
+
+.top-left{
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+.top-logo{
+width:24px;
+
+filter:
+drop-shadow(0 0 6px #00f5ff);
+}
+
+.top-title{
+font-family:'Orbitron',sans-serif;
+font-size:10px;
+font-weight:700;
+letter-spacing:1px;
+
+background:
+linear-gradient(90deg,var(--cyan),var(--green));
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.home-btn{
+width:26px;
+height:26px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+border-radius:10px;
+
+background:#111827;
+
+border:1px solid #00f5ff20;
+
+color:var(--cyan);
+
+font-size:11px;
+}
+
+/* =========================
+HEADER
+========================= */
+
+.hero{
+padding:18px 12px 14px;
+text-align:center;
+}
+
+.hero-title{
+font-family:'Orbitron',sans-serif;
+font-size:22px;
+font-weight:800;
+letter-spacing:2px;
+
+background:
+linear-gradient(
+90deg,
+#00f5ff,
+#ffffff,
+#00ff88
+);
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.hero-sub{
+margin-top:7px;
+
+font-size:10px;
+font-weight:700;
+
+letter-spacing:4px;
+
+color:var(--muted);
+}
+
+/* =========================
+WRAP
+========================= */
+
+.wrap{
+width:min(100% - 20px,1400px);
+margin:auto;
+}
+
+/* =========================
+SEARCH
+========================= */
+
+.search-box{
+width:100%;
+
+height:50px;
+
+padding:0 18px;
+
+border-radius:18px;
+
+border:1px solid #00f5ff20;
+
+background:
+linear-gradient(145deg,#111827,#0f172a);
+
+outline:none;
+
+color:white;
+
+font-size:14px;
+font-weight:700;
+
+font-family:'Rajdhani',sans-serif;
+
+margin-bottom:18px;
+
+box-shadow:
+0 0 12px #00f5ff08;
+}
+
+.search-box::placeholder{
+color:#94a3b8;
+}
+
+.search-box:focus{
+
+border-color:#00f5ff55;
+
+box-shadow:
+0 0 14px #00f5ff22;
+}
+
+/* =========================
+GRID
+========================= */
+
+.players-grid{
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(350px,1fr));
+
+gap:16px;
+}
+
+/* =========================
+CARD
+========================= */
+
+.card{
+position:relative;
+
+padding:14px;
+
+border-radius:22px;
+
+background:
+linear-gradient(145deg,#111827,#0f172a);
+
+border:1px solid #00f5ff18;
+
+overflow:hidden;
+
+box-shadow:
+0 0 18px #000;
+
+transition:.25s;
+}
+
+.card::before{
+content:"";
+
+position:absolute;
+
+inset:4px;
+
+border-radius:18px;
+
+border:1px solid #00f5ff10;
+
+pointer-events:none;
+}
+
+.card:hover{
+transform:translateY(-4px);
+
+border-color:#00f5ff30;
+
+box-shadow:
+0 0 18px #00f5ff15;
+}
+
+/* =========================
+TOP ROW
+========================= */
+
+.top-row{
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+gap:10px;
+
+padding:12px;
+
+border-radius:16px;
+
+background:
+linear-gradient(145deg,#0b1220,#0f172a);
+
+border:1px solid #ffffff10;
+}
+
+/* NAME */
+
+.player-name{
+font-size:20px;
+font-weight:800;
+
+line-height:1.2;
+
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+
+/* CLUB ID */
+
+.club-id{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:6px;
+
+padding:10px 14px;
+
+border-radius:999px;
+
+background:#00f5ff10;
+
+border:1px solid #00f5ff20;
+
+color:var(--cyan);
+
+font-size:11px;
+font-weight:800;
+
+white-space:nowrap;
+}
+
+/* =========================
+MIDDLE ROW
+========================= */
+
+.info-grid{
+display:grid;
+
+grid-template-columns:
+1fr 1fr;
+
+gap:12px;
+
+margin-top:12px;
+}
+
+.info-box{
+padding:12px;
+
+border-radius:16px;
+
+background:
+linear-gradient(145deg,#0b1220,#0f172a);
+
+border:1px solid #ffffff10;
+}
+
+.info-label{
+font-size:9px;
+font-weight:700;
+
+letter-spacing:2px;
+
+color:var(--muted);
+
+margin-bottom:6px;
+}
+
+.info-value{
+font-size:14px;
+font-weight:800;
+
+word-break:break-word;
+}
+
+/* COLORS */
+
+.konami{
+color:var(--yellow);
+}
+
+.device{
+color:var(--purple);
+}
+
+/* =========================
+FACEBOOK ROW
+========================= */
+
+.fb-btn{
+margin-top:12px;
+
+width:100%;
+
+height:48px;
+
+border-radius:16px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+gap:10px;
+
+text-decoration:none;
+
+background:
+linear-gradient(145deg,#111827,#0f172a);
+
+border:1px solid #1877f220;
+
+color:#4ea1ff;
+
+font-size:13px;
+font-weight:800;
+
+transition:.25s;
+}
+
+.fb-btn:hover{
+border-color:#1877f255;
+
+box-shadow:
+0 0 12px #1877f220;
+}
+
+/* =========================
+EMPTY
+========================= */
+
+.empty{
+padding:50px 10px;
+
+text-align:center;
+
+font-size:16px;
+font-weight:700;
+
+color:var(--muted);
+}
+
+/* =========================
+FOOTER
+========================= */
+
+.footer{
+margin-top:22px;
+
+text-align:center;
+
+font-size:10px;
+font-weight:700;
+
+letter-spacing:3px;
+
+color:#64748b;
+}
+
+/* =========================
+TABLET
+========================= */
+
+@media(max-width:900px){
+
+.players-grid{
+
+grid-template-columns:
+repeat(2,1fr);
+
+}
+
+.player-name{
+font-size:18px;
+}
+
+}
+
+/* =========================
+MOBILE
+========================= */
+
+@media(max-width:768px){
+
+.wrap{
+width:min(100% - 10px,480px);
+}
+
+.players-grid{
+
+grid-template-columns:
+1fr;
+
+gap:12px;
+}
+
+.hero-title{
+font-size:17px;
+}
+
+.hero-sub{
+font-size:8px;
+letter-spacing:3px;
+}
+
+.search-box{
+height:42px;
+font-size:12px;
+}
+
+.card{
+padding:12px;
+}
+
+.top-row{
+padding:10px;
+}
+
+.player-name{
+font-size:14px;
+}
+
+.club-id{
+font-size:8px;
+padding:6px 9px;
+}
+
+.info-grid{
+gap:8px;
+}
+
+.info-box{
+padding:10px;
+}
+
+.info-value{
+font-size:11px;
+}
+
+.fb-btn{
+height:40px;
+font-size:11px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- TOPBAR -->
+
+<a href="https://goatfcbd.com"
+class="topbar">
+
+<div class="top-left">
+
+<img src="https://i.imgur.com/LY3Bb9m.png"
+class="top-logo">
+
+<div class="top-title">
+GOAT FC
+</div>
+
+</div>
+
+<div class="home-btn">
+<i class="fa-solid fa-house"></i>
+</div>
+
+</a>
+
+<!-- HERO -->
+
+<div class="hero">
+
+<div class="hero-title">
+PLAYER ROSTER
+</div>
+
+<div class="hero-sub">
+SEARCH CLUB ID & VIEW PLAYER DETAILS
+</div>
+
+</div>
+
+<!-- WRAP -->
+
+<div class="wrap">
+
+<input
+type="text"
+id="searchInput"
+class="search-box"
+placeholder="Search By Club ID...">
+
+<div id="players"
+class="players-grid">
+
+</div>
+
+<div class="footer">
+POWERED BY GOAT FC
+</div>
+
+</div>
+
+<script>
+
+const csvURL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vRxNxMgcwsp3k8B9jqnfObnnRfhSX3vUcEOuaPTsyEMaEVOZKE9OIcLiMQRJHHkAQiJWn-msKE6Cs80/pub?output=csv";
+
+let players=[];
+
+/* NORMALIZE */
+
+function normalize(str){
+
+return (str || "")
+.toLowerCase()
+.replace(/[^a-z0-9]/g,"");
+
+}
+
+/* LOAD */
+
+function loadData(){
+
+Papa.parse(csvURL,{
+
+download:true,
+
+header:true,
+
+skipEmptyLines:true,
+
+complete:function(res){
+
+players=res.data;
+
+render(players);
+
+}
+
+});
+
+}
+
+/* RENDER */
+
+function render(data){
+
+const wrap =
+document.getElementById("players");
+
+wrap.innerHTML="";
+
+if(data.length===0){
+
+wrap.innerHTML=`
+
+<div class="empty">
+<i class="fa-solid fa-magnifying-glass"></i>
+<br><br>
+No Player Found
+</div>
+
+`;
+
+return;
+
+}
+
+data.forEach(p=>{
+
+wrap.innerHTML += `
+
+<div class="card">
+
+<!-- ROW 1 -->
+
+<div class="top-row">
+
+<div class="player-name">
+${p["Player Name"] || "Unknown"}
+</div>
+
+<div class="club-id">
+
+<i class="fa-solid fa-shield-halved"></i>
+
+${p["Your Club ID"] || "N/A"}
+
+</div>
+
+</div>
+
+<!-- ROW 2 -->
+
+<div class="info-grid">
+
+<div class="info-box">
+
+<div class="info-label">
+KONAMI ID
+</div>
+
+<div class="info-value konami">
+${p["KONAMI ID"] || "N/A"}
+</div>
+
+</div>
+
+<div class="info-box">
+
+<div class="info-label">
+DEVICE
+</div>
+
+<div class="info-value device">
+${p["DEVICE NAME"] || "N/A"}
+</div>
+
+</div>
+
+</div>
+
+<!-- ROW 3 -->
+
+<a href="${p["Facebook URL"] || "#"}"
+target="_blank"
+class="fb-btn">
+
+<i class="fa-brands fa-facebook-f"></i>
+
+VISIT FACEBOOK
+
+</a>
+
+</div>
+
+`;
+
+});
+
+}
+
+/* SEARCH */
+
+document
+.getElementById("searchInput")
+
+.addEventListener("input",function(){
+
+const val =
+normalize(this.value);
+
+const filtered =
+players.filter(p=>{
+
+let club =
+normalize(p["Your Club ID"]);
+
+return club.includes(val);
+
+});
+
+render(filtered);
+
+});
+
+/* LOAD */
+
+loadData();
+
+setInterval(loadData,30000);
+
+</script>
+
+</body>
+</html>
