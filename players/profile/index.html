@@ -438,24 +438,35 @@ font-size:8px;
 font-weight:800;
 
 letter-spacing:1px;
+}
 
+/* RANK TITLE */
+
+.rank-text{
+color:#00f5ff;
+}
+
+/* CP TITLE */
+
+.cp-text{
 color:#00f5ff;
 }
 
 .badge strong{
 font-size:15px;
 font-weight:900;
+}
 
-background:linear-gradient(
-90deg,
-#fff6cc,
-#ffd700,
-#ffb700,
-#fff1a8
-);
+/* RANK NUMBER */
 
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+.rank-number{
+color:#ff00d4;
+}
+
+/* CP NUMBER */
+
+.cp-number{
+color:#ffd60a;
 }
 
 /* =====================
@@ -1048,7 +1059,7 @@ ${info.club}
 </div>
 
 <div>
-<small>RANK</small>
+<small>OVERALL</small>
 <strong>#${rank||'-'}</strong>
 </div>
 
@@ -1061,7 +1072,7 @@ ${info.club}
 </div>
 
 <div>
-<small>CP</small>
+<small>NET CP</small>
 <strong>${netCP}</strong>
 </div>
 
