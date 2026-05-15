@@ -942,8 +942,8 @@ if((r[9]||'').toLowerCase()!=='yes')return;
 const p1=normalize(r[0]);
 const p2=normalize(r[1]);
 
-if(!board[p1]) board[p1]={points:0,win:0,gs:0,gc:0};
-if(!board[p2]) board[p2]={points:0,win:0,gs:0,gc:0};
+if(!board[p1]) board[p1]={points:0,win:0,gs:0,gc:0,match:0};
+if(!board[p2]) board[p2]={points:0,win:0,gs:0,gc:0,match:0};
 
 board[p1].points+=(+r[5]||0);
 board[p2].points+=(+r[6]||0);
@@ -956,6 +956,10 @@ board[p1].gc+=(+r[4]||0);
 
 board[p2].gs+=(+r[4]||0);
 board[p2].gc+=(+r[3]||0);
+
+// ✅ ADD THIS PART HERE
+board[p1].match++;
+board[p2].match++;
 
 if(p1===playerId||p2===playerId){
 
@@ -973,18 +977,23 @@ s2:+r[4]
 
 });
 
-const ranking=Object.entries(board)
-
-.map(([id,v])=>({
+const ranking = Object.entries(board)
+.map(([id, v]) => ({
 
 id,
-points:v.points,
-win:v.win,
-gd:v.gs-v.gc
+
+points: v.points,
+
+winPercent: v.match ? (v.win / v.match) * 100 : 0,
+
+gd: v.gs - v.gc
 
 }))
-
-.sort((a,b)=>b.points-a.points||b.win-a.win||b.gd-a.gd);
+.sort((a, b) =>
+b.points - a.points ||
+b.winPercent - a.winPercent ||
+b.gd - a.gd
+);
 
 const rank=ranking.findIndex(x=>x.id===playerId)+1;
 
