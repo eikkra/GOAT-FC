@@ -453,28 +453,30 @@ ld=ld.filter(r=>map[r["Club_ID"]?.trim()]);
 
 ld.sort((a,b)=>{
 
-let A_m=+(t==="overall"?a["Overall_PL"]:a["Monthly_PL"])||0;
-let B_m=+(t==="overall"?b["Overall_PL"]:b["Monthly_PL"])||0;
+// 1️ Anti inactive rule (same)
+let A_m=+(type==="overall"?a["Overall_PL"]:a["Monthly_PL"])||0;
+let B_m=+(type==="overall"?b["Overall_PL"]:b["Monthly_PL"])||0;
 
 if(A_m===0 && B_m>0) return 1;
 if(B_m===0 && A_m>0) return -1;
 
-let A_pt=+(t==="overall"?a["Overall_Point"]:a["Monthly_Point"])||0;
-let B_pt=+(t==="overall"?b["Overall_Point"]:b["Monthly_Point"])||0;
+// 2️ Points
+let A_pt=+(type==="overall"?a["Overall_Point"]:a["Monthly_Point"])||0;
+let B_pt=+(type==="overall"?b["Overall_Point"]:b["Monthly_Point"])||0;
+
 if(B_pt!==A_pt) return B_pt-A_pt;
 
-let A_gd=+(t==="overall"?a["Total GD"]:a["Montly GD"])||0;
-let B_gd=+(t==="overall"?b["Total GD"]:b["Montly GD"])||0;
-if(B_gd!==A_gd) return B_gd-A_gd;
+// 3️ Win%
+let A_w=+(type==="overall"?a["Overall_Win%"]:a["Monthly_Win%"])||0;
+let B_w=+(type==="overall"?b["Overall_Win%"]:b["Monthly_Win%"])||0;
 
-let A_gf=+(t==="overall"?a["Total GF"]:a["Montly GF"])||0;
-let B_gf=+(t==="overall"?b["Total GF"]:b["Montly GF"])||0;
-if(B_gf!==A_gf) return B_gf-A_gf;
+if(B_w!==A_w) return B_w-A_w;
 
-let A_ga=+(t==="overall"?a["Total GA"]:a["Montly GA"])||0;
-let B_ga=+(t==="overall"?b["Total GA"]:b["Montly GA"])||0;
+// 4️ GD
+let A_gd=+(type==="overall"?a["Total GD"]:a["Montly GD"])||0;
+let B_gd=+(type==="overall"?b["Total GD"]:b["Montly GD"])||0;
 
-return A_ga-B_ga;
+return B_gd-A_gd;
 
 });
 
