@@ -3,237 +3,1027 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GOAT FC STATISTICS</title>
+<title>PLAYER STATISTICS</title>
 <link rel="icon" type="image/png" href="https://i.imgur.com/LY3Bb9m.png">
-
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-body{margin:0;font-family:'Rajdhani',sans-serif;background:#020617;color:white;}
-.header{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;flex-wrap:wrap;}
-.header img{width:42px;filter: drop-shadow(0 0 8px #00f5ff);}
-.header h1{
-    font-size:22px;margin:0;color:#00f5ff;letter-spacing:0.5px;
-    text-shadow:0 0 6px #00f5ff,0 0 12px #00f5ff,0 0 18px #00f5ff;
-}
-.desc{width:100%;text-align:center;font-size:13px;color:#94a3b8;}
-
-.search{text-align:center;margin:10px;}
-.search input{
-    padding:10px;width:90%;max-width:380px;border-radius:10px;
-    border:1px solid #00f5ff;background:black;color:#00f5ff;
-    outline:none;font-family:'Rajdhani';
-}
-
-#data{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-    gap:10px;padding:10px;
+:root {
+  --cyan: #00f5ff;
+  --green: #39ff14;
+  --red: #ff2d55;
+  --yellow: #ffd700;
+  --purple: #bf00ff;
+  --orange: #ff6b00;
+  --bg: #020812;
+  --bg2: #050f1a;
+  --bg3: #071524;
+  --border: rgba(0,245,255,0.2);
+  --text: #e2f4ff;
+  --muted: #4a7a8a;
+  --gold: #ffd700;
+  --silver: #c0c0c0;
+  --bronze: #cd7f32;
 }
 
-.card{
-    padding:14px;border-radius:16px;
-    background:linear-gradient(145deg,#020617,#001f2f);
-    border:1px solid rgba(0,245,255,0.3);
-    box-shadow:0 0 10px rgba(0,245,255,0.12);
-    text-align:center;
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body {
+  font-family:'Exo 2',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
 }
 
-.rank1{border:1px solid gold;box-shadow:0 0 12px gold;}
-.rank2{border:1px solid silver;box-shadow:0 0 12px silver;}
-.rank3{border:1px solid #cd7f32;box-shadow:0 0 12px #cd7f32;}
-.top10{border:1px solid #a855f7;box-shadow:0 0 10px #a855f7;}
-
-.club{font-size:16px;font-weight:700;margin-bottom:12px;}
-.player-label{color:#94a3b8;}
-.player-name{color:#22c55e;}
-.player-id{color:#00f5ff;}
-
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.box{
-    padding:8px;border-radius:10px;font-size:13px;font-weight:600;
-    background:rgba(0,245,255,0.06);
-    border:1px solid rgba(0,245,255,0.3);
-    box-shadow:0 0 4px rgba(0,245,255,0.4);
+/* SCANLINE OVERLAY */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background:repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,245,255,0.012) 2px,
+    rgba(0,245,255,0.012) 4px
+  );
+  pointer-events:none;
+  z-index:1000;
 }
 
-.download{margin-top:10px;}
-.download button{
-    padding:6px 12px;border:none;border-radius:8px;
-    background:#00f5ff;color:black;font-size:13px;
-    cursor:pointer;font-family:'Rajdhani';
+/* ANIMATED BG GRID */
+body::after {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(0,245,255,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,245,255,0.04) 1px,transparent 1px);
+  background-size:40px 40px;
+  animation:gridMove 20s linear infinite;
+  pointer-events:none;
+  z-index:0;
+}
+@keyframes gridMove {
+  0%{background-position:0 0;}
+  100%{background-position:40px 40px;}
 }
 
-@media(max-width:768px){
-    #data{display:block;padding:6px;}
-    .grid{grid-template-columns:repeat(2,1fr);}
-    .card{margin-bottom:12px;}
+/* AMBIENT LIGHT ORBS */
+.orb {
+  position:fixed;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:1;
+  filter:blur(80px);
+}
+.orb1 {
+  width:360px; height:360px;
+  top:-100px; left:-80px;
+  background:radial-gradient(circle, rgba(0,245,255,0.08) 0%, transparent 70%);
+  animation:orbFloat 9s ease-in-out infinite;
+}
+.orb2 {
+  width:300px; height:300px;
+  top:35%; right:-90px;
+  background:radial-gradient(circle, rgba(57,255,20,0.06) 0%, transparent 70%);
+  animation:orbFloat 11s ease-in-out infinite;
+  animation-delay:-4s;
+}
+.orb3 {
+  width:260px; height:260px;
+  bottom:-80px; left:25%;
+  background:radial-gradient(circle, rgba(191,0,255,0.055) 0%, transparent 70%);
+  animation:orbFloat 13s ease-in-out infinite;
+  animation-delay:-7s;
+}
+@keyframes orbFloat {
+  0%,100%{transform:translateY(0) scale(1);}
+  50%{transform:translateY(-28px) scale(1.07);}
+}
+
+/* TOPBAR */
+.topbar {
+  position:sticky;
+  top:0;
+  z-index:999;
+  height:50px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px;
+  background:rgba(2,8,18,0.92);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(0,245,255,0.1);
+  box-shadow:0 2px 20px rgba(0,0,0,0.5);
+  text-decoration:none;
+  color:inherit;
+}
+.topbar-line {
+  position:absolute;
+  bottom:0; left:0; right:0;
+  height:1px;
+  background:linear-gradient(90deg, transparent, var(--cyan), transparent);
+  opacity:0.35;
+}
+.top-left {
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+.top-logo {
+  width:26px;
+  filter:drop-shadow(0 0 7px var(--cyan));
+}
+.top-title {
+  font-family:'Orbitron',sans-serif;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:1.5px;
+  background:linear-gradient(90deg, var(--cyan), var(--green));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.home-btn {
+  width:32px; height:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:8px;
+  background:rgba(0,245,255,0.07);
+  border:1px solid rgba(0,245,255,0.18);
+  color:var(--cyan);
+  font-size:12px;
+  transition:all 0.2s;
+}
+.home-btn:hover {
+  background:rgba(0,245,255,0.14);
+  box-shadow:0 0 10px rgba(0,245,255,0.28);
+}
+
+/* HEADER */
+.header {
+  position:relative;
+  z-index:10;
+  text-align:center;
+  padding:26px 16px 18px;
+  border-bottom:1px solid rgba(0,245,255,0.09);
+  background:linear-gradient(180deg, rgba(0,245,255,0.04) 0%, transparent 100%);
+}
+.header-badge {
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  background:rgba(0,245,255,0.07);
+  border:1px solid rgba(0,245,255,0.24);
+  border-radius:4px;
+  padding:3px 10px;
+  font-size:10px;
+  letter-spacing:3px;
+  color:var(--cyan);
+  text-transform:uppercase;
+  margin-bottom:14px;
+  animation:pulseBadge 3s ease-in-out infinite;
+}
+@keyframes pulseBadge {
+  0%,100%{box-shadow:0 0 6px rgba(0,245,255,0.22);}
+  50%{box-shadow:0 0 18px rgba(0,245,255,0.52);}
+}
+@keyframes blink {
+  0%,100%{opacity:0.35;}
+  50%{opacity:1;}
+}
+.header h1 {
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(18px,5vw,32px);
+  font-weight:900;
+  letter-spacing:2px;
+  color:var(--cyan);
+  text-shadow:
+    0 0 8px var(--cyan),
+    0 0 20px var(--cyan),
+    0 0 40px rgba(0,245,255,0.4);
+  line-height:1.1;
+}
+.header-desc {
+  margin-top:10px;
+  font-size:11px;
+  color:var(--muted);
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+
+/* SEARCH */
+.search-wrap {
+  position:relative;
+  z-index:10;
+  padding:16px 14px;
+  display:flex;
+  justify-content:center;
+}
+.search-box {
+  position:relative;
+  width:100%;
+  max-width:440px;
+}
+.search-box i {
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--cyan);
+  font-size:14px;
+  opacity:0.55;
+}
+.search-box input {
+  width:100%;
+  padding:12px 16px 12px 40px;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:6px;
+  color:var(--cyan);
+  font-family:'Exo 2',sans-serif;
+  font-size:14px;
+  letter-spacing:1px;
+  outline:none;
+  transition:all 0.3s;
+}
+.search-box input::placeholder { color:var(--muted); }
+.search-box input:focus {
+  border-color:var(--cyan);
+  box-shadow:0 0 0 3px rgba(0,245,255,0.1), 0 0 20px rgba(0,245,255,0.12);
+}
+
+/* GRID */
+#data {
+  position:relative;
+  z-index:10;
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(310px, 1fr));
+  gap:14px;
+  padding:10px 14px 30px;
+}
+
+/* CARD */
+.card {
+  background:linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:0;
+  overflow:hidden;
+  transition:transform 0.25s, box-shadow 0.25s;
+  animation:fadeIn 0.5s ease both;
+  position:relative;
+}
+@keyframes fadeIn {
+  from{opacity:0; transform:translateY(16px);}
+  to{opacity:1; transform:translateY(0);}
+}
+.card:hover {
+  transform:translateY(-3px);
+  box-shadow:0 8px 30px rgba(0,245,255,0.12);
+}
+
+/* Rank top strip */
+.card::before {
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:2px;
+  background:var(--border);
+  border-radius:12px 12px 0 0;
+  z-index:2;
+}
+.rank1::before { background:linear-gradient(90deg,transparent,var(--gold),transparent); box-shadow:0 0 14px var(--gold); }
+.rank2::before { background:linear-gradient(90deg,transparent,var(--silver),transparent); box-shadow:0 0 10px var(--silver); }
+.rank3::before { background:linear-gradient(90deg,transparent,var(--bronze),transparent); box-shadow:0 0 10px var(--bronze); }
+.top10::before { background:linear-gradient(90deg,transparent,var(--purple),transparent); }
+
+.rank1 { border-color:rgba(255,215,0,0.33); box-shadow:0 0 18px rgba(255,215,0,0.13); }
+.rank2 { border-color:rgba(192,192,192,0.33); box-shadow:0 0 14px rgba(192,192,192,0.1); }
+.rank3 { border-color:rgba(205,127,50,0.33); box-shadow:0 0 12px rgba(205,127,50,0.13); }
+.top10 { border-color:rgba(191,0,255,0.22); }
+
+/* CARD HEAD */
+.card-head {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 16px 10px;
+  border-bottom:1px solid rgba(0,245,255,0.07);
+  gap:8px;
+}
+.rank-badge {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:30px; height:30px;
+  border-radius:6px;
+  font-family:'Orbitron',sans-serif;
+  font-size:11px;
+  font-weight:700;
+  flex-shrink:0;
+}
+.rank-badge.r1 { background:rgba(255,215,0,0.14); color:var(--gold); border:1px solid rgba(255,215,0,0.38); }
+.rank-badge.r2 { background:rgba(192,192,192,0.11); color:var(--silver); border:1px solid rgba(192,192,192,0.32); }
+.rank-badge.r3 { background:rgba(205,127,50,0.11); color:var(--bronze); border:1px solid rgba(205,127,50,0.32); }
+.rank-badge.rn { background:rgba(0,245,255,0.07); color:var(--muted); border:1px solid var(--border); }
+
+.player-info { flex:1; min-width:0; }
+.player-name {
+  font-family:'Orbitron',sans-serif;
+  font-size:13px;
+  font-weight:700;
+  color:var(--green);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.player-id {
+  font-size:11px;
+  color:var(--cyan);
+  opacity:0.62;
+  letter-spacing:0.5px;
+  margin-top:2px;
+}
+.rank-icon { font-size:20px; }
+
+/* WIN BAR */
+.winbar-wrap { padding:10px 14px 4px; }
+.winbar-label {
+  display:flex;
+  justify-content:space-between;
+  font-size:10px;
+  color:var(--muted);
+  letter-spacing:1px;
+  margin-bottom:5px;
+  text-transform:uppercase;
+}
+.winbar-track {
+  height:5px;
+  background:rgba(0,0,0,0.4);
+  border-radius:3px;
+  overflow:hidden;
+  border:1px solid rgba(0,245,255,0.08);
+}
+.winbar-fill {
+  height:100%;
+  background:linear-gradient(90deg, var(--green), #00ff88);
+  border-radius:3px;
+  box-shadow:0 0 8px rgba(57,255,20,0.48);
+}
+
+/* STATS */
+.stats-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+  padding:12px 14px;
+}
+.stat-box {
+  background:rgba(0,0,0,0.3);
+  border:1px solid rgba(0,245,255,0.11);
+  border-radius:8px;
+  padding:9px 6px 7px;
+  text-align:center;
+  transition:border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.stat-box:hover {
+  border-color:rgba(0,245,255,0.3);
+  background:rgba(0,245,255,0.055);
+  box-shadow:0 0 10px rgba(0,245,255,0.09);
+}
+.stat-box .stat-icon { font-size:13px; margin-bottom:4px; display:block; }
+.stat-box .stat-val {
+  font-family:'Orbitron',sans-serif;
+  font-size:15px;
+  font-weight:700;
+  line-height:1;
+  display:block;
+}
+.stat-box .stat-lbl {
+  font-size:9px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-top:3px;
+  display:block;
+}
+.stat-win .stat-icon  { color:var(--green); }
+.stat-win .stat-val   { color:var(--green); }
+.stat-loss .stat-icon { color:var(--red); }
+.stat-loss .stat-val  { color:var(--red); }
+.stat-draw .stat-icon { color:var(--yellow); }
+.stat-draw .stat-val  { color:var(--yellow); }
+.stat-match .stat-val { color:var(--cyan); }
+.stat-winp .stat-val  { color:#f97316; }
+.stat-rate .stat-val  { color:#38bdf8; }
+.stat-gs .stat-val    { color:var(--green); }
+.stat-gc .stat-val    { color:var(--red); }
+.stat-diff .stat-val  { color:var(--cyan); }
+.stat-seven .stat-val { color:var(--gold); }
+.stat-friendly .stat-val { color:#a78bfa; }
+.stat-tour .stat-val  { color:#f472b6; }
+
+/* DOWNLOAD ICON in card head */
+.dl-icon-btn {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:28px; height:28px;
+  border-radius:7px;
+  background:rgba(0,245,255,0.07);
+  border:1px solid rgba(0,245,255,0.22);
+  color:var(--cyan);
+  font-size:12px;
+  cursor:pointer;
+  flex-shrink:0;
+  transition:all 0.2s;
+}
+.dl-icon-btn:hover {
+  background:var(--cyan);
+  color:#000;
+  box-shadow:0 0 12px rgba(0,245,255,0.45);
+}
+
+/* POWERED BY footer */
+.powered-by {
+  position:relative;
+  z-index:10;
+  text-align:center;
+  padding:10px 0 20px;
+  font-family:'Orbitron',sans-serif;
+  font-size:9px;
+  letter-spacing:3px;
+  color:var(--muted);
+  text-transform:uppercase;
+  opacity:0.5;
+}
+
+/* LOADING */
+#loading {
+  position:fixed;
+  inset:0;
+  background:var(--bg);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  gap:20px;
+}
+.loader-ring {
+  width:60px; height:60px;
+  border:3px solid rgba(0,245,255,0.12);
+  border-top-color:var(--cyan);
+  border-radius:50%;
+  animation:spin 0.9s linear infinite;
+}
+@keyframes spin { to{transform:rotate(360deg);} }
+.loader-text {
+  font-family:'Orbitron',sans-serif;
+  font-size:11px;
+  letter-spacing:3px;
+  color:var(--cyan);
+  animation:blink 1.5s ease-in-out infinite;
+}
+
+/* EMPTY */
+.empty {
+  text-align:center;
+  padding:60px 20px;
+  color:var(--muted);
+  font-size:14px;
+  letter-spacing:1px;
+  grid-column:1/-1;
+}
+.empty i { font-size:36px; margin-bottom:12px; display:block; opacity:0.38; }
+
+/* MOBILE */
+@media(max-width:600px) {
+  .header { padding:18px 12px 14px; }
+  #data { grid-template-columns:1fr; gap:10px; padding:8px 10px 20px; }
+  .stats-grid { gap:5px; }
+  .stat-box { padding:8px 4px 6px; }
+  .stat-box .stat-val { font-size:13px; }
+  .header h1 { font-size:19px; }
 }
 </style>
 </head>
 
 <body>
 
+<!-- AMBIENT ORBS -->
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<!-- LOADING -->
+<div id="loading">
+  <div class="loader-ring"></div>
+  <div class="loader-text">LOADING MATCH DATA...</div>
+</div>
+
+<!-- TOPBAR -->
+<a href="https://goatfcbd.com" class="topbar">
+  <div class="top-left">
+    <img src="https://i.imgur.com/LY3Bb9m.png" class="top-logo" alt="GOAT FC">
+    <div class="top-title">GOAT FC</div>
+  </div>
+  <div class="home-btn">
+    <i class="fa-solid fa-house"></i>
+  </div>
+  <div class="topbar-line"></div>
+</a>
+
+<!-- HEADER -->
 <div class="header">
-<img src="https://i.imgur.com/LY3Bb9m.png">
-<h1>GOAT FC STATISTICS</h1>
-<div class="desc">
-Official performance dashboard showing wins, goals, win rate and match stats (Approved matches only)
-</div>
+  <div class="header-badge">
+    <i class="fa-solid fa-circle" style="font-size:6px; color:var(--green); animation:blink 1.2s infinite;"></i>
+    LIVE DASHBOARD
+  </div>
+  <h1>PLAYER STATISTICS</h1>
+  <div class="header-desc">
+    <i class="fa-solid fa-shield-halved" style="color:var(--cyan); margin-right:5px;"></i>
+    Official Performance Dashboard &mdash; Approved Matches Only
+  </div>
 </div>
 
-<div class="search">
-<input type="text" id="search" placeholder="Search Name or Club ID..." oninput="render()">
+<!-- SEARCH -->
+<div class="search-wrap">
+  <div class="search-box">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" id="search" placeholder="Search player name or club ID..." oninput="render()">
+  </div>
 </div>
 
+<!-- CARDS -->
 <div id="data"></div>
 
-<script>
+<div class="powered-by"><i class="fa-solid fa-bolt" style="margin-right:5px;"></i>POWERED BY GOAT FC</div>
 
+<script>
 const MATCH_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=1588171329&single=true&output=csv";
 const MEMBER_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=133947099&single=true&output=csv";
 
 let players={}, members={}, cache={};
 
 function parseCSV(text){
-    const rows=[]; let cur=[], val="", q=false;
-    for(let i=0;i<text.length;i++){
-        let c=text[i];
-        if(c=='"'){ if(q && text[i+1]=='"'){val+='"';i++;} else q=!q;}
-        else if(c==','&&!q){cur.push(val); val="";}
-        else if((c=='\n'||c=='\r')&&!q){
-            if(val||cur.length){cur.push(val);rows.push(cur);cur=[];val="";}
-        } else val+=c;
-    }
-    return rows;
+  const rows=[]; let cur=[], val="", q=false;
+  for(let i=0;i<text.length;i++){
+    let c=text[i];
+    if(c==='"'){ if(q && text[i+1]==='"'){val+='"';i++;} else q=!q; }
+    else if(c===','&&!q){ cur.push(val); val=""; }
+    else if((c==='\n'||c==='\r')&&!q){
+      if(val||cur.length){ cur.push(val); rows.push(cur); cur=[]; val=""; }
+    } else val+=c;
+  }
+  if(val||cur.length) rows.push([...cur, val]);
+  return rows;
 }
 
-function normalize(id){
-    return (id||"").toLowerCase().replace(/[^a-z0-9]/g,'');
-}
+function normalize(id){ return (id||"").toLowerCase().replace(/[^a-z0-9]/g,''); }
 
 async function getData(url){
-    if(cache[url]) return cache[url];
-    let t=await fetch(url+"&t="+Date.now()).then(r=>r.text());
-    cache[url]=t;
-    return t;
+  if(cache[url]) return cache[url];
+  let t=await fetch(url+"&t="+Date.now()).then(r=>r.text());
+  cache[url]=t; return t;
 }
 
 async function loadMembers(){
-    let rows=parseCSV(await getData(MEMBER_URL)).slice(1);
-    rows.forEach(c=>{
-        if(c[1] && !c[1].includes("#VALUE")){
-            members[normalize(c[1])] = c[0];
-        }
-    });
+  let rows=parseCSV(await getData(MEMBER_URL)).slice(1);
+  rows.forEach(c=>{
+    if(c[1]&&!c[1].includes("#VALUE")) members[normalize(c[1])]=c[0];
+  });
 }
 
 async function loadMatches(){
-    let rows=parseCSV(await getData(MATCH_URL)).slice(1);
-
-    rows.forEach(c=>{
-
-        let P1=c[0], P2=c[1];
-        let s1=Number(c[3]), s2=Number(c[4]);
-        let approved=(c[9]||"").toLowerCase();
-
-        // 🔥 FIX
-        if(
-            !P1 || !P2 ||
-            P1.includes("#VALUE") || P2.includes("#VALUE") ||
-            isNaN(s1) || isNaN(s2) ||
-            approved!=="yes"
-        ) return;
-
-        update(P1,s1,s2,c[2]);
-        update(P2,s2,s1,c[2]);
-    });
+  let rows=parseCSV(await getData(MATCH_URL)).slice(1);
+  rows.forEach(c=>{
+    let P1=c[0], P2=c[1];
+    let s1=Number(c[3]), s2=Number(c[4]);
+    let approved=(c[9]||"").toLowerCase();
+    if(!P1||!P2||P1.includes("#VALUE")||P2.includes("#VALUE")||isNaN(s1)||isNaN(s2)||approved!=="yes") return;
+    update(P1,s1,s2,c[2]);
+    update(P2,s2,s1,c[2]);
+  });
 }
 
 function update(id,s,c,t){
-    if(!players[id]) players[id]={match:0,win:0,loss:0,draw:0,gs:0,gc:0,diff:0,rate:0,seven:0,friendly:0,other:0};
-
-    let p=players[id];
-    p.match++; p.gs+=s; p.gc+=c; p.diff=p.gs-p.gc;
-
-    if(t==="Friendly") p.friendly++; else p.other++;
-
-    if(s>c) p.win++;
-    else if(s<c) p.loss++;
-    else p.draw++;
-
-    if(s>=7) p.seven++;
-
-    p.winp=(p.win/p.match)*100;
-    p.rate=(p.gs/p.match);
+  if(!players[id]) players[id]={match:0,win:0,loss:0,draw:0,gs:0,gc:0,diff:0,rate:0,seven:0,friendly:0,other:0};
+  let p=players[id];
+  p.match++; p.gs+=s; p.gc+=c; p.diff=p.gs-p.gc;
+  if(t==="Friendly") p.friendly++; else p.other++;
+  if(s>c) p.win++;
+  else if(s<c) p.loss++;
+  else p.draw++;
+  if(s>=7) p.seven++;
+  p.winp=(p.win/p.match)*100;
+  p.rate=(p.gs/p.match);
 }
 
+function rankBadge(i){
+  if(i===0) return `<div class="rank-badge r1"><i class="fa-solid fa-crown"></i></div>`;
+  if(i===1) return `<div class="rank-badge r2">#2</div>`;
+  if(i===2) return `<div class="rank-badge r3">#3</div>`;
+  return `<div class="rank-badge rn">#${i+1}</div>`;
+}
+
+function rankIcon(i){
+  if(i===0) return `<span class="rank-icon">🥇</span>`;
+  if(i===1) return `<span class="rank-icon">🥈</span>`;
+  if(i===2) return `<span class="rank-icon">🥉</span>`;
+  return '';
+}
+
+function diffColor(d){ return d>0?'var(--green)':d<0?'var(--red)':'var(--muted)'; }
+
 function render(){
-    let q=normalize(document.getElementById("search").value);
-    let sorted=Object.entries(players).sort((a,b)=>b[1].win-a[1].win);
+  let q=normalize(document.getElementById("search").value);
+  let sorted=Object.entries(players).sort((a,b)=>b[1].win-a[1].win);
+  let filtered=sorted.filter(([id])=>{
+    let name=members[normalize(id)]||"";
+    return !q||(normalize(id).includes(q)||normalize(name).includes(q));
+  });
 
-    let html="";
-    sorted.forEach(([id,p],i)=>{
-        let name=members[normalize(id)]||"Unknown Player";
+  if(!filtered.length){
+    document.getElementById("data").innerHTML=`
+      <div class="empty">
+        <i class="fa-solid fa-user-slash"></i>
+        No players found matching "<strong>${document.getElementById("search").value}</strong>"
+      </div>`;
+    return;
+  }
 
-        if(q && !(normalize(id).includes(q)||normalize(name).includes(q))) return;
+  let html="";
+  filtered.forEach(([id,p],fi)=>{
+    let rank=sorted.findIndex(([sid])=>sid===id);
+    let name=members[normalize(id)]||"Unknown Player";
+    let cls="card";
+    if(rank===0) cls+=" rank1";
+    else if(rank===1) cls+=" rank2";
+    else if(rank===2) cls+=" rank3";
+    else if(rank<10) cls+=" top10";
 
-        let cls="card";
-        if(i===0) cls+=" rank1";
-        else if(i===1) cls+=" rank2";
-        else if(i===2) cls+=" rank3";
-        else if(i<10) cls+=" top10";
+    let barW=Math.min(p.winp,100).toFixed(1);
+    let diffSign=p.diff>0?'+':'';
 
-        html+=`
-        <div class="${cls}">
-            <div class="club">
-                <span class="player-label">Player :</span>
-                <span class="player-name">${name}</span>
-                <span class="player-id">(${id})</span>
-            </div>
+    html+=`
+    <div class="${cls}" style="animation-delay:${fi*0.04}s">
+      <div class="card-head">
+        ${rankBadge(rank)}
+        <div class="player-info">
+          <div class="player-name">${name}</div>
+          <div class="player-id"><i class="fa-solid fa-id-badge" style="margin-right:4px;"></i>${id}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+          ${rankIcon(rank)}
+          <button class="dl-icon-btn" title="Download" onclick="downloadCard(this)"><i class="fa-solid fa-download"></i></button>
+        </div>
+      </div>
 
-            <div class="grid">
-                <div class="box">🟢 Win : ${p.win}</div>
-                <div class="box">🔴 Loss : ${p.loss}</div>
-                <div class="box">🟡 Draw : ${p.draw}</div>
-                <div class="box">🎮 Match : ${p.match}</div>
-                <div class="box">📊 Win% : ${p.winp.toFixed(1)}</div>
-                <div class="box">⚽ Rate : ${p.rate.toFixed(2)}</div>
-                <div class="box">⚽ Scored : ${p.gs}</div>
-                <div class="box">🥅 Conc. : ${p.gc}</div>
-                <div class="box">📈 Diff. : ${p.diff}</div>
-                <div class="box">👑 7+ Goals : ${p.seven}</div>
-                <div class="box">🤝 Friendly : ${p.friendly}</div>
-                <div class="box">🏆 Tour : ${p.other}</div>
-            </div>
+      <div class="winbar-wrap">
+        <div class="winbar-label">
+          <span><i class="fa-solid fa-chart-line" style="margin-right:4px;"></i>Win Rate</span>
+          <span>${p.winp.toFixed(1)}%</span>
+        </div>
+        <div class="winbar-track">
+          <div class="winbar-fill" style="width:${barW}%"></div>
+        </div>
+      </div>
 
-            <div class="download">
-                <button onclick="downloadCard(this)">Download</button>
-            </div>
-        </div>`;
-    });
+      <div class="stats-grid">
+        <div class="stat-box stat-win">
+          <span class="stat-icon"><i class="fa-solid fa-trophy"></i></span>
+          <span class="stat-val">${p.win}</span>
+          <span class="stat-lbl">Wins</span>
+        </div>
+        <div class="stat-box stat-loss">
+          <span class="stat-icon"><i class="fa-solid fa-circle-xmark"></i></span>
+          <span class="stat-val">${p.loss}</span>
+          <span class="stat-lbl">Loss</span>
+        </div>
+        <div class="stat-box stat-draw">
+          <span class="stat-icon"><i class="fa-solid fa-handshake"></i></span>
+          <span class="stat-val">${p.draw}</span>
+          <span class="stat-lbl">Draw</span>
+        </div>
+        <div class="stat-box stat-match">
+          <span class="stat-icon"><i class="fa-solid fa-gamepad"></i></span>
+          <span class="stat-val">${p.match}</span>
+          <span class="stat-lbl">Matches</span>
+        </div>
+        <div class="stat-box stat-winp">
+          <span class="stat-icon"><i class="fa-solid fa-percent"></i></span>
+          <span class="stat-val">${p.winp.toFixed(1)}</span>
+          <span class="stat-lbl">Win %</span>
+        </div>
+        <div class="stat-box stat-rate">
+          <span class="stat-icon"><i class="fa-solid fa-bolt"></i></span>
+          <span class="stat-val">${p.rate.toFixed(2)}</span>
+          <span class="stat-lbl">Goal/G</span>
+        </div>
+        <div class="stat-box stat-gs">
+          <span class="stat-icon"><i class="fa-solid fa-futbol"></i></span>
+          <span class="stat-val">${p.gs}</span>
+          <span class="stat-lbl">Scored</span>
+        </div>
+        <div class="stat-box stat-gc">
+          <span class="stat-icon"><i class="fa-solid fa-shield"></i></span>
+          <span class="stat-val">${p.gc}</span>
+          <span class="stat-lbl">Conced.</span>
+        </div>
+        <div class="stat-box stat-diff">
+          <span class="stat-icon"><i class="fa-solid fa-arrow-trend-up"></i></span>
+          <span class="stat-val" style="color:${diffColor(p.diff)}">${diffSign}${p.diff}</span>
+          <span class="stat-lbl">GD</span>
+        </div>
+        <div class="stat-box stat-seven">
+          <span class="stat-icon"><i class="fa-solid fa-star"></i></span>
+          <span class="stat-val">${p.seven}</span>
+          <span class="stat-lbl">7+ Goals</span>
+        </div>
+        <div class="stat-box stat-friendly">
+          <span class="stat-icon"><i class="fa-solid fa-people-arrows"></i></span>
+          <span class="stat-val">${p.friendly}</span>
+          <span class="stat-lbl">Friendly</span>
+        </div>
+        <div class="stat-box stat-tour">
+          <span class="stat-icon"><i class="fa-solid fa-medal"></i></span>
+          <span class="stat-val">${p.other}</span>
+          <span class="stat-lbl">Tourney</span>
+        </div>
+      </div>
+    </div>`;
+  });
 
-    document.getElementById("data").innerHTML=html;
+  document.getElementById("data").innerHTML=html;
 }
 
 function downloadCard(btn){
-    html2canvas(btn.closest(".card")).then(c=>{
-        let a=document.createElement("a");
-        a.download="GOAT_FC_STATS.jpg";
-        a.href=c.toDataURL("image/jpeg");
-        a.click();
+  const card = btn.closest(".card");
+
+  // Read data from the card DOM
+  const name    = card.querySelector(".player-name").textContent.trim();
+  const clubId  = card.querySelector(".player-id").textContent.replace(/\s+/g,' ').trim();
+  const barPct  = parseFloat(card.querySelector(".winbar-fill").style.width)||0;
+  const winPct  = card.querySelector(".winbar-label span:last-child").textContent.trim();
+
+  // Rank strip color
+  let stripColor = "#00f5ff";
+  if(card.classList.contains("rank1")) stripColor="#ffd700";
+  else if(card.classList.contains("rank2")) stripColor="#c0c0c0";
+  else if(card.classList.contains("rank3")) stripColor="#cd7f32";
+  else if(card.classList.contains("top10")) stripColor="#bf00ff";
+
+  // Stat boxes
+  const boxes = card.querySelectorAll(".stat-box");
+  const stats = [];
+  boxes.forEach(b=>{
+    stats.push({
+      val: b.querySelector(".stat-val").textContent.trim(),
+      lbl: b.querySelector(".stat-lbl").textContent.trim(),
+      color: getComputedStyle(b.querySelector(".stat-val")).color
     });
+  });
+
+  // Canvas size
+  const W=600, PAD=24;
+  const HEADER_H=90, BAR_SECTION=54;
+  const COLS=3, ROWS=Math.ceil(stats.length/COLS);
+  const BOX_W=(W-PAD*2-10*(COLS-1))/COLS;
+  const BOX_H=72;
+  const FOOTER_H=44;
+  const H = HEADER_H + BAR_SECTION + ROWS*(BOX_H+8) + FOOTER_H + 20;
+
+  const cv=document.createElement("canvas");
+  cv.width=W*2; cv.height=H*2;
+  const ctx=cv.getContext("2d");
+  ctx.scale(2,2);
+
+  // ── BG ──
+  const bg=ctx.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0,"#050f1a");
+  bg.addColorStop(1,"#071524");
+  ctx.fillStyle=bg;
+  roundRect(ctx,0,0,W,H,16);
+  ctx.fill();
+
+  // ── BG grid dots ──
+  ctx.save();
+  ctx.strokeStyle="rgba(0,245,255,0.06)";
+  ctx.lineWidth=0.5;
+  for(let x=0;x<W;x+=28){
+    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
+  }
+  for(let y=0;y<H;y+=28){
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+  }
+  ctx.restore();
+
+  // ── RANK TOP STRIP ──
+  ctx.save();
+  const strip=ctx.createLinearGradient(0,0,W,0);
+  strip.addColorStop(0,"transparent");
+  strip.addColorStop(0.5,stripColor);
+  strip.addColorStop(1,"transparent");
+  ctx.shadowColor=stripColor; ctx.shadowBlur=14;
+  ctx.fillStyle=strip;
+  roundRect(ctx,0,0,W,3,0);
+  ctx.fill();
+  ctx.restore();
+
+  // ── CARD BORDER ──
+  ctx.save();
+  ctx.strokeStyle=stripColor==="ffd700"?
+    "rgba(255,215,0,0.33)":
+    (stripColor==="#c0c0c0"?"rgba(192,192,192,0.33)":
+    (stripColor==="#cd7f32"?"rgba(205,127,50,0.33)":
+    (stripColor==="#bf00ff"?"rgba(191,0,255,0.22)":
+    "rgba(0,245,255,0.2)")));
+  ctx.lineWidth=1;
+  roundRect(ctx,0.5,0.5,W-1,H-1,16);
+  ctx.stroke();
+  ctx.restore();
+
+  // ── RANK BADGE ──
+  let rankLabel="", rankColor="#4a7a8a", rankBg="rgba(0,245,255,0.07)";
+  if(card.classList.contains("rank1")){rankLabel="★";rankColor="#ffd700";rankBg="rgba(255,215,0,0.14)";}
+  else if(card.classList.contains("rank2")){rankLabel="#2";rankColor="#c0c0c0";rankBg="rgba(192,192,192,0.11)";}
+  else if(card.classList.contains("rank3")){rankLabel="#3";rankColor="#cd7f32";rankBg="rgba(205,127,50,0.11)";}
+  else{
+    const rn=card.querySelector(".rank-badge");
+    rankLabel=rn?rn.textContent.trim():"";
+  }
+
+  ctx.save();
+  ctx.fillStyle=rankBg;
+  roundRect(ctx,PAD,22,30,30,6);
+  ctx.fill();
+  ctx.strokeStyle=rankColor+"66";
+  ctx.lineWidth=1;
+  roundRect(ctx,PAD,22,30,30,6);
+  ctx.stroke();
+  ctx.fillStyle=rankColor;
+  ctx.font="bold 11px 'Orbitron',monospace";
+  ctx.textAlign="center";
+  ctx.textBaseline="middle";
+  ctx.fillText(rankLabel,PAD+15,37);
+  ctx.restore();
+
+  // ── RANK EMOJI ──
+  const emoji=card.classList.contains("rank1")?"🥇":
+               card.classList.contains("rank2")?"🥈":
+               card.classList.contains("rank3")?"🥉":"";
+  if(emoji){
+    ctx.font="22px serif";
+    ctx.textAlign="right";
+    ctx.textBaseline="middle";
+    ctx.fillText(emoji,W-PAD,37);
+  }
+
+  // ── PLAYER NAME ──
+  ctx.save();
+  ctx.shadowColor="#39ff14"; ctx.shadowBlur=10;
+  ctx.fillStyle="#39ff14";
+  ctx.font="bold 16px 'Orbitron',monospace";
+  ctx.textAlign="left";
+  ctx.textBaseline="alphabetic";
+  const maxNameW = W - PAD*2 - 40 - (emoji?30:0);
+  ctx.fillText(truncate(ctx,name,maxNameW), PAD+38, 34);
+  ctx.restore();
+
+  // ── PLAYER ID ──
+  ctx.fillStyle="rgba(0,245,255,0.55)";
+  ctx.font="11px 'Exo 2',sans-serif";
+  ctx.textAlign="left";
+  ctx.textBaseline="alphabetic";
+  ctx.fillText(clubId, PAD+38, 52);
+
+  // ── DIVIDER ──
+  ctx.strokeStyle="rgba(0,245,255,0.07)";
+  ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(PAD,HEADER_H-10); ctx.lineTo(W-PAD,HEADER_H-10); ctx.stroke();
+
+  // ── WIN RATE LABEL ──
+  let yBar=HEADER_H;
+  ctx.fillStyle="#4a7a8a";
+  ctx.font="10px 'Exo 2',sans-serif";
+  ctx.textAlign="left"; ctx.textBaseline="alphabetic";
+  ctx.fillText("WIN RATE", PAD, yBar+14);
+  ctx.fillStyle="#f97316";
+  ctx.font="bold 11px 'Orbitron',monospace";
+  ctx.textAlign="right";
+  ctx.fillText(winPct, W-PAD, yBar+14);
+
+  // ── WIN BAR TRACK ──
+  ctx.fillStyle="rgba(0,0,0,0.35)";
+  roundRect(ctx,PAD,yBar+20,W-PAD*2,6,3);
+  ctx.fill();
+
+  // ── WIN BAR FILL ──
+  ctx.save();
+  const barFill=ctx.createLinearGradient(PAD,0,W-PAD,0);
+  barFill.addColorStop(0,"#39ff14");
+  barFill.addColorStop(1,"#00ff88");
+  ctx.fillStyle=barFill;
+  ctx.shadowColor="#39ff14"; ctx.shadowBlur=8;
+  const fillW=Math.max(0,(W-PAD*2)*(barPct/100));
+  roundRect(ctx,PAD,yBar+20,fillW,6,3);
+  ctx.fill();
+  ctx.restore();
+
+  // ── STAT BOXES ──
+  let y0 = HEADER_H + BAR_SECTION;
+  const statColors=[
+    "#39ff14","#ff2d55","#ffd700",
+    "#00f5ff","#f97316","#38bdf8",
+    "#39ff14","#ff2d55","#00f5ff",
+    "#ffd700","#a78bfa","#f472b6"
+  ];
+
+  stats.forEach((s,i)=>{
+    const col=i%COLS, row=Math.floor(i/COLS);
+    const bx=PAD+col*(BOX_W+10);
+    const by=y0+row*(BOX_H+8);
+
+    // box bg
+    ctx.fillStyle="rgba(0,0,0,0.28)";
+    roundRect(ctx,bx,by,BOX_W,BOX_H,8);
+    ctx.fill();
+    ctx.strokeStyle="rgba(0,245,255,0.12)";
+    ctx.lineWidth=1;
+    roundRect(ctx,bx,by,BOX_W,BOX_H,8);
+    ctx.stroke();
+
+    // value
+    ctx.save();
+    ctx.fillStyle=statColors[i]||"#00f5ff";
+    ctx.shadowColor=statColors[i]||"#00f5ff";
+    ctx.shadowBlur=6;
+    ctx.font="bold 18px 'Orbitron',monospace";
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+    ctx.fillText(s.val, bx+BOX_W/2, by+BOX_H/2-6);
+    ctx.restore();
+
+    // label
+    ctx.fillStyle="#4a7a8a";
+    ctx.font="9px 'Exo 2',sans-serif";
+    ctx.textAlign="center";
+    ctx.textBaseline="alphabetic";
+    ctx.fillText(s.lbl.toUpperCase(), bx+BOX_W/2, by+BOX_H-10);
+  });
+
+  // ── FOOTER ──
+  const fyTop = HEADER_H + BAR_SECTION + ROWS*(BOX_H+8) + 14;
+  ctx.strokeStyle="rgba(0,245,255,0.08)";
+  ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(PAD,fyTop); ctx.lineTo(W-PAD,fyTop); ctx.stroke();
+
+  ctx.fillStyle="rgba(0,245,255,0.25)";
+  ctx.font="8px 'Orbitron',monospace";
+  ctx.textAlign="center";
+  ctx.textBaseline="middle";
+  ctx.fillText("⚡ POWERED BY GOAT FC", W/2, fyTop+16);
+
+  // ── DOWNLOAD ──
+  const a=document.createElement("a");
+  a.download=`GOAT_FC_${name.replace(/\s+/g,"_")}.jpg`;
+  a.href=cv.toDataURL("image/jpeg",0.97);
+  a.click();
+}
+
+// Helpers
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
+
+function truncate(ctx,text,maxW){
+  if(ctx.measureText(text).width<=maxW) return text;
+  while(text.length>0 && ctx.measureText(text+"…").width>maxW) text=text.slice(0,-1);
+  return text+"…";
 }
 
 async function init(){
-    await Promise.all([loadMembers(),loadMatches()]);
-    render();
+  await Promise.all([loadMembers(), loadMatches()]);
+  document.getElementById("loading").style.display="none";
+  render();
 }
 init();
-
 </script>
-
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 </body>
 </html>
