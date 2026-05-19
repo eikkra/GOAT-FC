@@ -1,401 +1,565 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GOAT FC CP LEADERBOARD</title>
+<title>CP SYSTEM</title>
 <link rel="icon" type="image/png" href="https://i.imgur.com/LY3Bb9m.png">
-
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 
 <style>
-
-/* =========================
-TOPBAR
-========================= */
-
-.topbar{
-
-position:sticky;
-top:0;
-z-index:9999;
-
-height:46px;
-
-padding:0 14px;
-
-display:flex;
-align-items:center;
-justify-content:space-between;
-
-text-decoration:none;
-
-background:rgba(2,6,23,.88);
-
-backdrop-filter:blur(10px);
-
-border-bottom:1px solid #00f5ff22;
-
-box-shadow:
-0 0 15px #00f5ff11;
-
+:root {
+  --bg:     #06040e;
+  --bg2:    #0d0a1a;
+  --bg3:    #120e22;
+  --gold:   #ffd700;
+  --gold2:  #ffb300;
+  --gold3:  #ffe066;
+  --cyan:   #00f5ff;
+  --green:  #39ff14;
+  --red:    #ff3b3b;
+  --purple: #c084fc;
+  --border: rgba(255,215,0,0.18);
+  --text:   #f0e6c8;
+  --muted:  #7a6a4a;
 }
 
-.topbar-left{
+*{ margin:0; padding:0; box-sizing:border-box; }
 
-display:flex;
-align-items:center;
-gap:8px;
-
+body {
+  font-family:'Exo 2',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  padding-bottom:30px;
 }
 
-.topbar-logo{
-
-width:26px;
-
-filter:
-drop-shadow(0 0 6px #00f5ff);
-
+/* ── SCANLINES ── */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background:repeating-linear-gradient(
+    0deg, transparent, transparent 2px,
+    rgba(255,215,0,0.012) 2px, rgba(255,215,0,0.012) 4px
+  );
+  pointer-events:none; z-index:1000;
 }
 
-.topbar-text{
-
-font-size:13px;
-font-weight:800;
-
-letter-spacing:1px;
-
-background:
-linear-gradient(
-90deg,
-#00f5ff,
-#00ff88
-);
-
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-
+/* ── ANIMATED GRID ── */
+body::after {
+  content:'';
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(255,215,0,0.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,215,0,0.035) 1px,transparent 1px);
+  background-size:40px 40px;
+  animation:gridMove 22s linear infinite;
+  pointer-events:none; z-index:0;
+}
+@keyframes gridMove {
+  0%{background-position:0 0;}
+  100%{background-position:40px 40px;}
 }
 
-.topbar-right{
-
-width:28px;
-height:28px;
-
-display:flex;
-align-items:center;
-justify-content:center;
-
-border-radius:50%;
-
-background:#00f5ff11;
-
-border:1px solid #00f5ff33;
-
-color:#00f5ff;
-
-font-size:12px;
-
+/* ── AMBIENT ORBS ── */
+.orb {
+  position:fixed; border-radius:50%;
+  pointer-events:none; z-index:1; filter:blur(80px);
+}
+.orb1 {
+  width:380px; height:380px; top:-100px; left:-80px;
+  background:radial-gradient(circle,rgba(255,215,0,0.07) 0%,transparent 70%);
+  animation:orbFloat 9s ease-in-out infinite;
+}
+.orb2 {
+  width:300px; height:300px; top:35%; right:-80px;
+  background:radial-gradient(circle,rgba(255,140,0,0.06) 0%,transparent 70%);
+  animation:orbFloat 12s ease-in-out infinite; animation-delay:-4s;
+}
+.orb3 {
+  width:260px; height:260px; bottom:-60px; left:30%;
+  background:radial-gradient(circle,rgba(192,132,252,0.055) 0%,transparent 70%);
+  animation:orbFloat 14s ease-in-out infinite; animation-delay:-7s;
+}
+@keyframes orbFloat {
+  0%,100%{transform:translateY(0) scale(1);}
+  50%{transform:translateY(-26px) scale(1.06);}
+}
+@keyframes blink {
+  0%,100%{opacity:0.35;} 50%{opacity:1;}
 }
 
-/* MOBILE */
-
-@media(max-width:768px){
-
-.topbar{
-
-height:42px;
-
-padding:0 10px;
-
+/* ── TOPBAR ── */
+.topbar {
+  position:sticky; top:0; z-index:999;
+  height:50px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 16px;
+  background:rgba(6,4,14,0.93);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(255,215,0,0.13);
+  box-shadow:0 2px 20px rgba(0,0,0,0.6);
+  text-decoration:none; color:inherit;
+}
+.topbar-glow {
+  position:absolute; bottom:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  opacity:0.35;
+}
+.top-left { display:flex; align-items:center; gap:9px; }
+.top-logo {
+  width:26px;
+  filter:drop-shadow(0 0 7px var(--gold));
+}
+.top-title {
+  font-family:'Orbitron',sans-serif;
+  font-size:12px; font-weight:700; letter-spacing:1.5px;
+  background:linear-gradient(90deg,var(--gold),var(--gold3));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.home-btn {
+  width:32px; height:32px;
+  display:flex; align-items:center; justify-content:center;
+  border-radius:8px;
+  background:rgba(255,215,0,0.07);
+  border:1px solid rgba(255,215,0,0.2);
+  color:var(--gold); font-size:12px;
+  transition:all 0.2s;
+}
+.home-btn:hover {
+  background:rgba(255,215,0,0.15);
+  box-shadow:0 0 12px rgba(255,215,0,0.3);
 }
 
-.topbar-logo{
-
-width:23px;
-
+/* ── HEADER ── */
+.header {
+  position:relative; z-index:10;
+  text-align:center;
+  padding:26px 16px 18px;
+  border-bottom:1px solid rgba(255,215,0,0.1);
+  background:linear-gradient(180deg,rgba(255,215,0,0.04) 0%,transparent 100%);
+}
+.header-badge {
+  display:inline-flex; align-items:center; gap:7px;
+  background:rgba(255,215,0,0.07);
+  border:1px solid rgba(255,215,0,0.28);
+  border-radius:4px; padding:3px 12px;
+  font-size:15px;
+  font-weight:800;
+  letter-spacing:4px;
+  letter-spacing:3px;
+  color:var(--gold); text-transform:uppercase;
+  margin-bottom:14px;
+  animation:pulseBadge 3s ease-in-out infinite;
+}
+@keyframes pulseBadge {
+  0%,100%{box-shadow:0 0 6px rgba(255,215,0,0.2);}
+  50%{box-shadow:0 0 18px rgba(255,215,0,0.5);}
+}
+.header h1 {
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(17px,4.5vw,30px);
+  font-weight:900; letter-spacing:2px;
+  background:linear-gradient(90deg,var(--gold2),var(--gold3),var(--gold2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  text-shadow:none; line-height:1.1;
+  filter:drop-shadow(0 0 14px rgba(255,215,0,0.4));
+}
+.header-desc {
+  margin-top:10px; font-size:11px;
+  color:var(--muted); letter-spacing:1.5px; text-transform:uppercase;
 }
 
-.topbar-text{
-
-font-size:12px;
-
+/* ── WRAPPER ── */
+.wrap {
+  position:relative; z-index:10;
+  max-width:960px; margin:auto;
+  padding:14px 12px 0;
 }
 
+/* ── TABLE CARD ── */
+.table-card {
+  background:linear-gradient(145deg,var(--bg2),var(--bg3));
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 0 30px rgba(255,215,0,0.07), 0 0 60px rgba(0,0,0,0.5);
+}
+
+/* ── TABLE ── */
+table {
+  width:100%;
+  border-collapse:collapse;
+}
+
+thead tr {
+  background:rgba(255,215,0,0.06);
+  border-bottom:1px solid rgba(255,215,0,0.15);
+}
+
+th {
+  padding:12px 10px;
+  font-family:'Orbitron',sans-serif;
+  font-size:10px; font-weight:700;
+  letter-spacing:1.5px; text-transform:uppercase;
+  color:var(--gold);
+  text-align:center;
+  white-space:nowrap;
+}
+th:nth-child(2){ text-align:left; }
+
+td {
+  padding:11px 10px;
+  font-size:12px; font-weight:600;
+  text-align:center;
+  border-bottom:1px solid rgba(255,215,0,0.06);
+  white-space:nowrap;
+  transition:background 0.2s;
+}
+td:nth-child(2){ text-align:left; }
+
+tbody tr {
+  animation:fadeRow 0.4s ease both;
+}
+@keyframes fadeRow {
+  from{opacity:0; transform:translateY(8px);}
+  to{opacity:1; transform:translateY(0);}
+}
+tbody tr:hover td {
+  background:rgba(255,215,0,0.05);
+}
+tbody tr:last-child td { border-bottom:none; }
+
+/* ── PLAYER CELL ── */
+.player-name {
+  font-size:13px; font-weight:700; color:var(--text);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  max-width:160px;
+}
+
+/* ── CP VALUES ── */
+.val-base    { color:#a0d4ff; }
+.val-tour    { color:#c084fc; }
+.val-bonus   { color:var(--gold3); }
+.val-earn    { color:var(--green); }
+.val-sell    { color:#38bdf8; }
+.val-deduct  { color:var(--red); }
+
+.val-net-pos {
+  color:var(--gold);
+  font-family:'Orbitron',sans-serif;
+  font-size:11px; font-weight:700;
+  text-shadow:0 0 8px rgba(255,215,0,0.5);
+}
+.val-net-neg {
+  color:var(--red);
+  font-family:'Orbitron',sans-serif;
+  font-size:11px; font-weight:700;
+}
+
+/* ── COIN ICON ── */
+.coin-icon {
+  color:var(--gold); margin-right:3px; font-size:10px;
+}
+
+/* ── ACTION BUTTON ── */
+.btn-claim {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:6px 12px;
+  background:linear-gradient(135deg,var(--gold2),var(--gold));
+  color:#000; border:none;
+  border-radius:6px; font-family:'Exo 2',sans-serif;
+  font-size:11px; font-weight:700; letter-spacing:0.5px;
+  cursor:pointer; transition:all 0.2s;
+  box-shadow:0 0 10px rgba(255,215,0,0.4);
+}
+.btn-claim:hover {
+  transform:scale(1.06);
+  box-shadow:0 0 18px rgba(255,215,0,0.65);
+}
+
+.btn-locked {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:6px 12px;
+  background:rgba(255,255,255,0.05);
+  color:var(--muted); border:1px solid rgba(255,255,255,0.08);
+  border-radius:6px; font-family:'Exo 2',sans-serif;
+  font-size:11px; font-weight:600; letter-spacing:0.5px;
+  cursor:not-allowed;
 }
 
 
-/* ================= GLOBAL ================= */
-body{
-margin:0;
-font-family:Segoe UI;
-background: radial-gradient(circle at top,#020617,#000);
-color:white;
+/* ── LOADING ── */
+#loading {
+  position:fixed; inset:0; background:var(--bg);
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  z-index:9999; gap:20px;
+}
+.loader-ring {
+  width:60px; height:60px;
+  border:3px solid rgba(255,215,0,0.12);
+  border-top-color:var(--gold);
+  border-radius:50%;
+  animation:spin 0.9s linear infinite;
+}
+@keyframes spin{ to{transform:rotate(360deg);} }
+.loader-text {
+  font-family:'Orbitron',sans-serif;
+  font-size:11px; letter-spacing:3px; color:var(--gold);
+  animation:blink 1.5s ease-in-out infinite;
 }
 
-/* ================= HEADER ================= */
-h1{
-text-align:center;
-padding:18px;
-color:#00f0ff;
-text-shadow:0 0 12px #00f0ff;
-letter-spacing:2px;
-font-size:22px;
-animation: glow 2s infinite alternate;
+/* ── POPUP ── */
+.popup {
+  position:fixed; inset:0;
+  background:rgba(0,0,0,0.8);
+  display:flex; align-items:center; justify-content:center;
+  visibility:hidden; z-index:9998;
+  backdrop-filter:blur(6px);
+}
+.popup-content {
+  background:linear-gradient(145deg,var(--bg2),var(--bg3));
+  border:1px solid rgba(255,215,0,0.3);
+  border-radius:16px; padding:28px 24px;
+  text-align:center;
+  box-shadow:0 0 40px rgba(255,215,0,0.2);
+  width:90%; max-width:320px;
+  animation:popIn 0.25s ease;
+}
+@keyframes popIn {
+  from{transform:scale(0.85); opacity:0;}
+  to{transform:scale(1); opacity:1;}
+}
+.popup-icon { font-size:36px; margin-bottom:10px; }
+.popup-content h2 {
+  font-family:'Orbitron',sans-serif;
+  font-size:16px; color:var(--gold); margin-bottom:12px;
+}
+.popup-content p {
+  font-size:12px; color:var(--muted); margin:4px 0; letter-spacing:0.5px;
+}
+.popup-contact {
+  margin-top:14px; padding:12px;
+  background:rgba(255,215,0,0.06);
+  border:1px solid rgba(255,215,0,0.15);
+  border-radius:8px; font-size:12px; color:var(--text);
+  line-height:1.8;
+}
+.popup-close {
+  margin-top:16px;
+  padding:8px 20px;
+  background:linear-gradient(135deg,var(--gold2),var(--gold));
+  color:#000; border:none; border-radius:8px;
+  font-family:'Exo 2',sans-serif;
+  font-size:13px; font-weight:700; cursor:pointer;
+  transition:all 0.2s;
+}
+.popup-close:hover { transform:scale(1.05); box-shadow:0 0 16px rgba(255,215,0,0.5); }
+
+/* ── FOOTER ── */
+.powered-by {
+  position:relative; z-index:10;
+  text-align:center; padding:16px 0 20px;
+  font-family:'Orbitron',sans-serif;
+  font-size:9px; letter-spacing:3px;
+  color:var(--muted); text-transform:uppercase; opacity:0.45;
 }
 
-@keyframes glow{
-from{ text-shadow:0 0 10px #00f0ff; }
-to{ text-shadow:0 0 25px #22c55e; }
+/* ── EMPTY ── */
+.empty-row td {
+  text-align:center; padding:40px;
+  color:var(--muted); font-size:13px; letter-spacing:1px;
 }
 
-/* ================= DESCRIPTION ================= */
-.desc{
-text-align:center;
-font-size:13px;
-color:#94a3b8;
-margin-bottom:10px;
+/* ── MOBILE ── */
+@media(max-width:600px) {
+  .wrap { padding:8px 4px 0; }
+  .table-card { border-radius:10px; }
+  table { font-size:9px; }
+  th {
+    font-size:8px; padding:8px 4px;
+    letter-spacing:0; white-space:nowrap;
+  }
+  td {
+    font-size:9px; padding:8px 4px;
+    white-space:nowrap;
+  }
+  .player-name { max-width:72px; font-size:9px; }
+  .val-net-pos, .val-net-neg { font-size:9px; }
+  .btn-claim {
+    padding:4px 7px; font-size:9px; gap:3px;
+    border-radius:5px;
+  }
+  .btn-locked {
+    padding:4px 7px; font-size:9px; gap:3px;
+    border-radius:5px;
+  }
+  .btn-claim i, .btn-locked i { display:none; }
+  .header h1 { font-size:16px; }
+  .header-desc { font-size:10px; }
 }
-
-/* ================= TABLE ================= */
-table{
-width:95%;
-margin:auto;
-border-collapse:collapse;
-background:rgba(15,23,42,0.8);
-backdrop-filter: blur(10px);
-box-shadow:0 0 25px rgba(0,255,255,0.2);
-border-radius:12px;
-overflow:hidden;
-}
-
-/* HEADER */
-th{
-padding:10px;
-font-size:12px;
-background:#020617;
-color:#00f0ff;
-text-shadow:0 0 10px #00f0ff;
-}
-
-/* ROW */
-td{
-padding:10px;
-text-align:center;
-font-size:12px;
-border-bottom:1px solid #1e293b;
-white-space:nowrap;
-}
-
-/* ROW ANIMATION */
-tr{
-animation: fadeIn 0.6s ease-in-out;
-}
-
-@keyframes fadeIn{
-from{opacity:0; transform:translateY(10px);}
-to{opacity:1; transform:translateY(0);}
-}
-
-/* HOVER EFFECT */
-tr:hover{
-background:#1e293b;
-transform:scale(1.01);
-transition:0.2s;
-}
-
-/* CP COLORS */
-.net{
-color:#22c55e;
-font-weight:bold;
-text-shadow:0 0 8px #22c55e;
-}
-
-.low{
-color:#ff4d4d;
-}
-
-/* ================= BUTTON ================= */
-button{
-padding:5px 10px;
-border:none;
-border-radius:6px;
-background:linear-gradient(45deg,#00f0ff,#22c55e);
-color:black;
-font-weight:bold;
-cursor:pointer;
-box-shadow:0 0 10px #00f0ff;
-transition:0.3s;
-font-size:11px;
-}
-
-button:hover{
-transform:scale(1.05);
-box-shadow:0 0 18px #22c55e;
-}
-
-button:disabled{
-background:gray;
-box-shadow:none;
-cursor:not-allowed;
-}
-
-/* ================= POPUP ================= */
-.popup{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.75);
-display:flex;
-align-items:center;
-justify-content:center;
-visibility:hidden;
-}
-
-.popup-content{
-background:#0f172a;
-padding:20px;
-border-radius:12px;
-text-align:center;
-box-shadow:0 0 25px #00f0ff;
-width:80%;
-max-width:300px;
-}
-
-.popup-content h2{
-color:#00f0ff;
-}
-
-.close-btn{
-margin-top:10px;
-}
-
-/* ================= MOBILE ================= */
-@media(max-width:768px){
-
-th,td{
-font-size:10px;
-padding:6px;
-}
-
-h1{
-font-size:18px;
-}
-
-}
-
 </style>
-
 </head>
 
 <body>
 
+<!-- ORBS -->
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<!-- LOADING -->
+<div id="loading">
+  <div class="loader-ring"></div>
+  <div class="loader-text">LOADING CP DATA...</div>
+</div>
+
+<!-- TOPBAR -->
 <a href="https://goatfcbd.com" class="topbar">
-
-<div class="topbar-left">
-
-<img src="https://i.imgur.com/LY3Bb9m.png" class="topbar-logo">
-
-<div class="topbar-text">
-GOAT FC
-</div>
-
-</div>
-
-<div class="topbar-right">
-<i class="fa-solid fa-house"></i>
-</div>
-
+  <div class="top-left">
+    <img src="https://i.imgur.com/LY3Bb9m.png" class="top-logo" alt="GOAT FC">
+    <div class="top-title">GOAT FC</div>
+  </div>
+  <div class="home-btn">
+    <i class="fa-solid fa-house"></i>
+  </div>
+  <div class="topbar-glow"></div>
 </a>
 
-<h1>GOAT FC CP LEADERBOARD</h1>
-
-<div class="desc">
-🔥 Welcome to GOAT FC CP System — Track your Tournament performance, Earn CP, Manage bids, and Withdraw rewards instantly. Only the strongest rise to the top leaderboard.
+<!-- HEADER -->
+<div class="header">
+  <div class="header-badge">
+    <i class="fa-solid fa-coins" style="font-size:19px;"></i>
+    CP SYSTEM
+  </div>
+  <div class="header-desc">
+    <i class="fa-solid fa-fire" style="color:var(--gold); margin-right:5px;"></i>
+    Earn CP &bull; Manage Bids &bull; Claim Rewards &bull; Only the strongest rise
+  </div>
 </div>
 
-<table id="table">
-<tr>
-<th>Club ID</th>
-<th>Base</th>
-<th>Tour</th>
-<th>Bonus</th>
-<th>Bid+</th>
-<th>Sell</th>
-<th>Bid-</th>
-<th>NetCP</th>
-<th>Action</th>
-</tr>
-</table>
+<!-- TABLE -->
+<div class="wrap">
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align:left">Club ID</th>
+          <th>Base</th>
+          <th>Tour</th>
+          <th>Bonus</th>
+          <th>Bid+</th>
+          <th>Sell</th>
+          <th>Bid-</th>
+          <th>Net CP</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="powered-by"><i class="fa-solid fa-bolt" style="margin-right:5px;"></i>POWERED BY GOAT FC</div>
 
 <!-- POPUP -->
 <div class="popup" id="popup">
-<div class="popup-content">
-<h2>Withdraw Sent ✅</h2>
-<p>Email: goatfcbd@gmail.com</p>
-<p>WhatsApp: +8801521253995</p>
-<button onclick="closePopup()">Close</button>
-</div>
+  <div class="popup-content">
+    <div class="popup-icon">✅</div>
+    <h2>Withdraw Request Sent!</h2>
+    <p>Your request has been submitted.</p>
+    <div class="popup-contact">
+      <div><i class="fa-solid fa-envelope" style="color:var(--gold); margin-right:6px;"></i>goatfcbd@gmail.com</div>
+      <div><i class="fa-brands fa-whatsapp" style="color:var(--green); margin-right:6px;"></i>+8801521253995</div>
+    </div>
+    <button class="popup-close" onclick="closePopup()">Close</button>
+  </div>
 </div>
 
 <script>
+const DATA_URL = "https://opensheet.elk.sh/1DSPKPaU1ZQYbFM4iYbE1VXgDAXU-FCT7--QhYJsNf1M/CP_System";
 
-const url = "https://opensheet.elk.sh/1DSPKPaU1ZQYbFM4iYbE1VXgDAXU-FCT7--QhYJsNf1M/CP_System";
+function rowClass(i){
+  if(i===0) return 'row-rank1';
+  if(i===1) return 'row-rank2';
+  if(i===2) return 'row-rank3';
+  if(i<10)  return 'row-top';
+  return '';
+}
 
-fetch(url)
-.then(res=>res.json())
-.then(data=>{
+async function loadData(){
+  try {
+    const data = await fetch(DATA_URL).then(r=>r.json());
 
-// 🔥 SORT BY NET CP (DESC)
-data.sort((a,b)=>(parseInt(b["Net CP"])||0)-(parseInt(a["Net CP"])||0));
+    // Sort by Net CP descending
+    data.sort((a,b)=>(parseInt(b["Net CP"])||0)-(parseInt(a["Net CP"])||0));
 
-let table = document.getElementById("table");
+    const tbody = document.getElementById("table-body");
+    tbody.innerHTML = "";
 
-data.forEach(club=>{
+    if(!data.length){
+      tbody.innerHTML=`<tr class="empty-row"><td colspan="9"><i class="fa-solid fa-coins" style="opacity:0.3; margin-right:8px;"></i>No data available</td></tr>`;
+      return;
+    }
 
-let net = parseInt(club["Net CP"])||0;
+    data.forEach((club, i)=>{
+      const net     = parseInt(club["Net CP"])||0;
+      const base    = club["Base CP"]||0;
+      const tour    = club["Tournamnet CP"]||0;
+      const bonus   = club["Bonus CP"]||0;
+      const earn    = club["Earn By Bid"]||0;
+      const sell    = club["Sell CP"]||0;
+      const deduct  = club["Deduct By Bid"]||0;
+      const clubId  = club["Player Club ID"]||"—";
 
-let btn = (net>=1000)
-? `<button onclick="withdraw('${club["Player Club ID"]}')">Claim</button>`
-: `<button disabled>Locked</button>`;
+      const netCls  = net>=0 ? 'val-net-pos' : 'val-net-neg';
+      const netSign = '';
 
-table.innerHTML += `
-<tr>
-<td>${club["Player Club ID"]}</td>
-<td>${club["Base CP"]||0}</td>
-<td>${club["Tournamnet CP"]||0}</td>
-<td>${club["Bonus CP"]||0}</td>
-<td>${club["Earn By Bid"]||0}</td>
-<td>${club["Sell CP"]||0}</td>
-<td>${club["Deduct By Bid"]||0}</td>
-<td class="${net<0?'low':'net'}">${net}</td>
-<td>${btn}</td>
-</tr>
-`;
+      const actionBtn = (net>=1000)
+        ? `<button class="btn-claim" onclick="withdraw('${clubId}')"><i class="fa-solid fa-coins"></i> Claim</button>`
+        : `<button class="btn-locked" disabled><i class="fa-solid fa-lock"></i> Locked</button>`;
 
-});
+      const tr = document.createElement("tr");
+      tr.className = rowClass(i);
+      tr.style.animationDelay = `${i*0.04}s`;
+      tr.innerHTML = `
+        <td><div class="player-name">${clubId}</div></td>
+        <td><span class="val-base">${base}</span></td>
+        <td><span class="val-tour">${tour}</span></td>
+        <td><span class="val-bonus">${bonus}</span></td>
+        <td><span class="val-earn">${earn}</span></td>
+        <td><span class="val-sell">${sell}</span></td>
+        <td><span class="val-deduct">${deduct}</span></td>
+        <td><span class="${netCls}">${netSign}${net}</span></td>
+        <td>${actionBtn}</td>
+      `;
+      tbody.appendChild(tr);
+    });
 
-});
+  } catch(e){
+    document.getElementById("table-body").innerHTML=
+      `<tr class="empty-row"><td colspan="9">Failed to load data. Please refresh.</td></tr>`;
+  } finally {
+    document.getElementById("loading").style.display="none";
+  }
+}
 
-// ================= WITHDRAW =================
 function withdraw(id){
-
-let email="goatfcbd@gmail.com";
-let subject="GOAT FC CP Withdraw Request";
-let body=`Club ID: ${id} requesting 1000 CP withdraw`;
-
-window.location.href=`mailto:${email}?subject=${subject}&body=${body}`;
-
-document.getElementById("popup").style.visibility="visible";
+  const email   = "goatfcbd@gmail.com";
+  const subject = "GOAT FC CP Withdraw Request";
+  const body    = `Club ID: ${id} requesting 1000 CP withdraw`;
+  window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  document.getElementById("popup").style.visibility="visible";
 }
 
-// CLOSE POPUP
 function closePopup(){
-document.getElementById("popup").style.visibility="hidden";
+  document.getElementById("popup").style.visibility="hidden";
 }
 
+loadData();
 </script>
 
 </body>
