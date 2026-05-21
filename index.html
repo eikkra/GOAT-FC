@@ -230,57 +230,75 @@ text-shadow:0 0 10px rgba(0,240,255,0.6),0 0 22px rgba(0,240,255,0.2);
 .slide-overlay{position:absolute;inset:0;background:linear-gradient(0deg,rgba(6,6,16,0.92) 0%,rgba(6,6,16,0.3) 55%,rgba(6,6,16,0.05) 100%);}
 .slide-grid{position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(0,240,255,0.025) 39px,rgba(0,240,255,0.025) 40px),repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(0,240,255,0.012) 39px,rgba(0,240,255,0.012) 40px);}
 .slide-content{position:absolute;bottom:22px;left:0;right:0;text-align:center;padding:0 20px;z-index:5;}
-/* Slide title — soft warm white, elegant & readable */
+/* Slide title — neon cyan glow */
+@keyframes titleNeon{
+0%,100%{text-shadow:0 0 8px #00f0ff,0 0 20px rgba(0,240,255,0.5),0 0 40px rgba(0,240,255,0.2),0 2px 6px rgba(0,0,0,0.7);}
+50%{text-shadow:0 0 12px #00f0ff,0 0 30px rgba(0,240,255,0.7),0 0 60px rgba(191,0,255,0.25),0 2px 6px rgba(0,0,0,0.7);}
+}
 .slide-content h1{
 font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;letter-spacing:3px;
-color:#e8f4ff;
-text-shadow:0 0 20px rgba(180,220,255,0.5),0 2px 8px rgba(0,0,0,0.6);
+color:#c8f5ff;
+animation:titleNeon 2.5s ease-in-out infinite;
 margin-bottom:6px;
 }
 .slide-content p{font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:rgba(238,240,255,0.65);margin-bottom:12px;text-transform:uppercase;}
 
-/* ── GLASSMORPHISM BUTTON ── */
+/* ── NEON GLASS BUTTON ── */
+@keyframes btnNeonPulse{
+0%,100%{box-shadow:0 0 10px rgba(0,240,255,0.25),0 0 22px rgba(0,240,255,0.1),inset 0 1px 0 rgba(255,255,255,0.1);}
+50%{box-shadow:0 0 18px rgba(0,240,255,0.45),0 0 40px rgba(191,0,255,0.15),inset 0 1px 0 rgba(255,255,255,0.15);}
+}
+@keyframes btnShineSweep{
+0%{left:-80%;}
+100%{left:130%;}
+}
 .slide-btn{
 display:inline-flex;align-items:center;gap:8px;
-padding:9px 24px;
+padding:9px 26px;
 font-family:'Exo 2',sans-serif;font-size:10px;font-weight:900;letter-spacing:2.5px;
 text-transform:uppercase;text-decoration:none;
-color:rgba(220,240,255,0.95);
-/* Glass effect */
-background:rgba(255,255,255,0.03);
-backdrop-filter:blur(12px);
--webkit-backdrop-filter:blur(12px);
-border:1px solid rgba(255,255,255,0.08);
-border-radius:6px;
-box-shadow:
-  0 4px 24px rgba(0,240,255,0.15),
-  0 1px 0 rgba(255,255,255,0.12) inset,
-  0 -1px 0 rgba(0,0,0,0.2) inset;
-transition:all .28s ease;
+color:rgba(200,245,255,0.92);
+/* Hyper-transparent glass */
+background:rgba(0,240,255,0.04);
+backdrop-filter:blur(16px);
+-webkit-backdrop-filter:blur(16px);
+border-top:1px solid rgba(0,240,255,0.45);
+border-left:1px solid rgba(0,240,255,0.2);
+border-right:1px solid rgba(0,240,255,0.2);
+border-bottom:1px solid rgba(0,240,255,0.1);
+border-radius:5px;
+animation:btnNeonPulse 2.5s ease-in-out infinite;
+transition:background .3s,color .3s,transform .25s;
 position:relative;overflow:hidden;
 }
-/* Subtle inner shine sweep */
+/* Travelling shine line */
 .slide-btn::before{
 content:"";position:absolute;
-top:0;left:-60%;
-width:50%;height:100%;
-background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);
-transform:skewX(-20deg);
-transition:left .45s ease;
+top:0;left:-80%;
+width:45%;height:100%;
+background:linear-gradient(90deg,transparent,rgba(0,240,255,0.18),rgba(255,255,255,0.08),transparent);
+transform:skewX(-18deg);
+animation:btnShineSweep 3s ease-in-out infinite;
+pointer-events:none;
 }
-.slide-btn:hover::before{left:130%;}
+/* Bottom neon edge accent */
+.slide-btn::after{
+content:"";position:absolute;
+bottom:0;left:15%;right:15%;
+height:1px;
+background:linear-gradient(90deg,transparent,rgba(0,240,255,0.8),rgba(191,0,255,0.6),rgba(0,240,255,0.8),transparent);
+border-radius:99px;
+}
 .slide-btn:hover{
-background:rgba(0,240,255,0.12);
-border-color:rgba(0,240,255,0.45);
-box-shadow:
-  0 6px 30px rgba(0,240,255,0.25),
-  0 1px 0 rgba(255,255,255,0.18) inset;
+background:rgba(0,240,255,0.1);
 color:#fff;
-transform:translateY(-1px);
+transform:translateY(-2px);
+box-shadow:0 0 24px rgba(0,240,255,0.5),0 0 50px rgba(191,0,255,0.2),inset 0 1px 0 rgba(255,255,255,0.2);
+border-top-color:rgba(0,240,255,0.7);
 }
-.slide-btn i{font-size:11px;opacity:0.8;}
+.slide-btn i{font-size:11px;opacity:0.85;}
 
-.arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(6,6,16,0.4);border:1px solid rgba(0,240,255,0.15);color:var(--neon-cyan);font-size:14px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;border-radius:4px;transition:all .2s;}
+.arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(6,6,16,0.7);border:1px solid rgba(0,240,255,0.15);color:var(--neon-cyan);font-size:14px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;border-radius:4px;transition:all .2s;}
 .arrow:hover{background:rgba(0,240,255,0.1);box-shadow:0 0 10px rgba(0,240,255,0.2);}
 .arrow.left{left:10px;}.arrow.right{right:10px;}
 
