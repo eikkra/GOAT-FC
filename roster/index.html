@@ -2,790 +2,554 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
-
-<title>PLAYER ROSTER</title>
-
-<link rel="icon"
-type="image/png"
-href="https://i.imgur.com/LY3Bb9m.png">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Rajdhani:wght@400;500;600;700&display=swap"
-rel="stylesheet">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>GOAT FC — Player Roster</title>
+<link rel="icon" type="image/png" href="https://i.imgur.com/LY3Bb9m.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-
 <style>
+:root {
+  --bg: #03040d;
+  --cyan: #00f5ff;
+  --cyan-dim: rgba(0,245,255,0.12);
+  --green: #00ff88;
+  --purple: #b56cff;
+  --yellow: #ffe033;
+  --white: #eef2ff;
+  --muted: #4a5580;
+  --text-dim: #8896cc;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
 
-:root{
---bg:#050816;
---card:#0f172a;
---cyan:#00f5ff;
---green:#00ff88;
---purple:#c084fc;
---yellow:#fbbf24;
---white:#f8fafc;
---muted:#94a3b8;
+@keyframes rgbShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes scanline {
+  0%   { transform: translateY(-100%); opacity: 0; }
+  10%  { opacity: 0.35; }
+  90%  { opacity: 0.35; }
+  100% { transform: translateY(3000%); opacity: 0; }
+}
+@keyframes borderRgb {
+  0%,100% { opacity: 0.6; background-position: 0% 50%; }
+  50%      { opacity: 1;   background-position: 100% 50%; }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes fadeUp {
+  from { opacity:0; transform: translateY(14px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+@keyframes dotBlink {
+  0%,100% { opacity:1; }
+  50%      { opacity:0.2; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes avatarPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(0,245,255,0.25); }
+  50%      { box-shadow: 0 0 0 4px rgba(0,245,255,0.08); }
 }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
+html, body {
+  background: var(--bg);
+  font-family: 'Rajdhani', sans-serif;
+  color: var(--white);
+  overflow-x: hidden;
+  min-height: 100vh;
 }
 
-body{
-background:var(--bg);
-font-family:'Rajdhani',sans-serif;
-color:var(--white);
-overflow-x:hidden;
-padding-bottom:25px;
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 10% 0%, rgba(0,245,255,0.045) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 90% 100%, rgba(181,108,255,0.045) 0%, transparent 55%);
+  z-index: 0; pointer-events: none;
+}
+body::after {
+  content: "";
+  position: fixed; inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(0,245,255,0.012) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(0,245,255,0.008) 40px);
+  z-index: 0; pointer-events: none;
 }
 
-body::before{
-content:"";
-position:fixed;
-inset:0;
-
-background:
-radial-gradient(circle at top left,#00f5ff12,transparent 25%),
-radial-gradient(circle at bottom right,#00ff8810,transparent 25%);
-
-z-index:-1;
+.scanline-anim {
+  position: fixed; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0,245,255,0.28), transparent);
+  z-index: 9999; pointer-events: none;
+  animation: scanline 7s linear infinite;
 }
 
-/* =========================
-TOPBAR
-========================= */
+/* TOPBAR */
+.topbar {
+  height: 50px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 14px;
+  background: rgba(3,4,13,0.96);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid transparent;
+  position: sticky; top: 0; z-index: 999;
+  text-decoration: none;
+  position: relative;
+}
+.topbar-line {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), var(--purple), var(--green), var(--cyan), transparent);
+  background-size: 300% 100%;
+  animation: rgbShift 4s linear infinite;
+}
+.top-left { display:flex; align-items:center; gap:9px; }
+.top-logo { width:24px; filter: drop-shadow(0 0 7px var(--cyan)); }
+.top-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px; font-weight: 800; letter-spacing: 2px;
+  background: linear-gradient(90deg, var(--cyan), #fff, var(--green), var(--cyan));
+  background-size: 300% auto;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+.home-btn {
+  width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px;
+  background: rgba(0,245,255,0.06);
+  border: 1px solid rgba(0,245,255,0.18);
+  color: var(--cyan); font-size: 12px;
+  transition: all 0.2s;
+}
+.home-btn:hover { background: rgba(0,245,255,0.13); box-shadow: 0 0 12px rgba(0,245,255,0.3); }
 
-.topbar{
-height:52px;
-
-display:flex;
-align-items:center;
-justify-content:space-between;
-
-padding:0 14px;
-
-background:rgba(5,8,22,.88);
-
-backdrop-filter:blur(10px);
-
-border-bottom:1px solid #00f5ff15;
-
-position:sticky;
-top:0;
-z-index:999;
-
-text-decoration:none;
+/* HERO */
+.hero {
+  padding: 20px 14px 16px;
+  text-align: center;
+  position: relative; z-index: 1;
+}
+.hero-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 24px; font-weight: 900; letter-spacing: 2px;
+  background: linear-gradient(90deg, var(--cyan) 0%, #fff 40%, var(--green) 80%, var(--cyan) 100%);
+  background-size: 300% auto;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+.hero-sub {
+  margin-top: 6px;
+  font-size: 9px; font-weight: 700; letter-spacing: 4px;
+  color: var(--muted); text-transform: uppercase;
 }
 
-.top-left{
-display:flex;
-align-items:center;
-gap:8px;
+/* WRAP */
+.wrap { width: min(100% - 16px, 1400px); margin: auto; position: relative; z-index: 1; }
+
+/* SEARCH + COUNT */
+.controls {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 16px;
+}
+.search-wrap { position: relative; flex: 1; }
+.search-icon {
+  position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+  color: var(--cyan); font-size: 12px; opacity: 0.55; pointer-events: none;
+}
+.search-box {
+  width: 100%; height: 38px;
+  padding: 0 14px 0 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,245,255,0.14);
+  background: rgba(8,12,26,0.85);
+  outline: none; color: white;
+  font-size: 13px; font-weight: 700;
+  font-family: 'Rajdhani', sans-serif;
+  transition: all 0.22s;
+}
+.search-box::placeholder { color: var(--muted); }
+.search-box:focus {
+  border-color: rgba(0,245,255,0.38);
+  box-shadow: 0 0 0 3px rgba(0,245,255,0.06), 0 0 16px rgba(0,245,255,0.08);
 }
 
-.top-logo{
-width:24px;
+.count-pill {
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 12px; height: 38px;
+  border-radius: 10px;
+  background: rgba(8,12,26,0.85);
+  border: 1px solid rgba(0,245,255,0.1);
+  white-space: nowrap; flex-shrink: 0;
+}
+.count-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--cyan); box-shadow: 0 0 6px var(--cyan);
+  animation: dotBlink 1.8s infinite;
+}
+.count-num {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px; font-weight: 800; color: var(--cyan);
+}
+.count-label { font-size: 9px; font-weight: 700; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
 
-filter:
-drop-shadow(0 0 6px #00f5ff);
+/* GRID */
+.players-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
 }
 
-.top-title{
-font-family:'Orbitron',sans-serif;
-font-size:10px;
-font-weight:700;
-letter-spacing:1px;
-
-background:
-linear-gradient(90deg,var(--cyan),var(--green));
-
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+/* CARD */
+.card {
+  position: relative;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #090d1f, #070a18);
+  border: 1px solid rgba(0,245,255,0.1);
+  overflow: hidden;
+  transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+  animation: fadeUp 0.35s ease both;
+}
+.card::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(0,245,255,0.025) 0%, transparent 50%, rgba(181,108,255,0.015) 100%);
+  pointer-events: none;
+}
+.card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0,245,255,0.26);
+  box-shadow: 0 10px 36px rgba(0,0,0,0.45), 0 0 20px rgba(0,245,255,0.08);
 }
 
-.home-btn{
-width:26px;
-height:26px;
+.rgb-stripe {
+  height: 2px;
+  background: linear-gradient(90deg, var(--cyan), var(--purple), var(--green), var(--yellow), var(--cyan));
+  background-size: 300% 100%;
+  animation: rgbShift 2.5s linear infinite;
+  animation-play-state: paused;
+}
+.card:hover .rgb-stripe { animation-play-state: running; }
 
-display:flex;
-align-items:center;
-justify-content:center;
+.card-inner { padding: 12px 13px 13px; }
 
-border-radius:10px;
-
-background:#111827;
-
-border:1px solid #00f5ff20;
-
-color:var(--cyan);
-
-font-size:11px;
+/* PLAYER ROW */
+.player-row {
+  display: flex; align-items: center;
+  gap: 10px; margin-bottom: 11px;
 }
 
-/* =========================
-HEADER
-========================= */
-
-.hero{
-padding:18px 12px 14px;
-text-align:center;
+.player-avatar {
+  width: 44px; height: 44px; flex-shrink: 0;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(0,245,255,0.1), rgba(181,108,255,0.07));
+  border: 1px solid rgba(0,245,255,0.18);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 15px; font-weight: 900;
+  color: var(--cyan);
+  text-shadow: 0 0 10px var(--cyan);
+  overflow: hidden;
+  animation: avatarPulse 3s ease-in-out infinite;
+  position: relative;
+}
+.player-avatar img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  border-radius: 9px;
+  display: block;
 }
 
-.hero-title{
-font-family:'Orbitron',sans-serif;
-font-size:22px;
-font-weight:800;
-letter-spacing:2px;
-
-background:
-linear-gradient(
-90deg,
-#00f5ff,
-#ffffff,
-#00ff88
-);
-
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+.player-info { flex: 1; min-width: 0; }
+.player-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px; font-weight: 800;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  color: var(--white);
+  line-height: 1.2;
 }
 
-.hero-sub{
-margin-top:7px;
-
-font-size:10px;
-font-weight:700;
-
-letter-spacing:4px;
-
-color:var(--muted);
+.club-badge {
+  display: flex; align-items: center; gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(0,245,255,0.07);
+  border: 1px solid rgba(0,245,255,0.16);
+  flex-shrink: 0;
+}
+.club-badge-icon { color: var(--cyan); font-size: 10px; }
+.club-badge-id {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px; color: var(--cyan); letter-spacing: 0.3px;
 }
 
-/* =========================
-WRAP
-========================= */
-
-.wrap{
-width:min(100% - 20px,1400px);
-margin:auto;
+/* DIVIDER */
+.card-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,245,255,0.12), transparent);
+  margin-bottom: 10px;
 }
 
-/* =========================
-SEARCH
-========================= */
+/* STATS ROW */
+.stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 9px; }
 
-.search-box{
-width:100%;
+.stat-box {
+  padding: 9px 10px;
+  border-radius: 10px;
+  background: rgba(5,8,20,0.8);
+  border: 1px solid rgba(255,255,255,0.05);
+  position: relative; overflow: hidden;
+}
+.stat-box::before {
+  content: "";
+  position: absolute; top: 0; left: 0; right: 0; height: 1px; opacity: 0.45;
+}
+.stat-box.konami::before { background: linear-gradient(90deg, transparent, var(--yellow), transparent); }
+.stat-box.device::before { background: linear-gradient(90deg, transparent, var(--purple), transparent); }
 
-height:50px;
+.stat-box-top { display: flex; align-items: center; gap: 5px; margin-bottom: 4px; }
+.stat-box-icon { font-size: 10px; }
+.stat-box.konami .stat-box-icon { color: var(--yellow); }
+.stat-box.device .stat-box-icon { color: var(--purple); }
+.stat-box-label { font-size: 8px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+.stat-box-val { font-size: 12px; font-weight: 800; word-break: break-word; line-height: 1.2; }
+.stat-box.konami .stat-box-val { color: var(--yellow); text-shadow: 0 0 8px rgba(255,224,51,0.35); }
+.stat-box.device .stat-box-val { color: var(--purple); text-shadow: 0 0 8px rgba(181,108,255,0.35); }
 
-padding:0 18px;
+/* FB */
+.fb-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  height: 40px; width: 100%;
+  border-radius: 10px;
+  text-decoration: none;
+  background: rgba(24,119,242,0.07);
+  border: 1px solid rgba(24,119,242,0.18);
+  color: #6ab0ff;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px; font-weight: 800; letter-spacing: 1.5px;
+  text-transform: uppercase;
+  transition: all 0.22s;
+  position: relative; overflow: hidden;
+}
+.fb-btn::before {
+  content: "";
+  position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(78,161,255,0.1), transparent);
+  transition: left 0.4s;
+}
+.fb-btn:hover { border-color: rgba(24,119,242,0.42); box-shadow: 0 0 14px rgba(24,119,242,0.18); color: #90c8ff; }
+.fb-btn:hover::before { left: 100%; }
 
-border-radius:18px;
+/* EMPTY */
+.empty {
+  grid-column: 1 / -1; padding: 60px 20px; text-align: center;
+}
+.empty-icon { font-size: 28px; color: var(--muted); margin-bottom: 14px; }
+.empty-text { font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 3px; color: var(--muted); }
 
-border:1px solid #00f5ff20;
+/* LOADING */
+.loading-screen {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 60px 20px; grid-column: 1/-1;
+}
+.load-ring {
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 2px solid rgba(0,245,255,0.1);
+  border-top-color: var(--cyan);
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 14px;
+}
+.load-text { font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 4px; color: var(--muted); }
 
-background:
-linear-gradient(145deg,#111827,#0f172a);
-
-outline:none;
-
-color:white;
-
-font-size:14px;
-font-weight:700;
-
-font-family:'Rajdhani',sans-serif;
-
-margin-bottom:18px;
-
-box-shadow:
-0 0 12px #00f5ff08;
+/* FOOTER */
+.footer {
+  margin-top: 24px; margin-bottom: 12px;
+  text-align: center;
+  font-size: 9px; font-weight: 700; letter-spacing: 4px;
+  color: rgba(74,85,128,0.55); text-transform: uppercase;
 }
 
-.search-box::placeholder{
-color:#94a3b8;
+/* MOBILE */
+@media (max-width: 480px) {
+  .players-grid { grid-template-columns: 1fr; gap: 10px; }
+  .hero-title { font-size: 20px; }
+  .player-name { font-size: 12px; }
+  .club-badge-id { font-size: 10px; }
 }
-
-.search-box:focus{
-
-border-color:#00f5ff55;
-
-box-shadow:
-0 0 14px #00f5ff22;
-}
-
-/* =========================
-GRID
-========================= */
-
-.players-grid{
-display:grid;
-
-grid-template-columns:
-repeat(auto-fit,minmax(350px,1fr));
-
-gap:16px;
-}
-
-/* =========================
-CARD
-========================= */
-
-.card{
-position:relative;
-
-padding:14px;
-
-border-radius:22px;
-
-background:
-linear-gradient(145deg,#111827,#0f172a);
-
-border:1px solid #00f5ff18;
-
-overflow:hidden;
-
-box-shadow:
-0 0 18px #000;
-
-transition:.25s;
-}
-
-.card::before{
-content:"";
-
-position:absolute;
-
-inset:4px;
-
-border-radius:18px;
-
-border:1px solid #00f5ff10;
-
-pointer-events:none;
-}
-
-.card:hover{
-transform:translateY(-4px);
-
-border-color:#00f5ff30;
-
-box-shadow:
-0 0 18px #00f5ff15;
-}
-
-/* =========================
-TOP ROW
-========================= */
-
-.top-row{
-display:flex;
-align-items:center;
-justify-content:space-between;
-
-gap:10px;
-
-padding:12px;
-
-border-radius:16px;
-
-background:
-linear-gradient(145deg,#0b1220,#0f172a);
-
-border:1px solid #ffffff10;
-}
-
-/* NAME */
-
-.player-name{
-font-size:20px;
-font-weight:800;
-
-line-height:1.2;
-
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis;
-}
-
-/* CLUB ID */
-
-.club-id{
-display:flex;
-align-items:center;
-justify-content:center;
-gap:6px;
-
-padding:10px 14px;
-
-border-radius:999px;
-
-background:#00f5ff10;
-
-border:1px solid #00f5ff20;
-
-color:var(--cyan);
-
-font-size:11px;
-font-weight:800;
-
-white-space:nowrap;
-}
-
-/* =========================
-MIDDLE ROW
-========================= */
-
-.info-grid{
-display:grid;
-
-grid-template-columns:
-1fr 1fr;
-
-gap:12px;
-
-margin-top:12px;
-}
-
-.info-box{
-padding:12px;
-
-border-radius:16px;
-
-background:
-linear-gradient(145deg,#0b1220,#0f172a);
-
-border:1px solid #ffffff10;
-}
-
-.info-label{
-font-size:9px;
-font-weight:700;
-
-letter-spacing:2px;
-
-color:var(--muted);
-
-margin-bottom:6px;
-}
-
-.info-value{
-font-size:14px;
-font-weight:800;
-
-word-break:break-word;
-}
-
-/* COLORS */
-
-.konami{
-color:var(--yellow);
-}
-
-.device{
-color:var(--purple);
-}
-
-/* =========================
-FACEBOOK ROW
-========================= */
-
-.fb-btn{
-margin-top:12px;
-
-width:100%;
-
-height:48px;
-
-border-radius:16px;
-
-display:flex;
-align-items:center;
-justify-content:center;
-gap:10px;
-
-text-decoration:none;
-
-background:
-linear-gradient(145deg,#111827,#0f172a);
-
-border:1px solid #1877f220;
-
-color:#4ea1ff;
-
-font-size:13px;
-font-weight:800;
-
-transition:.25s;
-}
-
-.fb-btn:hover{
-border-color:#1877f255;
-
-box-shadow:
-0 0 12px #1877f220;
-}
-
-/* =========================
-EMPTY
-========================= */
-
-.empty{
-padding:50px 10px;
-
-text-align:center;
-
-font-size:16px;
-font-weight:700;
-
-color:var(--muted);
-}
-
-/* =========================
-FOOTER
-========================= */
-
-.footer{
-margin-top:22px;
-
-text-align:center;
-
-font-size:10px;
-font-weight:700;
-
-letter-spacing:3px;
-
-color:#64748b;
-}
-
-/* =========================
-TABLET
-========================= */
-
-@media(max-width:900px){
-
-.players-grid{
-
-grid-template-columns:
-repeat(2,1fr);
-
-}
-
-.player-name{
-font-size:18px;
-}
-
-}
-
-/* =========================
-MOBILE
-========================= */
-
-@media(max-width:768px){
-
-.wrap{
-width:min(100% - 10px,480px);
-}
-
-.players-grid{
-
-grid-template-columns:
-1fr;
-
-gap:12px;
-}
-
-.hero-title{
-font-size:17px;
-}
-
-.hero-sub{
-font-size:8px;
-letter-spacing:3px;
-}
-
-.search-box{
-height:42px;
-font-size:12px;
-}
-
-.card{
-padding:12px;
-}
-
-.top-row{
-padding:10px;
-}
-
-.player-name{
-font-size:14px;
-}
-
-.club-id{
-font-size:8px;
-padding:6px 9px;
-}
-
-.info-grid{
-gap:8px;
-}
-
-.info-box{
-padding:10px;
-}
-
-.info-value{
-font-size:11px;
-}
-
-.fb-btn{
-height:40px;
-font-size:11px;
-}
-
-}
-
 </style>
 </head>
-
 <body>
 
-<!-- TOPBAR -->
+<div class="scanline-anim"></div>
 
-<a href="https://goatfcbd.com"
-class="topbar">
-
-<div class="top-left">
-
-<img src="https://i.imgur.com/LY3Bb9m.png"
-class="top-logo">
-
-<div class="top-title">
-GOAT FC
-</div>
-
-</div>
-
-<div class="home-btn">
-<i class="fa-solid fa-house"></i>
-</div>
-
+<a href="https://goatfcbd.com" class="topbar">
+  <div class="top-left">
+    <img src="https://i.imgur.com/LY3Bb9m.png" class="top-logo" alt="GOAT FC">
+    <div class="top-title">GOAT FC</div>
+  </div>
+  <div class="home-btn"><i class="fa-solid fa-house"></i></div>
+  <div class="topbar-line"></div>
 </a>
 
-<!-- HERO -->
-
 <div class="hero">
-
-<div class="hero-title">
-PLAYER ROSTER
+  <div class="hero-title">PLAYER ROSTER</div>
+  <div class="hero-sub">CLUB ID · KONAMI ID · DEVICE · FACEBOOK</div>
 </div>
-
-<div class="hero-sub">
-SEARCH CLUB ID & VIEW PLAYER DETAILS
-</div>
-
-</div>
-
-<!-- WRAP -->
 
 <div class="wrap">
 
-<input
-type="text"
-id="searchInput"
-class="search-box"
-placeholder="Search By Club ID...">
+  <div class="controls">
+    <div class="search-wrap">
+      <i class="fa-solid fa-crosshairs search-icon"></i>
+      <input type="text" id="searchInput" class="search-box" placeholder="Search by Club ID or Name...">
+    </div>
+    <div class="count-pill">
+      <span class="count-dot"></span>
+      <span class="count-num" id="totalCount">0</span>
+      <span class="count-label">Players</span>
+    </div>
+  </div>
 
-<div id="players"
-class="players-grid">
+  <div id="players" class="players-grid">
+    <div class="loading-screen">
+      <div class="load-ring"></div>
+      <div class="load-text">LOADING SQUAD DATA...</div>
+    </div>
+  </div>
 
-</div>
-
-<div class="footer">
-POWERED BY GOAT FC
-</div>
+  <div class="footer">⬡ POWERED BY GOAT FC ⬡</div>
 
 </div>
 
 <script>
+const ROSTER_CSV  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRxNxMgcwsp3k8B9jqnfObnnRfhSX3vUcEOuaPTsyEMaEVOZKE9OIcLiMQRJHHkAQiJWn-msKE6Cs80/pub?output=csv";
+const MEMBERS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=133947099&single=true&output=csv";
 
-const csvURL =
-"https://docs.google.com/spreadsheets/d/e/2PACX-1vRxNxMgcwsp3k8B9jqnfObnnRfhSX3vUcEOuaPTsyEMaEVOZKE9OIcLiMQRJHHkAQiJWn-msKE6Cs80/pub?output=csv";
+let allPlayers = [];
+let picMap = {};
 
-let players=[];
-
-/* NORMALIZE */
-
-function normalize(str){
-
-return (str || "")
-.toLowerCase()
-.replace(/[^a-z0-9]/g,"");
-
+function normalize(str) {
+  return (str || "").toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
-/* LOAD */
-
-function loadData(){
-
-Papa.parse(csvURL,{
-
-download:true,
-
-header:true,
-
-skipEmptyLines:true,
-
-complete:function(res){
-
-players=res.data;
-
-render(players);
-
+function initials(name) {
+  return (name || "??").split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase();
 }
 
+function parseCsv(url) {
+  return new Promise(resolve => {
+    Papa.parse(url, {
+      download: true, header: true, skipEmptyLines: true,
+      complete: r => resolve(r.data),
+      error: () => resolve([])
+    });
+  });
+}
+
+async function loadData() {
+  const [roster, members] = await Promise.all([
+    parseCsv(ROSTER_CSV),
+    parseCsv(MEMBERS_CSV)
+  ]);
+
+  picMap = {};
+  members.forEach(m => {
+    const id  = normalize(m["Club ID Number"] || "");
+    const pic = (m["Profile Picture (For Web)"] || "").trim();
+    if (id && pic) picMap[id] = pic;
+  });
+
+  allPlayers = roster;
+  document.getElementById("totalCount").textContent = allPlayers.length;
+
+  const q = normalize(document.getElementById("searchInput").value);
+  render(q ? allPlayers.filter(p =>
+    normalize(p["Your Club ID"]).includes(q) ||
+    normalize(p["Player Name"]).includes(q)
+  ) : allPlayers);
+}
+
+function render(data) {
+  const wrap = document.getElementById("players");
+
+  if (data.length === 0) {
+    wrap.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon"><i class="fa-solid fa-satellite-dish"></i></div>
+        <div class="empty-text">No Signal — Player Not Found</div>
+      </div>`;
+    return;
+  }
+
+  wrap.innerHTML = data.map((p, i) => {
+    const name   = p["Player Name"] || "Unknown";
+    const clubId = p["Your Club ID"] || "N/A";
+    const konami = p["KONAMI ID"] || "N/A";
+    const device = p["DEVICE NAME"] || "N/A";
+    const fbUrl  = p["Facebook URL"] || "#";
+
+    const picKey = normalize(clubId);
+    const picUrl = picMap[picKey] || "";
+
+    const avatarInner = picUrl
+      ? `<img src="${picUrl}" alt="${name}" onerror="this.parentNode.innerHTML='${initials(name)}'">`
+      : initials(name);
+
+    return `
+    <div class="card" style="animation-delay:${Math.min(i,14)*0.04}s">
+      <div class="rgb-stripe"></div>
+      <div class="card-inner">
+        <div class="player-row">
+          <div class="player-avatar">${avatarInner}</div>
+          <div class="player-info">
+            <div class="player-name">${name}</div>
+          </div>
+          <div class="club-badge">
+            <i class="fa-solid fa-shield-halved club-badge-icon"></i>
+            <span class="club-badge-id">${clubId}</span>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="stats-row">
+          <div class="stat-box konami">
+            <div class="stat-box-top">
+              <i class="fa-solid fa-gamepad stat-box-icon"></i>
+              <span class="stat-box-label">Konami ID</span>
+            </div>
+            <div class="stat-box-val">${konami}</div>
+          </div>
+          <div class="stat-box device">
+            <div class="stat-box-top">
+              <i class="fa-solid fa-mobile-screen stat-box-icon"></i>
+              <span class="stat-box-label">Device</span>
+            </div>
+            <div class="stat-box-val">${device}</div>
+          </div>
+        </div>
+        <a href="${fbUrl}" target="_blank" class="fb-btn">
+          <i class="fa-brands fa-facebook-f"></i>
+          VISIT FACEBOOK
+        </a>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+document.getElementById("searchInput").addEventListener("input", function() {
+  const val = normalize(this.value);
+  if (!val) { render(allPlayers); return; }
+  render(allPlayers.filter(p =>
+    normalize(p["Your Club ID"]).includes(val) ||
+    normalize(p["Player Name"]).includes(val)
+  ));
 });
-
-}
-
-/* RENDER */
-
-function render(data){
-
-const wrap =
-document.getElementById("players");
-
-wrap.innerHTML="";
-
-if(data.length===0){
-
-wrap.innerHTML=`
-
-<div class="empty">
-<i class="fa-solid fa-magnifying-glass"></i>
-<br><br>
-No Player Found
-</div>
-
-`;
-
-return;
-
-}
-
-data.forEach(p=>{
-
-wrap.innerHTML += `
-
-<div class="card">
-
-<!-- ROW 1 -->
-
-<div class="top-row">
-
-<div class="player-name">
-${p["Player Name"] || "Unknown"}
-</div>
-
-<div class="club-id">
-
-<i class="fa-solid fa-shield-halved"></i>
-
-${p["Your Club ID"] || "N/A"}
-
-</div>
-
-</div>
-
-<!-- ROW 2 -->
-
-<div class="info-grid">
-
-<div class="info-box">
-
-<div class="info-label">
-KONAMI ID
-</div>
-
-<div class="info-value konami">
-${p["KONAMI ID"] || "N/A"}
-</div>
-
-</div>
-
-<div class="info-box">
-
-<div class="info-label">
-DEVICE
-</div>
-
-<div class="info-value device">
-${p["DEVICE NAME"] || "N/A"}
-</div>
-
-</div>
-
-</div>
-
-<!-- ROW 3 -->
-
-<a href="${p["Facebook URL"] || "#"}"
-target="_blank"
-class="fb-btn">
-
-<i class="fa-brands fa-facebook-f"></i>
-
-VISIT FACEBOOK
-
-</a>
-
-</div>
-
-`;
-
-});
-
-}
-
-/* SEARCH */
-
-document
-.getElementById("searchInput")
-
-.addEventListener("input",function(){
-
-const val =
-normalize(this.value);
-
-const filtered =
-players.filter(p=>{
-
-let club =
-normalize(p["Your Club ID"]);
-
-return club.includes(val);
-
-});
-
-render(filtered);
-
-});
-
-/* LOAD */
 
 loadData();
-
-setInterval(loadData,30000);
-
+setInterval(loadData, 120000);
 </script>
-
 </body>
 </html>
