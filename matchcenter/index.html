@@ -40,10 +40,6 @@
   0%,100%{box-shadow:0 0 8px rgba(0,240,255,0.3),inset 0 0 8px rgba(0,240,255,0.05);}
   50%{box-shadow:0 0 16px rgba(0,240,255,0.5),inset 0 0 12px rgba(0,240,255,0.08);}
 }
-@keyframes activeDot{
-  0%,100%{opacity:1;transform:scale(1);}
-  50%{opacity:0.5;transform:scale(1.5);}
-}
 @keyframes iframeReveal{
   from{opacity:0;}
   to{opacity:1;}
@@ -133,19 +129,6 @@ body::after{
   font-size:13px;font-weight:900;letter-spacing:3px;
   background:linear-gradient(90deg,var(--neon-cyan),var(--neon-purple));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-
-/* Match Center badge */
-.header-badge{
-  font-family:'Exo 2',sans-serif;
-  font-size:8px;font-weight:800;letter-spacing:2px;
-  color:rgba(0,240,255,0.7);
-  text-transform:uppercase;
-  padding:3px 8px;
-  border:1px solid rgba(0,240,255,0.2);
-  border-radius:3px;
-  background:rgba(0,240,255,0.04);
-  white-space:nowrap;
 }
 
 /* Home icon */
@@ -265,7 +248,6 @@ iframe{
   background:transparent;
   transition:all .22s ease;
   overflow:hidden;
-  /* Ripple origin */
   -webkit-tap-highlight-color:transparent;
 }
 .nav-tab-icon{
@@ -297,17 +279,6 @@ iframe{
   color:rgba(0,240,255,0.85);
   text-shadow:0 0 8px rgba(0,240,255,0.4);
 }
-/* Active dot indicator */
-.nav-tab.active::after{
-  content:"";
-  position:absolute;
-  bottom:3px;
-  width:4px;height:4px;
-  border-radius:50%;
-  background:var(--neon-cyan);
-  box-shadow:0 0 6px var(--neon-cyan);
-  animation:activeDot 1.5s ease-in-out infinite;
-}
 
 /* Hover */
 .nav-tab:hover .nav-tab-icon{
@@ -338,13 +309,11 @@ iframe{
   :root{--header-h:44px;--footer-h:52px;}
   .header-logo-text{font-size:11px;letter-spacing:2px;}
   .header-logo img{height:22px;}
-  .header-badge{font-size:7px;padding:2px 6px;letter-spacing:1.5px;}
   .nav-tab{padding:5px 6px;max-width:62px;}
   .nav-tab-icon{font-size:14px;}
   .nav-tab-label{font-size:7px;}
 }
 @media(max-width:360px){
-  .header-badge{display:none;}
   .nav-tab-label{font-size:6.5px;letter-spacing:0.5px;}
 }
 </style>
@@ -357,8 +326,6 @@ iframe{
     <img src="https://i.imgur.com/LY3Bb9m.png" alt="GOAT FC">
     <span class="header-logo-text">GOAT FC</span>
   </a>
-
-  <div class="header-badge">Match Center</div>
 
   <a href="https://goatfcbd.com" class="header-home" title="Home">
     <i class="fa-solid fa-house"></i>
@@ -416,7 +383,6 @@ iframe{
 
 <script>
 /* ── CONFIG ── */
-/* Links are hardcoded below; sheet still loads main_link for the iframe default */
 const SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS3VQ-e6O8uHjlq8Lsdp5j0vxxOMZH1O17Nbo1ISGXDU_EFsuBEXNWydPbuhJ46lnxqJmevXaN2xPiL/pub?gid=368635247&single=true&output=csv";
 
 /* Parse CSV key/value */
@@ -432,19 +398,16 @@ function parseKV(csv) {
   return obj;
 }
 
-/* Load sheet config — only use main_link from sheet; all nav links are hardcoded */
+/* Load sheet config */
 fetch(SHEET_CSV)
   .then(r => r.text())
   .then(csv => {
     const cfg = parseKV(csv);
-    /* If sheet has a main_link, use it; else default to score form */
     const defaultSrc = cfg.main_link || cfg.score_link || 'https://forms.gle/Ye9pfHMbs35AqQnW6';
     document.getElementById('mainFrame').src = defaultSrc;
-    /* Also update score tab href if sheet provides it */
     if(cfg.score_link) document.getElementById('tab-score').dataset.src = cfg.score_link;
   })
   .catch(() => {
-    /* Fallback: load score form directly */
     document.getElementById('mainFrame').src = 'https://forms.gle/Ye9pfHMbs35AqQnW6';
   });
 
@@ -455,21 +418,18 @@ function hideLoader() {
   setTimeout(() => loader.style.display = 'none', 500);
 }
 
-/* ── LOAD FRAME (for tabs that open inside iframe) ── */
+/* ── LOAD FRAME ── */
 function loadFrame(e, tabId) {
   e.preventDefault();
   const tab = document.getElementById('tab-' + tabId);
   const src = tab.dataset.src || tab.href;
   if(!src || src === '#') return;
 
-  /* Show loader */
   const loader = document.getElementById('iframeLoader');
   loader.style.display = 'flex';
   loader.classList.remove('hidden');
 
   document.getElementById('mainFrame').src = src;
-
-  /* Set active */
   setActive('tab-' + tabId);
 }
 
@@ -480,7 +440,7 @@ function setActive(id) {
   if(el) el.classList.add('active');
 }
 
-/* ── RIPPLE on touch/click ── */
+/* ── RIPPLE ── */
 document.querySelectorAll('.nav-tab').forEach(tab => {
   function fireRipple(e) {
     const rip = tab.querySelector('.nav-ripple');
