@@ -185,28 +185,21 @@ tbody tr:hover{background:rgba(0,245,255,.05)}
 .card-photo-wrap{
   position:relative;
   width:100%;
-  height:230px;
+  height:220px;
   overflow:hidden;
   background:#060e1f;
-  flex-shrink:0;
 }
-/* soft bottom fade — no black band */
 .card-photo-wrap::after{
   content:'';
-  position:absolute;bottom:0;left:0;right:0;
-  height:55px;
-  background:linear-gradient(to bottom,rgba(6,14,31,0) 0%,rgba(6,14,31,0.85) 100%);
+  position:absolute;bottom:0;left:0;right:0;height:70px;
+  background:linear-gradient(transparent,#060e1f);
   pointer-events:none;
-  z-index:1;
 }
 .card-photo{
-  position:absolute;
-  top:0;left:0;
   width:100%;height:100%;
   object-fit:cover;
-  object-position:center top;
+  object-position:center 20%;
   display:block;
-  transition:opacity .3s;
 }
 .card-photo-placeholder{
   width:100%;height:100%;
@@ -239,16 +232,16 @@ tbody tr:hover{background:rgba(0,245,255,.05)}
 }
 .card-name{
   font-family:var(--font-head);
-  font-size:15px;font-weight:700;letter-spacing:1.5px;
+  font-size:16px;font-weight:700;letter-spacing:2px;
   color:#fff;
   text-shadow:0 0 20px rgba(0,245,255,.3);
   margin-bottom:2px;
 }
 .card-club-id{
   font-family:var(--font-head);
-  font-size:8.5px;letter-spacing:2px;
+  font-size:9px;letter-spacing:2px;
   color:rgba(0,245,255,.55);
-  margin-bottom:12px;
+  margin-bottom:14px;
 }
 
 /* Divider */
@@ -266,24 +259,21 @@ tbody tr:hover{background:rgba(0,245,255,.05)}
   padding:0 10px;
 }
 .cs{
-  background:rgba(0,245,255,.06);
-  border:1px solid rgba(0,245,255,.13);
-  border-radius:8px;
-  padding:10px 4px 8px;
-  display:flex;flex-direction:column;align-items:center;gap:3px;
+  background:rgba(0,245,255,.05);
+  border:1px solid rgba(0,245,255,.1);
+  border-radius:6px;
+  padding:8px 4px;
+  display:flex;flex-direction:column;align-items:center;gap:2px;
 }
 .cs-val{
   font-family:var(--font-head);
-  font-size:16px;font-weight:900;
+  font-size:13px;font-weight:700;
   color:#fff;
-  line-height:1;
-  letter-spacing:0;
 }
 .cs-lbl{
   font-family:var(--font-head);
-  font-size:6.5px;letter-spacing:1px;
-  color:rgba(0,245,255,.6);
-  font-weight:700;
+  font-size:7px;letter-spacing:1px;
+  color:rgba(0,245,255,.55);
 }
 
 /* Card footer brand */
@@ -490,35 +480,12 @@ function openCard(id){
   // photo
   const img=document.getElementById("card-img");
   const ph=document.getElementById("card-ph");
-  img.style.opacity="0";
-  img.style.display="block";
-  ph.style.display="none";
-
+  img.style.display="block"; ph.style.display="none";
   if(info.pic){
-    img.crossOrigin="anonymous";
-    img.onload=function(){
-      // Smart vertical position: tall images → show top 40%, wide/square → center
-      const ratio=img.naturalWidth/img.naturalHeight;
-      if(ratio<0.85){
-        // portrait — face likely in top 35%
-        img.style.objectPosition="center 15%";
-      } else if(ratio>1.2){
-        // landscape — center
-        img.style.objectPosition="center center";
-      } else {
-        // square-ish
-        img.style.objectPosition="center 20%";
-      }
-      img.style.opacity="1";
-    };
-    img.onerror=function(){
-      img.style.display="none";
-      ph.style.display="flex";
-    };
     img.src=info.pic;
+    img.crossOrigin="anonymous";
   } else {
-    img.style.display="none";
-    ph.style.display="flex";
+    img.style.display="none"; ph.style.display="flex";
   }
 
   // rank badge
@@ -550,7 +517,7 @@ function closeModal(e){
 // Keyboard ESC
 document.addEventListener("keydown",e=>{if(e.key==="Escape") closeModalDirect();});
 
-// Download card — captures exactly what is shown on screen
+// Download card
 document.getElementById("dl-btn").addEventListener("click",function(){
   const dlBtn=document.getElementById("dl-btn");
   const closeBtn=document.querySelector(".close-btn");
@@ -559,51 +526,42 @@ document.getElementById("dl-btn").addEventListener("click",function(){
 
   const target=document.getElementById("card-capture");
   const SCALE=2;
-  const RADIUS=16; // border-radius px
+  const RADIUS=16*SCALE;
 
-  // Wait a frame so display:none buttons are flushed
-  requestAnimationFrame(()=>{
-    html2canvas(target,{
-      backgroundColor:"#060e1f",
-      scale:SCALE,
-      useCORS:true,
-      allowTaint:true,
-      logging:false,
-      removeContainer:true,
-      width:target.offsetWidth,
-      height:target.offsetHeight
-    }).then(canvas=>{
-      dlBtn.style.display="";
-      closeBtn.style.display="";
+  html2canvas(target,{
+    backgroundColor:"#060e1f",
+    scale:SCALE,
+    useCORS:true,
+    allowTaint:true,
+    logging:false,
+    removeContainer:true
+  }).then(canvas=>{
+    dlBtn.style.display="";
+    closeBtn.style.display="";
 
-      // Clip to rounded corners matching card
-      const out=document.createElement("canvas");
-      out.width=canvas.width;
-      out.height=canvas.height;
-      const ctx=out.getContext("2d");
-      const w=out.width, h=out.height, r=RADIUS*SCALE;
-      ctx.beginPath();
-      ctx.moveTo(r,0);ctx.lineTo(w-r,0);
-      ctx.arcTo(w,0,w,r,r);
-      ctx.lineTo(w,h-r);
-      ctx.arcTo(w,h,w-r,h,r);
-      ctx.lineTo(r,h);
-      ctx.arcTo(0,h,0,h-r,r);
-      ctx.lineTo(0,r);
-      ctx.arcTo(0,0,r,0,r);
-      ctx.closePath();
-      ctx.clip();
-      ctx.drawImage(canvas,0,0);
+    // Clip to rounded rect so saved PNG matches card shape
+    const out=document.createElement("canvas");
+    out.width=canvas.width;
+    out.height=canvas.height;
+    const ctx=out.getContext("2d");
+    const w=out.width, h=out.height, r=RADIUS;
+    ctx.beginPath();
+    ctx.moveTo(r,0);ctx.lineTo(w-r,0);ctx.quadraticCurveTo(w,0,w,r);
+    ctx.lineTo(w,h-r);ctx.quadraticCurveTo(w,h,w-r,h);
+    ctx.lineTo(r,h);ctx.quadraticCurveTo(0,h,0,h-r);
+    ctx.lineTo(0,r);ctx.quadraticCurveTo(0,0,r,0);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(canvas,0,0);
 
-      const name=document.getElementById("card-name").textContent.replace(/\s+/g,"_");
-      const a=document.createElement("a");
-      a.download="GOATFC_RankCard_"+name+".png";
-      a.href=out.toDataURL("image/png");
-      a.click();
-    }).catch(()=>{
-      dlBtn.style.display="";
-      closeBtn.style.display="";
-    });
+    const name=document.getElementById("card-name").textContent.replace(/\s+/g,"_");
+    const a=document.createElement("a");
+    a.download="GOATFC_RankCard_"+name+".png";
+    a.href=out.toDataURL("image/png");
+    a.click();
+  }).catch(()=>{
+    dlBtn.style.display="";
+    closeBtn.style.display="";
   });
 });
 
