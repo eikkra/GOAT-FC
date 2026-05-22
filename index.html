@@ -638,7 +638,7 @@ function changeSlide(dir){const boxes=document.querySelectorAll('.slide-box');if
 
 /* Club Hub */
 fetch(`https://opensheet.elk.sh/${sheetID}/LINKS`).then(r=>r.json()).then(data=>{
-  document.getElementById('hubGrid').innerHTML=data.map(l=>`<div class="hub-card" onclick="window.open('${l.link}','_blank')"><span class="hub-ripple"></span><span class="hub-icon">${l.icon}</span><div class="hub-title">${l.title}</div></div>`).join('');
+  document.getElementById('hubGrid').innerHTML=data.map(l=>`<div class="hub-card" onclick="location.href='${l.link}'"><span class="hub-ripple"></span><span class="hub-icon">${l.icon}</span><div class="hub-title">${l.title}</div></div>`).join('');
   document.querySelectorAll('.hub-card').forEach(card=>{
     function fire(e){
       const r=card.querySelector('.hub-ripple'),rect=card.getBoundingClientRect();
