@@ -5,390 +5,321 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rival Tracker</title>
 <link rel="icon" type="image/png" href="https://i.imgur.com/LY3Bb9m.png">
-
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-
 <style>
-
-/* =========================
-TOPBAR
-========================= */
-
-.topbar{
-
-position:sticky;
-top:0;
-z-index:9999;
-
-height:46px;
-
-padding:0 14px;
-
-display:flex;
-align-items:center;
-justify-content:space-between;
-
-text-decoration:none;
-
-background:rgba(2,6,23,.88);
-
-backdrop-filter:blur(10px);
-
-border-bottom:1px solid #00f5ff22;
-
-box-shadow:
-0 0 15px #00f5ff11;
-
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c:#00f5ff;--g:#00ff88;--p:#bf5fff;--bg:#020817;
+  --gold:#ffd700;--border:rgba(255,255,255,0.07);
+  --fh:'Orbitron',sans-serif;--fb:'Rajdhani',sans-serif;
 }
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:#fff;font-family:var(--fb);min-height:100vh;overflow-x:hidden;display:flex;flex-direction:column;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,245,255,0.01) 2px,rgba(0,245,255,0.01) 4px);pointer-events:none;z-index:0;}
 
-.topbar-left{
+/* ── TOPBAR ── */
+.topbar{position:sticky;top:0;z-index:9999;height:46px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;background:rgba(2,8,23,.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,245,255,.15);text-decoration:none;}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--c),var(--g),var(--p),transparent);animation:scanbar 3s linear infinite;}
+@keyframes scanbar{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
+.topbar-left{display:flex;align-items:center;gap:9px}
+.topbar-logo{width:26px;filter:drop-shadow(0 0 6px var(--c))}
+.topbar-text{font-family:var(--fh);font-size:12px;font-weight:700;letter-spacing:2px;background:linear-gradient(90deg,var(--c),var(--g));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.topbar-right{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid rgba(0,245,255,.3);color:var(--c);font-size:12px;background:rgba(0,245,255,.07);}
 
-display:flex;
-align-items:center;
-gap:8px;
+/* ── MAIN ── */
+.main{position:relative;z-index:1;flex:1;}
+.wrapper{max-width:920px;margin:0 auto;padding:0 12px 24px;}
 
+/* ── TITLE ── */
+.title-block{padding:18px 0 6px;text-align:center;}
+.title-block h1{font-family:var(--fh);font-size:clamp(15px,3.5vw,22px);font-weight:900;letter-spacing:4px;text-transform:uppercase;background:linear-gradient(90deg,var(--c),var(--g),var(--p),var(--c));background-size:300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:titleShift 4s linear infinite;}
+@keyframes titleShift{0%{background-position:0%}100%{background-position:300%}}
+.subtitle{font-size:10px;letter-spacing:2px;opacity:.4;margin-top:3px;font-family:var(--fb);}
+
+/* ── FILTERS ── */
+.filter-section{display:flex;flex-direction:column;gap:8px;margin:10px 0 12px;}
+
+/* player select — full width */
+.select-wrap{position:relative;}
+.select-wrap i{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--c);opacity:.7;pointer-events:none;z-index:1;}
+.select-wrap select{
+  width:100%;
+  padding:9px 12px 9px 30px;
+  background:rgba(0,0,0,.55);
+  color:rgba(255,255,255,.85);
+  border:1px solid rgba(0,245,255,.22);
+  border-radius:6px;
+  font-size:11px;
+  font-family:var(--fb);
+  font-weight:600;
+  outline:none;
+  cursor:pointer;
+  appearance:none;
+  -webkit-appearance:none;
+  letter-spacing:.5px;
 }
+.select-wrap select:focus{border-color:var(--c);box-shadow:0 0 10px rgba(0,245,255,.15);}
 
-.topbar-logo{
+/* period + type — side by side */
+.filter-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 
-width:26px;
+/* ── TABLE CARD ── */
+.card{background:rgba(11,17,32,.85);border:1px solid var(--border);border-radius:8px;overflow:hidden;position:relative;}
+.card::before{content:'';position:absolute;inset:0;border-radius:8px;background:linear-gradient(135deg,rgba(0,245,255,.03),transparent 60%);pointer-events:none;z-index:0;}
+.card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--c),var(--g),var(--p),var(--c));background-size:300%;animation:titleShift 3s linear infinite;border-radius:8px 8px 0 0;}
 
-filter:
-drop-shadow(0 0 6px #00f5ff);
-
-}
-
-.topbar-text{
-
-font-size:13px;
-font-weight:800;
-
-letter-spacing:1px;
-
-background:
-linear-gradient(
-90deg,
-#00f5ff,
-#00ff88
-);
-
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-
-}
-
-.topbar-right{
-
-width:28px;
-height:28px;
-
-display:flex;
-align-items:center;
-justify-content:center;
-
-border-radius:50%;
-
-background:#00f5ff11;
-
-border:1px solid #00f5ff33;
-
-color:#00f5ff;
-
-font-size:12px;
-
-}
-
-/* MOBILE */
-
-@media(max-width:768px){
-
-.topbar{
-
-height:42px;
-
-padding:0 10px;
-
-}
-
-.topbar-logo{
-
-width:23px;
-
-}
-
-.topbar-text{
-
-font-size:12px;
-
-}
-
-}
-
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Orbitron',sans-serif;}
-body{background:linear-gradient(135deg,#050b14,#0b1320,#101b2d);color:#fff;padding:8px;}
-.container{max-width:1100px;margin:auto;background:rgba(255,255,255,.03);border:1px solid rgba(0,255,183,.12);border-radius:18px;padding:12px;box-shadow:0 0 20px rgba(0,255,183,.05);}
-.header{display:flex;align-items:center;justify-content:center;gap:10px;padding:10px;margin-bottom:12px;border-radius:14px;background:rgba(255,255,255,.03);}
-.header img{width:38px;filter:drop-shadow(0 0 3px rgba(0,255,183,.35)) drop-shadow(0 0 7px rgba(0,140,255,.18));}
-.header h1{font-size:20px;font-weight:900;background:linear-gradient(90deg,#00ffb7,#00d9ff,#8d7dff,#ff59ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.filter-top{margin-bottom:8px;}
-.filter-bottom{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
-select{width:100%;padding:10px;border:none;border-radius:10px;background:#13243b;color:#fff;font-size:12px;text-align:center;}
-.tableWrap{overflow:hidden;border-radius:14px;border:1px solid rgba(255,255,255,.05);}
+.tbl-wrap{overflow-x:auto;position:relative;z-index:1;}
 table{width:100%;border-collapse:collapse;table-layout:fixed;}
-th{background:#00ffb7;color:#000;padding:10px 4px;font-size:11px;}
-td{padding:8px 4px;text-align:center;border-bottom:1px solid rgba(255,255,255,.05);font-size:10px;}
-.opponent{text-align:left;padding-left:8px;}
-.opponent-name{font-size:10px;font-weight:700;line-height:1.2;}
-.opponent-id{font-size:8px;opacity:.7;}
-.warning{background:rgba(255,0,0,.12)!important;}
-.badge{padding:3px 6px;border-radius:999px;font-size:8px;font-weight:700;}
-.ok{background:#143f2e;color:#75ffba;}
-.alert{background:#661919;color:#ff9b9b;}
-@media(max-width:768px){
-.header h1{font-size:16px;}
-.header img{width:32px;}
-select{font-size:10px;padding:9px 6px;}
-th{font-size:9px;padding:8px 3px;}
-td{font-size:9px;padding:7px 3px;}
-.opponent-name{font-size:9px;}
-.opponent-id{font-size:7px;}
+
+thead{background:rgba(0,0,0,.4);}
+th{
+  font-family:var(--fh);font-size:9px;letter-spacing:1px;
+  color:var(--c);padding:10px 4px;
+  border-bottom:1px solid rgba(0,245,255,.15);
+  text-align:center;white-space:nowrap;
+}
+th.col-opp{text-align:left;padding-left:10px;}
+
+td{
+  padding:8px 4px;
+  font-size:12px;font-weight:600;
+  border-bottom:1px solid var(--border);
+  text-align:center;vertical-align:middle;
+  font-family:var(--fb);
+}
+td.col-opp{text-align:left;padding-left:10px;}
+
+tbody tr{background:rgba(255,255,255,.02);transition:background .15s;}
+tbody tr:hover{background:rgba(0,245,255,.04);}
+tbody tr.warning-row{background:linear-gradient(90deg,rgba(255,60,60,.08),transparent) !important;border-left:2px solid rgba(255,80,80,.5);}
+
+/* opponent cell */
+.opp-name{font-family:var(--fh);font-size:10px;font-weight:700;color:#fff;line-height:1.3;}
+.opp-id{font-size:9px;color:rgba(0,245,255,.5);font-family:var(--fh);letter-spacing:.5px;}
+.opp-former{font-size:9px;color:rgba(255,255,255,.35);font-family:var(--fb);}
+
+/* stat cells */
+.stat-win{color:#00ff88;font-weight:700;}
+.stat-draw{color:rgba(255,255,255,.6);}
+.stat-loss{color:#ff6b6b;font-weight:700;}
+.stat-total{color:var(--c);font-weight:700;}
+
+/* badge */
+.badge{
+  display:inline-block;
+  padding:3px 8px;border-radius:20px;
+  font-size:8px;font-family:var(--fh);font-weight:700;letter-spacing:.5px;
+}
+.badge-ok{background:rgba(0,255,136,.12);color:var(--g);border:1px solid rgba(0,255,136,.3);}
+.badge-alert{background:rgba(255,60,60,.15);color:#ff6b6b;border:1px solid rgba(255,60,60,.35);}
+
+/* empty / loading */
+.info-cell{padding:36px 20px;font-family:var(--fh);font-size:10px;letter-spacing:2px;color:rgba(0,245,255,.4);text-align:center;}
+.loading-cell{padding:36px 20px;font-family:var(--fh);font-size:10px;letter-spacing:3px;color:var(--c);opacity:.6;animation:lp 1s ease-in-out infinite alternate;text-align:center;}
+@keyframes lp{from{opacity:.2}to{opacity:.8}}
+
+/* footer */
+footer{position:relative;z-index:1;text-align:center;padding:14px 0 16px;border-top:1px solid rgba(0,245,255,.08);background:rgba(2,8,23,.6);}
+.footer-text{font-family:var(--fh);font-size:9px;letter-spacing:2.5px;background:linear-gradient(90deg,var(--c),var(--g));-webkit-background-clip:text;-webkit-text-fill-color:transparent;opacity:.5;}
+
+@media(max-width:480px){
+  th{font-size:8px;padding:8px 3px;}
+  td{font-size:11px;padding:7px 3px;}
+  .opp-name{font-size:9px;}
+  .opp-id{font-size:8px;}
 }
 </style>
 </head>
 <body>
 
+<!-- TOPBAR -->
 <a href="https://goatfcbd.com" class="topbar">
-
-<div class="topbar-left">
-
-<img src="https://i.imgur.com/LY3Bb9m.png" class="topbar-logo">
-
-<div class="topbar-text">
-GOAT FC
-</div>
-
-</div>
-
-<div class="topbar-right">
-<i class="fa-solid fa-house"></i>
-</div>
-
+  <div class="topbar-left">
+    <img src="https://i.imgur.com/LY3Bb9m.png" class="topbar-logo" alt="GOAT FC">
+    <span class="topbar-text">GOAT FC</span>
+  </div>
+  <div class="topbar-right"><i class="fa-solid fa-house"></i></div>
 </a>
 
-<div class="container">
-<div class="header">
-<img src="https://i.imgur.com/LY3Bb9m.png">
-<h1>Rival Tracker</h1>
-</div>
+<div class="main"><div class="wrapper">
 
-<div class="filter-top">
-<select id="playerSelect">
-<option value="">Select Player</option>
-</select>
-</div>
+  <!-- TITLE -->
+  <div class="title-block">
+    <h1>RIVAL TRACKER</h1>
+    <div class="subtitle">GOAT FC · HEAD-TO-HEAD STATISTICS</div>
+  </div>
 
-<div class="filter-bottom">
-<select id="periodFilter">
-<option value="monthly">Monthly</option>
-<option value="overall">Overall</option>
-</select>
+  <!-- FILTERS -->
+  <div class="filter-section">
+    <div class="select-wrap">
+      <i class="fa-solid fa-user-shield"></i>
+      <select id="playerSelect"><option value="">— Select Player —</option></select>
+    </div>
+    <div class="filter-row">
+      <div class="select-wrap">
+        <i class="fa-solid fa-calendar-days"></i>
+        <select id="periodFilter">
+          <option value="monthly">Monthly</option>
+          <option value="overall">Overall</option>
+        </select>
+      </div>
+      <div class="select-wrap">
+        <i class="fa-solid fa-shield-halved"></i>
+        <select id="typeFilter">
+          <option value="all">All Match</option>
+          <option value="Friendly">Friendly</option>
+          <option value="Tournament">Tournament</option>
+        </select>
+      </div>
+    </div>
+  </div>
 
-<select id="typeFilter">
-<option value="all">All Match</option>
-<option value="Friendly">Friendly</option>
-<option value="Tournament">Tournament</option>
-</select>
-</div>
+  <!-- TABLE -->
+  <div class="card">
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="col-opp" style="width:40%">OPPONENT</th>
+            <th style="width:12%">M</th>
+            <th style="width:12%">W</th>
+            <th style="width:12%">D</th>
+            <th style="width:12%">L</th>
+            <th style="width:12%">STATUS</th>
+          </tr>
+        </thead>
+        <tbody id="resultTable">
+          <tr><td colspan="6" class="loading-cell">LOADING DATA...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-<div class="tableWrap">
-<table>
-<thead>
-<tr>
-<th style="width:42%">Opponent</th>
-<th>Match</th>
-<th>W</th>
-<th>D</th>
-<th>L</th>
-<th>Status</th>
-</tr>
-</thead>
-<tbody id="resultTable">
-<tr><td colspan="6">Loading...</td></tr>
-</tbody>
-</table>
-</div>
-</div>
+</div></div>
+
+<footer><div class="footer-text">POWERED BY GOAT FC</div></footer>
 
 <script>
-const MONTHLY_MATCH_LIMIT = 5;
-
+const MONTHLY_MATCH_LIMIT=5;
 const MATCH_CSV="https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=1588171329&single=true&output=csv";
 const MEMBER_CSV="https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=133947099&single=true&output=csv";
 
 let matches=[],members={};
-
 const clean=v=>String(v||"").replace(/^"+|"+$/g,"").trim();
-
-function isValidClubID(id){
-    return /^GFC-\d+$/i.test(clean(id));
-}
+const isValidID=id=>/^GFC-\d+$/i.test(clean(id));
 
 function parseCSV(text){
-    const rows=[]; let row=[],cur="",q=false;
-    for(let i=0;i<text.length;i++){
-        const c=text[i],n=text[i+1];
-        if(c=='"'&&q&&n=='"'){cur+='"';i++;}
-        else if(c=='"'){q=!q;}
-        else if(c==','&&!q){row.push(cur);cur="";}
-        else if((c=='\n'||c=='\r')&&!q){
-            if(cur||row.length){row.push(cur);rows.push(row);}
-            row=[];cur="";
-        } else cur+=c;
-    }
-    if(cur||row.length){row.push(cur);rows.push(row);}
-    return rows;
+  const rows=[];let row=[],cur="",q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i],n=text[i+1];
+    if(c==='"'&&q&&n==='"'){cur+='"';i++;}
+    else if(c==='"'){q=!q;}
+    else if(c===','&&!q){row.push(cur);cur="";}
+    else if((c==='\n'||c==='\r')&&!q){
+      if(cur||row.length){row.push(cur);rows.push(row);}
+      row=[];cur="";
+    }else cur+=c;
+  }
+  if(cur||row.length){row.push(cur);rows.push(row);}
+  return rows;
 }
 
-function approved(v){
-    return clean(v).toLowerCase()==="yes";
-}
-
-function isCurrentMonth(d){
-    const x=new Date(d),now=new Date();
-    return !isNaN(x)&&x.getMonth()===now.getMonth()&&x.getFullYear()===now.getFullYear();
-}
+function approved(v){return clean(v).toLowerCase()==="yes";}
+function isCurrentMonth(d){const x=new Date(d),n=new Date();return !isNaN(x)&&x.getMonth()===n.getMonth()&&x.getFullYear()===n.getFullYear();}
 
 async function loadAll(){
+  try{
     const [mRes,uRes]=await Promise.all([fetch(MATCH_CSV),fetch(MEMBER_CSV)]);
     const [mTxt,uTxt]=await Promise.all([mRes.text(),uRes.text()]);
     loadMembers(uTxt);
     loadMatches(mTxt);
     populatePlayers();
-    resultTable.innerHTML='<tr><td colspan="6">Select Player</td></tr>';
+    document.getElementById("resultTable").innerHTML='<tr><td colspan="6" class="info-cell">SELECT A PLAYER TO VIEW STATS</td></tr>';
+  }catch(e){
+    document.getElementById("resultTable").innerHTML='<tr><td colspan="6" class="info-cell" style="color:#ff4466;">ERROR LOADING DATA</td></tr>';
+  }
 }
 
 function loadMembers(csv){
-    const rows=parseCSV(csv),h=rows[0];
-    rows.slice(1).forEach(r=>{
-        const obj={};
-        h.forEach((x,i)=>obj[clean(x)]=clean(r[i]));
-        const id=obj["Club ID Number"],name=obj["Full Name"];
-        if(isValidClubID(id)&&name){
-            members[id]={name,id};
-        }
-    });
+  const rows=parseCSV(csv),h=rows[0];
+  rows.slice(1).forEach(r=>{
+    const obj={};h.forEach((x,i)=>obj[clean(x)]=clean(r[i]));
+    const id=obj["Club ID Number"],name=obj["Full Name"];
+    if(isValidID(id)&&name) members[id]={name,id};
+  });
 }
 
 function loadMatches(csv){
-    const rows=parseCSV(csv),h=rows[0];
-    matches=rows.slice(1).map(r=>{
-        const obj={};
-        h.forEach((x,i)=>obj[clean(x)]=clean(r[i]));
-        return obj;
-    }).filter(m=>
-        isValidClubID(m.P1_ID)&&
-        isValidClubID(m.P2_ID)
-    );
+  const rows=parseCSV(csv),h=rows[0];
+  matches=rows.slice(1).map(r=>{
+    const obj={};h.forEach((x,i)=>obj[clean(x)]=clean(r[i]));
+    return obj;
+  }).filter(m=>isValidID(m.P1_ID)&&isValidID(m.P2_ID));
 }
 
-/* ONLY CURRENT CLUB MEMBERS IN DROPDOWN */
 function populatePlayers(){
-    const activeIDs=[...new Set(
-        matches.flatMap(m=>[m.P1_ID,m.P2_ID])
-    )]
-    .filter(id=>members[id])
-    .sort();
-
-    playerSelect.innerHTML='<option value="">Select Player</option>';
-
-    activeIDs.forEach(id=>{
-        const op=document.createElement("option");
-        op.value=id;
-        op.textContent=`${members[id].name} - ${id}`;
-        playerSelect.appendChild(op);
-    });
+  const ids=[...new Set(matches.flatMap(m=>[m.P1_ID,m.P2_ID]))].filter(id=>members[id]).sort();
+  const sel=document.getElementById("playerSelect");
+  sel.innerHTML='<option value="">— Select Player —</option>';
+  ids.forEach(id=>{
+    const o=document.createElement("option");
+    o.value=id;
+    o.textContent=`${members[id].name}  ·  ${id}`;
+    sel.appendChild(o);
+  });
 }
 
-function renderOpponent(id){
-    if(!members[id]){
-        return `
-        <div class="opponent-name">${id}</div>
-        <div class="opponent-id">Former/Unknown</div>
-        `;
-    }
-
-    return `
-    <div class="opponent-name">${members[id].name}</div>
-    <div class="opponent-id">${id}</div>
-    `;
+function oppCell(id){
+  if(!members[id]) return `<div class="opp-name">${id}</div><div class="opp-former">Former / Unknown</div>`;
+  return `<div class="opp-name">${members[id].name}</div><div class="opp-id">${id}</div>`;
 }
 
 function renderData(){
-    const player=clean(playerSelect.value);
+  const player=clean(document.getElementById("playerSelect").value);
+  const period=document.getElementById("periodFilter").value;
+  const type=document.getElementById("typeFilter").value;
+  const tbody=document.getElementById("resultTable");
 
-    if(!members[player]){
-        resultTable.innerHTML='<tr><td colspan="6">Select Player</td></tr>';
-        return;
-    }
+  if(!members[player]){
+    tbody.innerHTML='<tr><td colspan="6" class="info-cell">SELECT A PLAYER TO VIEW STATS</td></tr>';
+    return;
+  }
 
-    let data=matches.filter(m=>approved(m.Approved));
+  let data=matches.filter(m=>approved(m.Approved));
+  if(period==="monthly") data=data.filter(m=>isCurrentMonth(m.Match_Date));
+  if(type==="Friendly") data=data.filter(m=>clean(m.Match_Type)==="Friendly");
+  if(type==="Tournament") data=data.filter(m=>clean(m.Match_Type)!=="Friendly");
 
-    if(periodFilter.value==="monthly")
-        data=data.filter(m=>isCurrentMonth(m.Match_Date));
+  const stats={};
+  data.forEach(m=>{
+    const p1=m.P1_ID,p2=m.P2_ID,s1=+m.P1_Score||0,s2=+m.P2_Score||0;
+    let opp,res;
+    if(p1===player){opp=p2;res=s1>s2?"win":s1<s2?"loss":"draw";}
+    else if(p2===player){opp=p1;res=s2>s1?"win":s2<s1?"loss":"draw";}
+    else return;
+    if(!stats[opp]) stats[opp]={total:0,win:0,draw:0,loss:0};
+    stats[opp].total++;stats[opp][res]++;
+  });
 
-    if(typeFilter.value==="Friendly")
-        data=data.filter(m=>clean(m.Match_Type)==="Friendly");
+  const rows=Object.entries(stats).sort((a,b)=>b[1].total-a[1].total);
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="6" class="info-cell">NO DATA FOUND</td></tr>';return;}
 
-    if(typeFilter.value==="Tournament")
-        data=data.filter(m=>clean(m.Match_Type)!=="Friendly");
-
-    const stats={};
-
-    data.forEach(m=>{
-        const p1=m.P1_ID,p2=m.P2_ID;
-        const s1=+m.P1_Score||0,s2=+m.P2_Score||0;
-
-        let opp,res;
-
-        if(p1===player){
-            opp=p2;
-            res=s1>s2?"win":s1<s2?"loss":"draw";
-        }else if(p2===player){
-            opp=p1;
-            res=s2>s1?"win":s2<s1?"loss":"draw";
-        }else return;
-
-        if(!stats[opp]) stats[opp]={total:0,win:0,draw:0,loss:0};
-
-        stats[opp].total++;
-        stats[opp][res]++;
-    });
-
-    const rows=Object.entries(stats).sort((a,b)=>b[1].total-a[1].total);
-
-    resultTable.innerHTML=rows.length?rows.map(([opp,s])=>{
-        const limit=periodFilter.value==="monthly"&&s.total>MONTHLY_MATCH_LIMIT;
-
-        return `
-        <tr class="${limit?'warning':''}">
-            <td class="opponent">${renderOpponent(opp)}</td>
-            <td>${s.total}</td>
-            <td>${s.win}</td>
-            <td>${s.draw}</td>
-            <td>${s.loss}</td>
-            <td><span class="badge ${limit?'alert':'ok'}">${limit?'LIMIT':'OK'}</span></td>
-        </tr>`;
-    }).join(""):'<tr><td colspan="6">No Data Found</td></tr>';
+  tbody.innerHTML=rows.map(([opp,s])=>{
+    const limit=period==="monthly"&&s.total>MONTHLY_MATCH_LIMIT;
+    return `<tr class="${limit?'warning-row':''}">
+      <td class="col-opp">${oppCell(opp)}</td>
+      <td class="stat-total">${s.total}</td>
+      <td class="stat-win">${s.win}</td>
+      <td class="stat-draw">${s.draw}</td>
+      <td class="stat-loss">${s.loss}</td>
+      <td><span class="badge ${limit?'badge-alert':'badge-ok'}">${limit?'LIMIT':'OK'}</span></td>
+    </tr>`;
+  }).join("");
 }
 
-playerSelect.onchange=renderData;
-periodFilter.onchange=renderData;
-typeFilter.onchange=renderData;
-
+["playerSelect","periodFilter","typeFilter"].forEach(id=>document.getElementById(id).addEventListener("change",renderData));
 loadAll();
 </script>
-
 </body>
 </html>
