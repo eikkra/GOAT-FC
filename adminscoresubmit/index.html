@@ -4,8 +4,6 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Club Analytics System</title>
-<link rel="icon" type="image/png" href="https://i.imgur.com/LY3Bb9m.png">
-
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
@@ -601,14 +599,14 @@ Redwan Imtiaz 2🆚2 Ashraful Ashik 🔑
 // CONFIG — change here anytime
 // ════════════════════════════════════════
 const CONFIG = {
-  password: "goatfc@20231228",   // ← change this
+  password: "goatfc2025",   // ← change this
 
   scriptUrl: "https://script.google.com/macros/s/AKfycbxJnwgUC7AFRKd0i4izxn13B5mWKB299aGrNY1FBJxZQvsCjpcfyTeWnTaPqZ9STyRr/exec",
 
   referees: {
-    Main:     ["Joy das", "Ishmam Wahid", "Md Shah Newaj", "Sanjil Chowdhury", "Arniv Rahman", "Empty Slot"],
-    Academy:  ["Rian Forhad", "Ahmed Samir", "Ashaduzzaman Tuha", "Sheikh Imtiaz", "Empty Slot", "Empty Slot"],
-    Youth:    ["Empty Slot", "Empty Slot", "Empty Slot", "Empty Slot", "Empty Slot", "Empty Slot"],
+    Main:     ["Raiaan", "Joy Das", "Mahbub", "Mahfuzur", "Jamel", "Omar"],
+    Academy:  ["Raiaan", "Joy Das", "Mahbub", "Mahfuzur", "Jamel", "Omar"],
+    Youth:    ["Raiaan", "Joy Das", "Mahbub", "Mahfuzur", "Jamel", "Omar"],
     // Overall = all combined (auto-generated below)
   }
 };
@@ -762,6 +760,10 @@ function parseMatches(text) {
   const results = [];
   let session = "General";
 
+  // extract round — e.g. "GRP12-R6 / 29" or "R6/29" or "Round 6"
+  const roundMatch = text.match(/GRP[\w\-\/\s\d]+|\bR\d+[\-\/]\d+|\bRound\s*\d+/i);
+  const round = roundMatch ? roundMatch[0].trim().replace(/\s+/g," ") : "";
+
   lines.forEach(line => {
     for (const s of SESSION_MAP) {
       if (s.r.test(line)) { session = s.l; return; }
@@ -784,16 +786,16 @@ function parseMatches(text) {
     if (goatScore > oppScore) result = "Win";
     else if (goatScore < oppScore) result = "Loss";
 
-    results.push({ goatPlayer, oppPlayer, goatScore, oppScore, result, session, isKey });
+    results.push({ goatPlayer, oppPlayer, goatScore, oppScore, result, session, isKey, round });
   });
 
-  return { matches: results, goatSide };
+  return { matches: results, goatSide, round };
 }
 
 // ════════════════════════════════════════
 // DUPLICATE HASH (localStorage)
 // ════════════════════════════════════════
-const HASH_KEY = "goatfc_hashes_v2";
+const HASH_KEY = "goatfc_hashes_v3";
 function loadHashes() {
   try { return new Set(JSON.parse(localStorage.getItem(HASH_KEY) || "[]")); }
   catch { return new Set(); }
@@ -807,7 +809,8 @@ function makeHash(m, teamType) {
     m.oppPlayer.toLowerCase().trim(),
     m.goatScore, m.oppScore,
     m.session.toLowerCase().trim(),
-    teamType.toLowerCase().trim()
+    teamType.toLowerCase().trim(),
+    (m.round||"").toLowerCase().trim()   // ← round added: same player/score in new round = new match
   ].join("|");
 }
 
@@ -824,7 +827,7 @@ function doPreview() {
   if (!text) { showStatus("error","Match text paste করো আগে।"); return; }
 
   const teamType = document.getElementById("teamType").value;
-  const { matches, goatSide } = parseMatches(text);
+  const { matches, goatSide, round } = parseMatches(text);
 
   if (!matches.length) {
     showStatus("error","কোনো match line detect হয়নি। 🆚 format ঠিক আছে কিনা দেখো।");
@@ -849,7 +852,7 @@ function doPreview() {
   document.getElementById("matchCountLabel").textContent =
     fresh.length + " match" + (fresh.length!==1?"es":"");
   document.getElementById("goatSideLabel").textContent =
-    "GOAT FC → " + (goatSide==="right"?"right side":"left side");
+    (round ? round + " · " : "") + "GOAT FC → " + (goatSide==="right"?"right side":"left side");
 
   // dup block
   const dupBlock = document.getElementById("dupBlock");
