@@ -5,52 +5,56 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Club Analytics System</title>
 <link rel="icon" type="image/png" href="https://i.imgur.com/LY3Bb9m.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-/* ═══════════════════════════════════════
+/* ════════════════════════════════════════
    BASE
-═══════════════════════════════════════ */
+════════════════════════════════════════ */
 :root {
-  --gold:      #F5C842;
-  --gold-dim:  #c9a22a;
-  --gold-glow: rgba(245,200,66,.18);
-  --bg:        #090b0f;
-  --bg2:       #0f1117;
-  --bg3:       #161b24;
-  --bg4:       #1e2433;
-  --bg5:       #252d3e;
-  --border:    rgba(255,255,255,.07);
-  --border-g:  rgba(245,200,66,.25);
-  --text:      #eef0f4;
-  --text2:     #8891a6;
-  --text3:     #4a5268;
-  --green:     #3ecf8e;
-  --green-bg:  rgba(62,207,142,.10);
-  --amber:     #f59e0b;
-  --amber-bg:  rgba(245,158,11,.10);
-  --red:       #f26b6b;
-  --red-bg:    rgba(242,107,107,.10);
-  --blue:      #60a5fa;
-  --blue-bg:   rgba(96,165,250,.10);
-  --purple:    #c084fc;
-  --purple-bg: rgba(192,132,252,.10);
-  --r:         14px;
-  --r-sm:      9px;
+  --gold:       #F5C842;
+  --gold-dim:   #c9a22a;
+  --gold-glow:  rgba(245,200,66,.18);
+  --bg:         #090b0f;
+  --bg2:        #0f1117;
+  --bg3:        #161b24;
+  --bg4:        #1e2433;
+  --bg5:        #252d3e;
+  --border:     rgba(255,255,255,.07);
+  --border-g:   rgba(245,200,66,.25);
+  --text:       #eef0f4;
+  --text2:      #8891a6;
+  --text3:      #4a5268;
+  --green:      #3ecf8e;
+  --green-bg:   rgba(62,207,142,.10);
+  --amber:      #f59e0b;
+  --amber-bg:   rgba(245,158,11,.10);
+  --red:        #f26b6b;
+  --red-bg:     rgba(242,107,107,.10);
+  --blue:       #60a5fa;
+  --blue-bg:    rgba(96,165,250,.10);
+  --r:          14px;
+  --r-sm:       9px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
-  background:var(--bg);color:var(--text);
+  background:var(--bg);
+  color:var(--text);
   font-family:'DM Sans',sans-serif;
-  min-height:100vh;overflow-x:hidden;
+  min-height:100vh;
+  overflow-x:hidden;
 }
+
+/* ── BG grid + glow ── */
 body::before{
   content:'';position:fixed;inset:0;
   background-image:
     linear-gradient(rgba(245,200,66,.025) 1px,transparent 1px),
     linear-gradient(90deg,rgba(245,200,66,.025) 1px,transparent 1px);
-  background-size:48px 48px;pointer-events:none;z-index:0;
+  background-size:48px 48px;
+  pointer-events:none;z-index:0;
 }
 body::after{
   content:'';position:fixed;top:-300px;right:-300px;
@@ -59,26 +63,34 @@ body::after{
   pointer-events:none;z-index:0;
 }
 
-/* ═══════════════════════════════════════
+/* ════════════════════════════════════════
    PASSWORD GATE
-═══════════════════════════════════════ */
+════════════════════════════════════════ */
 #gate{
-  position:fixed;inset:0;z-index:999;background:var(--bg);
+  position:fixed;inset:0;z-index:999;
+  background:var(--bg);
   display:flex;align-items:center;justify-content:center;
 }
 .gate-card{
-  width:min(380px,90vw);background:var(--bg2);
-  border:1px solid var(--border-g);border-radius:var(--r);
-  padding:40px 32px;text-align:center;animation:fadeUp .4s ease;
+  width:min(380px,90vw);
+  background:var(--bg2);
+  border:1px solid var(--border-g);
+  border-radius:var(--r);
+  padding:40px 32px;
+  text-align:center;
+  animation:fadeUp .4s ease;
 }
 .gate-logo{
-  width:64px;height:64px;object-fit:contain;
-  margin:0 auto 16px;display:block;
+  width:64px;height:64px;
+  object-fit:contain;
+  margin:0 auto 16px;
+  display:block;
   filter:drop-shadow(0 0 16px rgba(245,200,66,.4));
 }
 .gate-title{
   font-family:'Bebas Neue',sans-serif;
-  font-size:26px;letter-spacing:3px;color:var(--gold);margin-bottom:4px;
+  font-size:26px;letter-spacing:3px;color:var(--gold);
+  margin-bottom:4px;
 }
 .gate-sub{font-size:12px;color:var(--text3);letter-spacing:.5px;margin-bottom:28px;}
 .gate-input-wrap{position:relative;margin-bottom:14px;}
@@ -87,7 +99,8 @@ body::after{
   background:var(--bg3);border:1px solid var(--border);
   border-radius:var(--r-sm);color:var(--text);
   font-family:'DM Sans',sans-serif;font-size:14px;
-  outline:none;transition:border-color .2s;letter-spacing:2px;
+  outline:none;transition:border-color .2s;
+  letter-spacing:2px;
 }
 .gate-input:focus{border-color:var(--border-g);}
 .gate-eye{
@@ -97,21 +110,28 @@ body::after{
 }
 .gate-eye:hover{color:var(--text2);}
 .gate-btn{
-  width:100%;padding:13px;background:var(--gold);color:#090b0f;
+  width:100%;padding:13px;
+  background:var(--gold);color:#090b0f;
   border:none;border-radius:var(--r-sm);
   font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;
-  cursor:pointer;letter-spacing:.5px;transition:all .18s;
+  cursor:pointer;letter-spacing:.5px;
+  transition:all .18s;
 }
 .gate-btn:hover{background:#ffd84d;box-shadow:0 6px 24px rgba(245,200,66,.3);}
-.gate-err{font-size:12px;color:var(--red);margin-top:10px;display:none;}
+.gate-err{
+  font-size:12px;color:var(--red);margin-top:10px;
+  display:none;
+}
 .gate-err.show{display:block;}
 
-/* ═══════════════════════════════════════
+/* ════════════════════════════════════════
    MAIN APP
-═══════════════════════════════════════ */
+════════════════════════════════════════ */
 #app{display:none;position:relative;z-index:1;}
+
 .page{max-width:780px;margin:0 auto;padding:24px 16px 70px;}
 
+/* ── TOPBAR ── */
 .topbar{
   display:flex;align-items:center;justify-content:space-between;
   padding-bottom:24px;border-bottom:1px solid var(--border);
@@ -120,7 +140,8 @@ body::after{
 .brand{display:flex;align-items:center;gap:12px;}
 .brand-logo{
   width:46px;height:46px;object-fit:contain;
-  filter:drop-shadow(0 0 12px rgba(245,200,66,.35));flex-shrink:0;
+  filter:drop-shadow(0 0 12px rgba(245,200,66,.35));
+  flex-shrink:0;
 }
 .brand-text{display:flex;flex-direction:column;}
 .brand-name{
@@ -129,24 +150,31 @@ body::after{
 }
 .brand-sub{font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-top:3px;}
 .topbar-right{
-  font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
-  color:var(--text3);border:1px solid var(--border);border-radius:20px;padding:5px 14px;
+  font-size:10px;font-weight:600;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--text3);
+  border:1px solid var(--border);border-radius:20px;
+  padding:5px 14px;
 }
 
+/* ── SECTION LABEL ── */
 .sec-label{
-  font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;
-  color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:10px;
+  font-size:10px;font-weight:600;letter-spacing:2px;
+  text-transform:uppercase;color:var(--gold);
+  display:flex;align-items:center;gap:8px;margin-bottom:10px;
 }
 .sec-label::after{content:'';flex:1;height:1px;background:var(--border-g);}
 
+/* ── CARD ── */
 .card{
   background:var(--bg2);border:1px solid var(--border);
-  border-radius:var(--r);overflow:hidden;margin-bottom:14px;transition:border-color .2s;
+  border-radius:var(--r);overflow:hidden;margin-bottom:14px;
+  transition:border-color .2s;
 }
 .card:focus-within{border-color:var(--border-g);}
 .card-head{
   display:flex;align-items:center;justify-content:space-between;
-  padding:12px 16px;background:var(--bg3);border-bottom:1px solid var(--border);
+  padding:12px 16px;background:var(--bg3);
+  border-bottom:1px solid var(--border);
   gap:8px;flex-wrap:wrap;
 }
 .card-head-left{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);}
@@ -154,15 +182,23 @@ body::after{
 .dot{width:9px;height:9px;border-radius:50%;}
 .dot.r{background:#ff5f57;}.dot.y{background:#febc2e;}.dot.g{background:#28c840;}
 
-.meta-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+/* ── TEAM TYPE ROW ── */
+.meta-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;margin-bottom:14px;
+}
 .field-label{font-size:11px;color:var(--text3);letter-spacing:.5px;margin-bottom:6px;font-weight:500;}
+
 .select-wrap{position:relative;}
-.select-wrap select{
+.select-wrap select,
+.styled-select{
   width:100%;padding:10px 36px 10px 14px;
   background:var(--bg3);border:1px solid var(--border);
   border-radius:var(--r-sm);color:var(--text);
   font-family:'DM Sans',sans-serif;font-size:13px;
-  appearance:none;outline:none;cursor:pointer;transition:border-color .2s;
+  appearance:none;outline:none;cursor:pointer;
+  transition:border-color .2s;
 }
 .select-wrap select:focus{border-color:var(--border-g);}
 .select-arrow{
@@ -170,14 +206,19 @@ body::after{
   pointer-events:none;color:var(--text3);
 }
 
-/* Referee panel */
+/* ── REFEREE SECTION ── */
 .ref-panel{
   background:var(--bg2);border:1px solid var(--border);
-  border-radius:var(--r);padding:16px;margin-bottom:14px;transition:border-color .2s;
+  border-radius:var(--r);padding:16px;margin-bottom:14px;
+  transition:border-color .2s;
 }
-.ref-panel.ref-error{border-color:rgba(242,107,107,.5);}
+.ref-panel.ref-error{
+  border-color:rgba(242,107,107,.5);
+}
 .ref-required-hint{
-  display:none;font-size:11px;color:var(--red);margin-top:8px;align-items:center;gap:5px;
+  display:none;
+  font-size:11px;color:var(--red);margin-top:8px;
+  align-items:center;gap:5px;
 }
 .ref-required-hint.show{display:flex;}
 .ref-grid{
@@ -185,22 +226,34 @@ body::after{
   gap:8px;margin-top:10px;
 }
 .ref-chip{
-  display:flex;align-items:center;gap:8px;padding:9px 12px;
-  background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);
-  cursor:pointer;transition:all .15s;user-select:none;font-size:13px;color:var(--text2);
+  display:flex;align-items:center;gap:8px;
+  padding:9px 12px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--r-sm);cursor:pointer;
+  transition:all .15s;user-select:none;
+  font-size:13px;color:var(--text2);
 }
 .ref-chip:hover{background:var(--bg4);border-color:rgba(255,255,255,.12);color:var(--text);}
-.ref-chip.selected{background:rgba(245,200,66,.1);border-color:var(--border-g);color:var(--gold);}
-.ref-check{
-  width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;transition:all .15s;background:transparent;
+.ref-chip.selected{
+  background:rgba(245,200,66,.1);
+  border-color:var(--border-g);
+  color:var(--gold);
 }
-.ref-chip.selected .ref-check{background:var(--gold);border-color:var(--gold);}
+.ref-check{
+  width:16px;height:16px;border-radius:4px;
+  border:1.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .15s;
+  background:transparent;
+}
+.ref-chip.selected .ref-check{
+  background:var(--gold);border-color:var(--gold);
+}
 .ref-check svg{display:none;}
 .ref-chip.selected .ref-check svg{display:block;}
 .ref-empty{font-size:12px;color:var(--text3);margin-top:8px;font-style:italic;}
 
+/* ── TEXTAREA ── */
 textarea{
   width:100%;min-height:210px;resize:vertical;
   background:transparent;color:var(--text);
@@ -210,6 +263,7 @@ textarea{
 textarea::placeholder{color:var(--text3);}
 .char-count{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);}
 
+/* ── BUTTONS ── */
 .btn-row{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
 .btn{
   display:inline-flex;align-items:center;gap:7px;
@@ -224,7 +278,8 @@ textarea::placeholder{color:var(--text3);}
 .btn-gold:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
 .btn-green{
   background:linear-gradient(135deg,#1f6f4a,#155e3b);
-  color:var(--green);border:1px solid rgba(62,207,142,.2);display:none;
+  color:var(--green);border:1px solid rgba(62,207,142,.2);
+  display:none;
 }
 .btn-green.show{display:inline-flex;}
 .btn-green:hover{background:linear-gradient(135deg,#25875a,#1a7549);transform:translateY(-1px);box-shadow:0 6px 20px rgba(62,207,142,.2);}
@@ -232,9 +287,11 @@ textarea::placeholder{color:var(--text3);}
 .btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border);}
 .btn-ghost:hover{background:var(--bg3);color:var(--text);}
 
+/* ── STATUS ── */
 .status{
-  display:none;align-items:center;gap:10px;padding:12px 16px;
-  border-radius:var(--r-sm);font-size:13px;margin-bottom:14px;border:1px solid transparent;
+  display:none;align-items:center;gap:10px;
+  padding:12px 16px;border-radius:var(--r-sm);
+  font-size:13px;margin-bottom:14px;border:1px solid transparent;
 }
 .status.show{display:flex;}
 .status.success{background:var(--green-bg);color:var(--green);border-color:rgba(62,207,142,.2);}
@@ -244,38 +301,42 @@ textarea::placeholder{color:var(--text3);}
 .spin{animation:spin .8s linear infinite;display:inline-flex;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
-/* Preview */
+/* ── PREVIEW ── */
 .preview{
-  display:none;background:var(--bg2);border:1px solid var(--border);
-  border-radius:var(--r);overflow:hidden;animation:fadeUp .3s ease;
+  display:none;background:var(--bg2);
+  border:1px solid var(--border);border-radius:var(--r);
+  overflow:hidden;animation:fadeUp .3s ease;
 }
 .preview.show{display:block;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
 .preview-head{
   display:flex;align-items:center;justify-content:space-between;
-  padding:13px 20px;background:var(--bg3);border-bottom:1px solid var(--border);
-  flex-wrap:wrap;gap:8px;
+  padding:13px 20px;background:var(--bg3);
+  border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px;
 }
 .preview-title{font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;}
 .preview-title span{color:var(--gold);}
 .goat-side-tag{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace;}
 
-/* 4-col stats row */
+/* stats */
 .stats-row{
-  display:grid;grid-template-columns:repeat(4,1fr);
+  display:grid;grid-template-columns:repeat(3,1fr);
   gap:1px;background:var(--border);border-bottom:1px solid var(--border);
 }
 .stat-cell{background:var(--bg2);padding:18px 12px;text-align:center;}
-.stat-num{font-family:'Bebas Neue',sans-serif;font-size:36px;line-height:1;margin-bottom:4px;}
+.stat-num{
+  font-family:'Bebas Neue',sans-serif;font-size:36px;line-height:1;margin-bottom:4px;
+}
 .stat-num.w{color:var(--green);}
 .stat-num.d{color:var(--amber);}
 .stat-num.l{color:var(--red);}
-.stat-num.m{color:var(--purple);}
 .stat-lbl{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);}
 
+/* dup notice */
 .dup-block{
-  display:none;margin:14px 20px 0;padding:10px 14px;
+  display:none;margin:14px 20px 0;
+  padding:10px 14px;
   background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);
   border-radius:var(--r-sm);font-size:12px;color:var(--amber);
   gap:8px;align-items:flex-start;
@@ -288,79 +349,86 @@ textarea::placeholder{color:var(--text3);}
 }
 .dup-list li::before{content:'↳ ';}
 
+/* ref summary in preview */
 .ref-summary{
-  display:none;margin:12px 20px 0;padding:10px 14px;
+  display:none;margin:12px 20px 0;
+  padding:10px 14px;
   background:var(--blue-bg);border:1px solid rgba(96,165,250,.2);
-  border-radius:var(--r-sm);font-size:12px;color:var(--blue);align-items:center;gap:8px;
+  border-radius:var(--r-sm);font-size:12px;color:var(--blue);
+  align-items:center;gap:8px;
 }
 .ref-summary.show{display:flex;}
 
-/* Match list */
+/* match list */
 .match-list{padding:8px 0;}
 .session-div{
-  display:flex;align-items:center;gap:10px;padding:10px 20px 5px;
-  font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);
+  display:flex;align-items:center;gap:10px;
+  padding:10px 20px 5px;
+  font-size:10px;font-weight:600;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--text3);
 }
 .session-div::after{content:'';flex:1;height:1px;background:var(--border);}
 
 .match-item{
-  display:grid;grid-template-columns:1fr auto 1fr auto;
-  align-items:center;gap:8px;padding:10px 20px;
-  border-bottom:1px solid var(--border);transition:background .15s;
+  display:grid;
+  grid-template-columns:1fr auto 1fr auto;
+  align-items:center;gap:8px;
+  padding:10px 20px;
+  border-bottom:1px solid var(--border);
+  transition:background .15s;
   animation:fadeIn .25s ease both;
 }
 .match-item:last-child{border-bottom:none;}
 .match-item:hover{background:var(--bg3);}
 .match-item.dup-item{opacity:.3;}
-/* MOTM highlight */
-.match-item.motm-item{
-  background:rgba(192,132,252,.05);
-  border-left:3px solid var(--purple);
-}
-.match-item.motm-item:hover{background:rgba(192,132,252,.09);}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
-.p-goat{font-size:13px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.p-goat{font-size:13px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:5px;}
 .key-ic{color:var(--gold);font-size:11px;}
-.motm-badge{
-  font-size:9px;font-weight:700;letter-spacing:.8px;
-  background:var(--purple-bg);color:var(--purple);
-  border:1px solid rgba(192,132,252,.3);
-  border-radius:10px;padding:2px 7px;text-transform:uppercase;
-}
 .p-opp{font-size:12px;color:var(--text2);text-align:right;}
 
 .score-box{
-  display:flex;align-items:center;border:1px solid var(--border);
-  border-radius:7px;overflow:hidden;flex-shrink:0;
+  display:flex;align-items:center;
+  border:1px solid var(--border);border-radius:7px;
+  overflow:hidden;flex-shrink:0;
 }
 .sg{
-  padding:4px 10px;font-family:'Bebas Neue',sans-serif;font-size:18px;
-  background:var(--bg4);color:var(--gold);min-width:32px;text-align:center;line-height:1;
+  padding:4px 10px;
+  font-family:'Bebas Neue',sans-serif;font-size:18px;
+  background:var(--bg4);color:var(--gold);
+  min-width:32px;text-align:center;line-height:1;
 }
 .ssep{
-  padding:4px 5px;font-size:9px;color:var(--text3);background:var(--bg3);
+  padding:4px 5px;font-size:9px;color:var(--text3);
+  background:var(--bg3);
   border-left:1px solid var(--border);border-right:1px solid var(--border);
 }
 .so{
-  padding:4px 10px;font-family:'Bebas Neue',sans-serif;font-size:18px;
-  background:var(--bg4);color:var(--text2);min-width:32px;text-align:center;line-height:1;
+  padding:4px 10px;
+  font-family:'Bebas Neue',sans-serif;font-size:18px;
+  background:var(--bg4);color:var(--text2);
+  min-width:32px;text-align:center;line-height:1;
 }
 
 .result-chip{
   padding:4px 10px;border-radius:20px;
-  font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;flex-shrink:0;
+  font-size:10px;font-weight:600;letter-spacing:1px;
+  text-transform:uppercase;flex-shrink:0;
 }
 .result-chip.win{background:var(--green-bg);color:var(--green);}
 .result-chip.draw{background:var(--amber-bg);color:var(--amber);}
 .result-chip.loss{background:var(--red-bg);color:var(--red);}
 
-.footer{text-align:center;margin-top:44px;font-size:11px;color:var(--text3);letter-spacing:.5px;}
+/* ── FOOTER ── */
+.footer{
+  text-align:center;margin-top:44px;
+  font-size:11px;color:var(--text3);letter-spacing:.5px;
+}
 .footer span{color:var(--gold-dim);}
 
-/* ═══════════════════════════════════════
+/* ════════════════════════════════════════
    RESPONSIVE
-═══════════════════════════════════════ */
+════════════════════════════════════════ */
 @media(max-width:540px){
   .page{padding:14px 12px 56px;}
   .topbar{padding-bottom:18px;margin-bottom:20px;}
@@ -368,9 +436,10 @@ textarea::placeholder{color:var(--text3);}
   .brand-name{font-size:17px;}
   .meta-row{grid-template-columns:1fr;}
   .ref-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
-  .stats-row{grid-template-columns:repeat(2,1fr);}
+
   .match-item{
-    grid-template-columns:1fr auto;grid-template-rows:auto auto;
+    grid-template-columns:1fr auto;
+    grid-template-rows:auto auto;
     gap:5px;padding:10px 14px;
   }
   .p-goat{grid-column:1;grid-row:1;font-size:12px;}
@@ -387,7 +456,9 @@ textarea::placeholder{color:var(--text3);}
 </head>
 <body>
 
-<!-- PASSWORD GATE -->
+<!-- ══════════════════════════════
+     PASSWORD GATE
+══════════════════════════════ -->
 <div id="gate">
   <div class="gate-card">
     <img src="https://i.imgur.com/SjIUSlC.png" class="gate-logo" alt="GOAT FC"/>
@@ -398,13 +469,8 @@ textarea::placeholder{color:var(--text3);}
         placeholder="Enter password"
         onkeydown="if(event.key==='Enter')checkPass()"/>
       <button class="gate-eye" onclick="toggleEye()" id="eyeBtn" title="Show/hide">
-        <svg id="eyeOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-        </svg>
-        <svg id="eyeClosed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:none">
-          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-          <line x1="1" y1="1" x2="23" y2="23"/>
-        </svg>
+        <svg id="eyeOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <svg id="eyeClosed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
       </button>
     </div>
     <button class="gate-btn" onclick="checkPass()">Enter System</button>
@@ -412,10 +478,13 @@ textarea::placeholder{color:var(--text3);}
   </div>
 </div>
 
-<!-- MAIN APP -->
+<!-- ══════════════════════════════
+     MAIN APP
+══════════════════════════════ -->
 <div id="app">
 <div class="page">
 
+  <!-- TOPBAR -->
   <div class="topbar">
     <div class="brand">
       <img src="https://i.imgur.com/SjIUSlC.png" class="brand-logo" alt="GOAT FC"/>
@@ -427,8 +496,9 @@ textarea::placeholder{color:var(--text3);}
     <div class="topbar-right" id="topbarDate">Admin Panel</div>
   </div>
 
-  <!-- MATCH CONFIGURATION -->
+  <!-- ── TEAM TYPE + REFEREE ── -->
   <div class="sec-label">Match Configuration</div>
+
   <div class="meta-row">
     <div>
       <div class="field-label">Team Type</div>
@@ -440,9 +510,7 @@ textarea::placeholder{color:var(--text3);}
           <option value="Overall">🌐 Overall</option>
         </select>
         <div class="select-arrow">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-            <polyline points="6 9 12 15 18 9"/>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
       </div>
     </div>
@@ -453,7 +521,7 @@ textarea::placeholder{color:var(--text3);}
   </div>
 
   <!-- REFEREE PANEL -->
-  <div class="ref-panel" id="refPanel">
+  <div class="ref-panel" id="refPanel" style="margin-bottom:14px;">
     <div class="sec-label" style="margin-bottom:0;">
       Select Referees
       <span style="color:var(--red);font-size:11px;letter-spacing:.5px;font-weight:600;text-transform:none;">*required</span>
@@ -462,52 +530,43 @@ textarea::placeholder{color:var(--text3);}
     <div class="ref-grid" id="refGrid">
       <div class="ref-empty">Select a Team Type to see referees.</div>
     </div>
+    <!-- inline error hint -->
     <div class="ref-required-hint" id="refRequiredHint">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;flex-shrink:0;">
-        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-      </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       কমপক্ষে ১ জন referee select করতে হবে।
     </div>
   </div>
 
-  <!-- INPUT -->
+  <!-- INPUT BLOCK -->
   <div class="sec-label">Match Data Input</div>
   <div class="card">
     <div class="card-head">
       <div class="card-head-left">
-        <div class="dots">
-          <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
-        </div>
+        <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
         <span style="margin-left:4px;">match_data.txt</span>
       </div>
       <div class="char-count" id="charCount">0 chars</div>
     </div>
     <textarea id="matchText"
-      placeholder="GOAT FC ⚒️ ARCANE SYNDICATE
-First Day: May 23
-👑Abu Yousuf 2🆚1 Kamrul Hassan 🔑
-Faiaz ur Rahman 🔑 3🆚0 Redwan Imtiaz
+      placeholder="𝐃𝐇𝐀𝐊𝐀 𝐄𝐋𝐈𝐓𝐄 𝐒𝐐𝐔𝐀𝐃 ⚒️ 𝐆𝐎𝐀𝐓 𝐅𝐂
+𝗙𝗶𝗿𝘀𝘁 𝗗𝗮𝘆: May 23 | Response 12:20am-12:30am
+Meherab Hossain Sakib 🔑 0🆚2 Faiaz ur Rahman
+Redwan Imtiaz 2🆚2 Ashraful Ashik 🔑
 ..."></textarea>
   </div>
 
   <!-- BUTTONS -->
   <div class="btn-row">
     <button class="btn btn-gold" id="previewBtn" onclick="doPreview()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-      </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
       Preview
     </button>
     <button class="btn btn-green" id="submitBtn" onclick="doSubmit()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <polyline points="20 6 9 17 4 12"/>
-      </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
       Submit to Sheet
     </button>
     <button class="btn btn-ghost" onclick="doClear()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;">
-        <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/>
-      </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
       Clear
     </button>
   </div>
@@ -522,28 +581,20 @@ Faiaz ur Rahman 🔑 3🆚0 Redwan Imtiaz
   <div class="preview" id="previewPanel">
     <div class="preview-head">
       <div class="preview-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;color:var(--gold)">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;color:var(--gold)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         Parsed — <span id="matchCountLabel">0 matches</span>
       </div>
       <div class="goat-side-tag" id="goatSideLabel"></div>
     </div>
 
-    <!-- W / D / L / MOTM -->
     <div class="stats-row">
       <div class="stat-cell"><div class="stat-num w" id="sW">0</div><div class="stat-lbl">Wins</div></div>
       <div class="stat-cell"><div class="stat-num d" id="sD">0</div><div class="stat-lbl">Draws</div></div>
       <div class="stat-cell"><div class="stat-num l" id="sL">0</div><div class="stat-lbl">Losses</div></div>
-      <div class="stat-cell"><div class="stat-num m" id="sM">0</div><div class="stat-lbl">MOTM 👑</div></div>
     </div>
 
     <div class="dup-block" id="dupBlock">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0;margin-top:1px;">
-        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-        <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-      </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0;margin-top:1px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       <div>
         <div style="font-weight:600;margin-bottom:2px;">Duplicate matches detected — এগুলো skip হবে</div>
         <ul class="dup-list" id="dupList"></ul>
@@ -551,10 +602,7 @@ Faiaz ur Rahman 🔑 3🆚0 Redwan Imtiaz
     </div>
 
     <div class="ref-summary" id="refSummary">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0;">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-      </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       <span id="refSummaryText"></span>
     </div>
 
@@ -569,17 +617,21 @@ Faiaz ur Rahman 🔑 3🆚0 Redwan Imtiaz
 
 <script>
 // ════════════════════════════════════════
-// CONFIG
+// CONFIG — change here anytime
 // ════════════════════════════════════════
 const CONFIG = {
   password: "goatfc@20231228",
-  scriptUrl: "https://script.google.com/macros/s/AKfycbxrF1aARTQxHbikAD3sDh4AmGnUb2g63kBxQVuqckulwp_7QDOhNDkNc-glGvt8tug/exec",
+
+  scriptUrl: "https://script.google.com/macros/s/AKfycbyRmTLiiumdbx8ugIzLls-GfbPqpqFWPO6iWiVjJv1uBqFlpp6MgxckaUmFySZ-H3zx/exec",
+
   referees: {
-    Main:    ["Joy das","Ishmam Wahid","Md Shah Newaj","Sanjil Chowdhury","Arniv Rahman","Empty Slot"],
-    Academy: ["Rian Forhad","Ahmed Samir","Ashaduzzaman Tuha","Sheikh Imtiaz","Empty Slot","Empty Slot"],
-    Youth:   ["Empty Slot","Empty Slot","Empty Slot","Empty Slot","Empty Slot","Empty Slot"],
+    Main:     ["Joy das", "Ishmam Wahid", "Md Shah Newaj", "Sanjil Chowdhury", "Arniv Rahman", "Empty Slot"],
+    Academy:  ["Rian Forhad", "Ahmed Samir", "Ashaduzzaman Tuha", "Sheikh Imtiaz", "Empty Slot", "Empty Slot"],
+    Youth:    ["Empty Slot", "Empty Slot", "Empty Slot", "Empty Slot", "Empty Slot", "Empty Slot"],
   }
 };
+
+// Build Overall = unique merge of all
 CONFIG.referees.Overall = [...new Set([
   ...CONFIG.referees.Main,
   ...CONFIG.referees.Academy,
@@ -627,6 +679,7 @@ function onTeamTypeChange() {
   renderRefGrid();
   updateRefDisplay();
   clearRefError();
+  // hide preview on team type change
   document.getElementById("previewPanel").classList.remove("show");
   document.getElementById("submitBtn").classList.remove("show");
   clearStatus();
@@ -636,27 +689,31 @@ function renderRefGrid() {
   const type = document.getElementById("teamType").value;
   const list = CONFIG.referees[type] || [];
   const grid = document.getElementById("refGrid");
+
   if (!list.length) {
     grid.innerHTML = '<div class="ref-empty">No referees configured for this team type.</div>';
     return;
   }
+
   grid.innerHTML = list.map(name => `
     <div class="ref-chip" id="rc_${esc(name)}" onclick="toggleRef('${esc(name)}')">
       <div class="ref-check">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#090b0f" stroke-width="3" width="10" height="10">
-          <polyline points="20 6 9 17 4 12"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#090b0f" stroke-width="3" width="10" height="10"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
       ${esc(name)}
-    </div>`).join("");
+    </div>
+  `).join("");
 }
 
 function toggleRef(name) {
   if (selectedRefs.has(name)) selectedRefs.delete(name);
   else selectedRefs.add(name);
+
   const chip = document.getElementById("rc_" + name);
   if (chip) chip.classList.toggle("selected", selectedRefs.has(name));
   updateRefDisplay();
+
+  // clear error as soon as at least 1 is selected
   if (selectedRefs.size > 0) clearRefError();
 }
 
@@ -676,18 +733,27 @@ function updateRefDisplay() {
   }
 }
 
+// ── Referee validation helpers ──
 function showRefError() {
   document.getElementById("refPanel").classList.add("ref-error");
   document.getElementById("refRequiredHint").classList.add("show");
-  document.getElementById("refPanel").scrollIntoView({behavior:"smooth",block:"center"});
+  // scroll ref panel into view smoothly
+  document.getElementById("refPanel").scrollIntoView({ behavior:"smooth", block:"center" });
 }
 function clearRefError() {
   document.getElementById("refPanel").classList.remove("ref-error");
   document.getElementById("refRequiredHint").classList.remove("show");
 }
 
+// init on load
 document.addEventListener("DOMContentLoaded", () => {
   renderRefGrid();
+});
+
+// ════════════════════════════════════════
+// CHAR COUNTER
+// ════════════════════════════════════════
+document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("matchText").addEventListener("input", function(){
     document.getElementById("charCount").textContent = this.value.length + " chars";
   });
@@ -696,12 +762,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // ════════════════════════════════════════
 // PARSE HELPERS
 // ════════════════════════════════════════
-
-/**
- * detectGoatSide
- * Finds the line containing "GOAT" and a separator (⚒️ or 🆚).
- * GOAT before separator → "left", GOAT after → "right". Default "right".
- */
 function detectGoatSide(text) {
   const m = text.match(/([^\n]*GOAT[^\n]*)/i);
   if (!m) return "right";
@@ -711,26 +771,24 @@ function detectGoatSide(text) {
   return (si !== -1 && gi < si) ? "left" : "right";
 }
 
+function cleanPlayerName(raw) {
+  return raw
+    .replace(/^[@#\*\-–—•►▶︎▷❯»·\s]+/, "")
+    .replace(/(?!🔑|🆚)[\u{1F300}-\u{1FFFF}\u{2600}-\u{27FF}]/gu, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
 const SESSION_MAP = [
-  {r:/first\s*day/i,         l:"First Day"},
-  {r:/\bstar\b.*?(\||may)/i, l:"Star"},
-  {r:/mid[\s_]?night/i,      l:"Mid Night"},
-  {r:/late[\s_]?night/i,     l:"Late Night"},
-  {r:/morning/i,             l:"Morning"},
-  {r:/afternoon/i,           l:"Afternoon"},
-  {r:/evening/i,             l:"Evening"},
+  { r: /first\s*day/i,         l: "First Day"  },
+  { r: /\bstar\b.*?(\||may)/i, l: "Star"       },
+  { r: /mid[\s_]?night/i,      l: "Mid Night"  },
+  { r: /late[\s_]?night/i,     l: "Late Night" },
+  { r: /morning/i,             l: "Morning"    },
+  { r: /afternoon/i,           l: "Afternoon"  },
+  { r: /evening/i,             l: "Evening"    },
 ];
 
-/**
- * parseMatches
- *
- * For each match line:
- *   LEFT_TOKEN  score 🆚 score  RIGHT_TOKEN
- *
- * MOTM (👑) rule:
- *   Only counts when the crown appears in the RAW token of the GOAT FC side.
- *   Opponent-side crowns are ignored completely.
- */
 function parseMatches(text) {
   const goatSide = detectGoatSide(text);
   const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
@@ -741,46 +799,31 @@ function parseMatches(text) {
   const round = roundMatch ? roundMatch[0].trim().replace(/\s+/g," ") : "";
 
   lines.forEach(line => {
-    // session header?
-    for (const s of SESSION_MAP) { if (s.r.test(line)) { session = s.l; return; } }
-
-    // light clean: strip leading junk, keep 🆚 🔑 👑, strip everything else
-    const cleaned = line
-      .replace(/^[\s@#\*\-–—•►▶▷❯»·]+/, "")
-      .replace(/(?!\u{1F19A}|\u{1F511}|\u{1F451})[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}]/gu, "")
-      .replace(/\s{2,}/g," ")
-      .trim();
-
+    for (const s of SESSION_MAP) {
+      if (s.r.test(line)) { session = s.l; return; }
+    }
+    const cleaned = cleanPlayerName(line);
     const m = cleaned.match(/^(.+?)\s+(\d+)\s*🆚\s*(\d+)\s+(.+)$/);
     if (!m) return;
 
-    const p1raw = m[1];        // raw left token
-    const s1    = parseInt(m[2]);
-    const s2    = parseInt(m[3]);
-    const p2raw = m[4];        // raw right token
+    const p1raw = m[1], s1 = parseInt(m[2]), s2 = parseInt(m[3]), p2raw = m[4];
+    const p1 = p1raw.replace(/🔑/g,"").trim();
+    const p2 = p2raw.replace(/🔑/g,"").trim();
 
-    // 👑 only matters on the GOAT FC side
-    const goatRaw = goatSide === "left" ? p1raw : p2raw;
-    const isMOTM  = /👑/.test(goatRaw);
-
-    // clean display names
-    const p1 = p1raw.replace(/🔑|👑/g,"").trim();
-    const p2 = p2raw.replace(/🔑|👑/g,"").trim();
-    const isKey = goatSide === "left" ? /🔑/.test(p1raw) : /🔑/.test(p2raw);
-
-    const goatPlayer = goatSide === "left"  ? p1 : p2;
-    const oppPlayer  = goatSide === "left"  ? p2 : p1;
-    const goatScore  = goatSide === "left"  ? s1 : s2;
-    const oppScore   = goatSide === "left"  ? s2 : s1;
+    const goatPlayer = goatSide === "right" ? p2 : p1;
+    const oppPlayer  = goatSide === "right" ? p1 : p2;
+    const goatScore  = goatSide === "right" ? s2 : s1;
+    const oppScore   = goatSide === "right" ? s1 : s2;
+    const isKey      = goatSide === "right" ? p2raw.includes("🔑") : p1raw.includes("🔑");
 
     let result = "Draw";
     if (goatScore > oppScore) result = "Win";
     else if (goatScore < oppScore) result = "Loss";
 
-    results.push({goatPlayer, oppPlayer, goatScore, oppScore, result, session, isKey, isMOTM, round});
+    results.push({ goatPlayer, oppPlayer, goatScore, oppScore, result, session, isKey, round });
   });
 
-  return {matches:results, goatSide, round};
+  return { matches: results, goatSide, round };
 }
 
 // ════════════════════════════════════════
@@ -788,7 +831,7 @@ function parseMatches(text) {
 // ════════════════════════════════════════
 const HASH_KEY = "goatfc_hashes_v3";
 function loadHashes() {
-  try { return new Set(JSON.parse(localStorage.getItem(HASH_KEY)||"[]")); }
+  try { return new Set(JSON.parse(localStorage.getItem(HASH_KEY) || "[]")); }
   catch { return new Set(); }
 }
 function saveHashes(set) {
@@ -817,15 +860,16 @@ function doPreview() {
   const text = document.getElementById("matchText").value.trim();
   if (!text) { showStatus("error","Match text paste করো আগে।"); return; }
 
+  // ── REFEREE VALIDATION ──
   if (selectedRefs.size === 0) {
     showRefError();
-    showStatus("error","Preview এর আগে কমপক্ষে ১ জন referee select করো।");
+    showStatus("error", "Preview এর আগে কমপক্ষে ১ জন referee select করো।");
     return;
   }
   clearRefError();
 
   const teamType = document.getElementById("teamType").value;
-  const {matches, goatSide, round} = parseMatches(text);
+  const { matches, goatSide, round } = parseMatches(text);
 
   if (!matches.length) {
     showStatus("error","কোনো match line detect হয়নি। 🆚 format ঠিক আছে কিনা দেখো।");
@@ -843,33 +887,28 @@ function doPreview() {
   });
   newMatches = fresh;
 
-  const motmCount = fresh.filter(m => m.isMOTM).length;
-
+  // stats
   document.getElementById("sW").textContent = fresh.filter(m=>m.result==="Win").length;
   document.getElementById("sD").textContent = fresh.filter(m=>m.result==="Draw").length;
   document.getElementById("sL").textContent = fresh.filter(m=>m.result==="Loss").length;
-  document.getElementById("sM").textContent = motmCount;
   document.getElementById("matchCountLabel").textContent =
     fresh.length + " match" + (fresh.length!==1?"es":"");
   document.getElementById("goatSideLabel").textContent =
-    (round ? round+" · " : "") + "GOAT FC → " + (goatSide==="left" ? "left side" : "right side");
+    (round ? round + " · " : "") + "GOAT FC → " + (goatSide==="right"?"right side":"left side");
 
   // dup block
   const dupBlock = document.getElementById("dupBlock");
   if (dups.length) {
     dupBlock.classList.add("show");
     document.getElementById("dupList").innerHTML = dups.map(d=>`<li>${esc(d)}</li>`).join("");
-  } else {
-    dupBlock.classList.remove("show");
-  }
+  } else dupBlock.classList.remove("show");
 
   // ref summary
   const refArr = [...selectedRefs];
-  document.getElementById("refSummary").classList.add("show");
+  const refSummary = document.getElementById("refSummary");
+  refSummary.classList.add("show");
   document.getElementById("refSummaryText").textContent =
-    `${refArr.length} referee(s): ${refArr.join(", ")}` +
-    ` · ${fresh.length} match(es)` +
-    (motmCount ? ` · ${motmCount} MOTM 👑` : "");
+    `${refArr.length} referee(s) selected: ${refArr.join(", ")} — each will earn 5 pts × ${fresh.length} match(es) submitted`;
 
   // match list
   let html = "", lastSess = "";
@@ -879,17 +918,11 @@ function doPreview() {
       html += `<div class="session-div">${esc(m.session)}</div>`;
       lastSess = m.session;
     }
-    const rc      = m.result.toLowerCase();
-    const isDup   = !fresh.includes(m);
-    const isMOTM  = m.isMOTM;
-
+    const rc = m.result.toLowerCase();
+    const isDup = !fresh.includes(m);
     html += `
-      <div class="match-item${isDup?" dup-item":""}${isMOTM?" motm-item":""}" style="animation-delay:${i*30}ms">
-        <div class="p-goat">
-          ${m.isKey ? '<span class="key-ic">🔑</span>' : ''}
-          ${esc(m.goatPlayer)}
-          ${isMOTM ? '<span class="motm-badge">👑 MOTM +2</span>' : ''}
-        </div>
+      <div class="match-item${isDup?" dup-item":""}" style="animation-delay:${i*30}ms">
+        <div class="p-goat">${m.isKey?'<span class="key-ic">🔑</span>':''} ${esc(m.goatPlayer)}</div>
         <div class="score-box">
           <div class="sg">${m.goatScore}</div>
           <div class="ssep">vs</div>
@@ -916,9 +949,11 @@ function doPreview() {
 // ════════════════════════════════════════
 async function doSubmit() {
   if (!newMatches.length) { showStatus("warn","কোনো নতুন match নেই।"); return; }
+
+  // ── REFEREE VALIDATION ──
   if (selectedRefs.size === 0) {
     showRefError();
-    showStatus("error","Submit এর আগে কমপক্ষে ১ জন referee select করো।");
+    showStatus("error", "Submit এর আগে কমপক্ষে ১ জন referee select করো।");
     return;
   }
 
@@ -932,28 +967,27 @@ async function doSubmit() {
   const refArr   = [...selectedRefs];
 
   try {
+    // URL-encoded body — Apps Script e.parameter তে ঠিকমতো আসে
     const body = new URLSearchParams();
     body.append("text",     text);
     body.append("teamType", teamType);
     body.append("referees", refArr.join(","));
 
     await fetch(CONFIG.scriptUrl, {
-      method:"POST",
-      headers:{"Content-Type":"application/x-www-form-urlencoded"},
-      body:body.toString(),
-      mode:"no-cors"
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: body.toString(),
+      mode: "no-cors"
     });
 
+    // save hashes locally
     const stored = loadHashes();
     newMatches.forEach(m => stored.add(makeHash(m, teamType)));
     saveHashes(stored);
 
-    const motmCount = newMatches.filter(m => m.isMOTM).length;
     showStatus("success",
       `✓ ${newMatches.length} match${newMatches.length!==1?"es":""} submitted` +
-      ` · ${refArr.length} referee(s) logged` +
-      (motmCount ? ` · ${motmCount} MOTM 👑 recorded` : "") + `!`
-    );
+      ` · ${refArr.length} referee(s) logged!`);
     document.getElementById("submitBtn").classList.remove("show");
     newMatches = [];
   } catch(err) {
@@ -981,7 +1015,7 @@ function doClear() {
 // STATUS HELPERS
 // ════════════════════════════════════════
 function showStatus(type, msg, spin) {
-  const bar  = document.getElementById("statusBar");
+  const bar = document.getElementById("statusBar");
   const icon = document.getElementById("statusIcon");
   document.getElementById("statusMsg").textContent = msg;
   bar.className = "status show " + type;
@@ -993,17 +1027,13 @@ function showStatus(type, msg, spin) {
     icon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
   } else if (type==="warn") {
     icon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
-  } else {
-    icon.innerHTML = "";
-  }
+  } else icon.innerHTML = "";
 }
 function clearStatus() {
   document.getElementById("statusBar").className = "status";
 }
 function esc(s) {
-  return String(s)
-    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 </script>
 </body>
