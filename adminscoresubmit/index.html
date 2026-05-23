@@ -950,7 +950,7 @@ function doPreview() {
 async function doSubmit() {
   if (!newMatches.length) { showStatus("warn","কোনো নতুন match নেই।"); return; }
 
-  // ── REFEREE VALIDATION (double-check) ──
+  // ── REFEREE VALIDATION ──
   if (selectedRefs.size === 0) {
     showRefError();
     showStatus("error", "Submit এর আগে কমপক্ষে ১ জন referee select করো।");
@@ -967,13 +967,20 @@ async function doSubmit() {
   const refArr   = [...selectedRefs];
 
   try {
-    const fd = new FormData();
-    fd.append("text",      text);
-    fd.append("teamType",  teamType);
-    fd.append("referees",  refArr.join(","));
-    await fetch(CONFIG.scriptUrl, { method:"POST", body:fd, mode:"no-cors" });
+    // URL-encoded body — Apps Script e.parameter তে ঠিকমতো আসে
+    const body = new URLSearchParams();
+    body.append("text",     text);
+    body.append("teamType", teamType);
+    body.append("referees", refArr.join(","));
 
-    // save hashes
+    await fetch(CONFIG.scriptUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: body.toString(),
+      mode: "no-cors"
+    });
+
+    // save hashes locally
     const stored = loadHashes();
     newMatches.forEach(m => stored.add(makeHash(m, teamType)));
     saveHashes(stored);
