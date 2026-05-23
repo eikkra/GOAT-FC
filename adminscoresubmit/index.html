@@ -210,7 +210,17 @@ body::after{
 .ref-panel{
   background:var(--bg2);border:1px solid var(--border);
   border-radius:var(--r);padding:16px;margin-bottom:14px;
+  transition:border-color .2s;
 }
+.ref-panel.ref-error{
+  border-color:rgba(242,107,107,.5);
+}
+.ref-required-hint{
+  display:none;
+  font-size:11px;color:var(--red);margin-top:8px;
+  align-items:center;gap:5px;
+}
+.ref-required-hint.show{display:flex;}
 .ref-grid{
   display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
   gap:8px;margin-top:10px;
@@ -511,10 +521,19 @@ textarea::placeholder{color:var(--text3);}
   </div>
 
   <!-- REFEREE PANEL -->
-  <div class="ref-panel" style="margin-bottom:14px;">
-    <div class="sec-label" style="margin-bottom:0;">Select Referees <span style="color:var(--text3);font-size:10px;letter-spacing:.5px;font-weight:400;text-transform:none;">(multiple select)</span></div>
+  <div class="ref-panel" id="refPanel" style="margin-bottom:14px;">
+    <div class="sec-label" style="margin-bottom:0;">
+      Select Referees
+      <span style="color:var(--red);font-size:11px;letter-spacing:.5px;font-weight:600;text-transform:none;">*required</span>
+      <span style="color:var(--text3);font-size:10px;letter-spacing:.5px;font-weight:400;text-transform:none;">(minimum 1)</span>
+    </div>
     <div class="ref-grid" id="refGrid">
       <div class="ref-empty">Select a Team Type to see referees.</div>
+    </div>
+    <!-- inline error hint -->
+    <div class="ref-required-hint" id="refRequiredHint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      কমপক্ষে ১ জন referee select করতে হবে।
     </div>
   </div>
 
@@ -601,15 +620,14 @@ Redwan Imtiaz 2🆚2 Ashraful Ashik 🔑
 // CONFIG — change here anytime
 // ════════════════════════════════════════
 const CONFIG = {
-  password: "goatfc@20231228",   // ← change this
+  password: "goatfc@20231228",
 
   scriptUrl: "https://script.google.com/macros/s/AKfycbxJnwgUC7AFRKd0i4izxn13B5mWKB299aGrNY1FBJxZQvsCjpcfyTeWnTaPqZ9STyRr/exec",
 
-referees: {
+  referees: {
     Main:     ["Joy das", "Ishmam Wahid", "Md Shah Newaj", "Sanjil Chowdhury", "Arniv Rahman", "Empty Slot"],
     Academy:  ["Rian Forhad", "Ahmed Samir", "Ashaduzzaman Tuha", "Sheikh Imtiaz", "Empty Slot", "Empty Slot"],
     Youth:    ["Empty Slot", "Empty Slot", "Empty Slot", "Empty Slot", "Empty Slot", "Empty Slot"],
-    // Overall = all combined (auto-generated below)
   }
 };
 
@@ -660,6 +678,7 @@ function onTeamTypeChange() {
   selectedRefs.clear();
   renderRefGrid();
   updateRefDisplay();
+  clearRefError();
   // hide preview on team type change
   document.getElementById("previewPanel").classList.remove("show");
   document.getElementById("submitBtn").classList.remove("show");
@@ -693,6 +712,9 @@ function toggleRef(name) {
   const chip = document.getElementById("rc_" + name);
   if (chip) chip.classList.toggle("selected", selectedRefs.has(name));
   updateRefDisplay();
+
+  // clear error as soon as at least 1 is selected
+  if (selectedRefs.size > 0) clearRefError();
 }
 
 function updateRefDisplay() {
@@ -709,6 +731,18 @@ function updateRefDisplay() {
     disp.textContent = "No referee selected";
     disp.style.color = "var(--text3)";
   }
+}
+
+// ── Referee validation helpers ──
+function showRefError() {
+  document.getElementById("refPanel").classList.add("ref-error");
+  document.getElementById("refRequiredHint").classList.add("show");
+  // scroll ref panel into view smoothly
+  document.getElementById("refPanel").scrollIntoView({ behavior:"smooth", block:"center" });
+}
+function clearRefError() {
+  document.getElementById("refPanel").classList.remove("ref-error");
+  document.getElementById("refRequiredHint").classList.remove("show");
 }
 
 // init on load
@@ -738,7 +772,6 @@ function detectGoatSide(text) {
 }
 
 function cleanPlayerName(raw) {
-  // Remove: @ # leading symbols, emojis except 🔑 and 🆚
   return raw
     .replace(/^[@#\*\-–—•►▶︎▷❯»·\s]+/, "")
     .replace(/(?!🔑|🆚)[\u{1F300}-\u{1FFFF}\u{2600}-\u{27FF}]/gu, "")
@@ -762,7 +795,6 @@ function parseMatches(text) {
   const results = [];
   let session = "General";
 
-  // extract round — e.g. "GRP12-R6 / 29" or "R6/29" or "Round 6"
   const roundMatch = text.match(/GRP[\w\-\/\s\d]+|\bR\d+[\-\/]\d+|\bRound\s*\d+/i);
   const round = roundMatch ? roundMatch[0].trim().replace(/\s+/g," ") : "";
 
@@ -812,7 +844,7 @@ function makeHash(m, teamType) {
     m.goatScore, m.oppScore,
     m.session.toLowerCase().trim(),
     teamType.toLowerCase().trim(),
-    (m.round||"").toLowerCase().trim()   // ← round added: same player/score in new round = new match
+    (m.round||"").toLowerCase().trim()
   ].join("|");
 }
 
@@ -827,6 +859,14 @@ let newMatches = [];
 function doPreview() {
   const text = document.getElementById("matchText").value.trim();
   if (!text) { showStatus("error","Match text paste করো আগে।"); return; }
+
+  // ── REFEREE VALIDATION ──
+  if (selectedRefs.size === 0) {
+    showRefError();
+    showStatus("error", "Preview এর আগে কমপক্ষে ১ জন referee select করো।");
+    return;
+  }
+  clearRefError();
 
   const teamType = document.getElementById("teamType").value;
   const { matches, goatSide, round } = parseMatches(text);
@@ -866,11 +906,9 @@ function doPreview() {
   // ref summary
   const refArr = [...selectedRefs];
   const refSummary = document.getElementById("refSummary");
-  if (refArr.length) {
-    refSummary.classList.add("show");
-    document.getElementById("refSummaryText").textContent =
-      `${refArr.length} referee(s) selected: ${refArr.join(", ")} — each will earn 5 pts × ${fresh.length} match(es) submitted`;
-  } else refSummary.classList.remove("show");
+  refSummary.classList.add("show");
+  document.getElementById("refSummaryText").textContent =
+    `${refArr.length} referee(s) selected: ${refArr.join(", ")} — each will earn 5 pts × ${fresh.length} match(es) submitted`;
 
   // match list
   let html = "", lastSess = "";
@@ -911,6 +949,14 @@ function doPreview() {
 // ════════════════════════════════════════
 async function doSubmit() {
   if (!newMatches.length) { showStatus("warn","কোনো নতুন match নেই।"); return; }
+
+  // ── REFEREE VALIDATION (double-check) ──
+  if (selectedRefs.size === 0) {
+    showRefError();
+    showStatus("error", "Submit এর আগে কমপক্ষে ১ জন referee select করো।");
+    return;
+  }
+
   const submitBtn  = document.getElementById("submitBtn");
   const previewBtn = document.getElementById("previewBtn");
   submitBtn.disabled = previewBtn.disabled = true;
@@ -934,7 +980,7 @@ async function doSubmit() {
 
     showStatus("success",
       `✓ ${newMatches.length} match${newMatches.length!==1?"es":""} submitted` +
-      (refArr.length ? ` · ${refArr.length} referee(s) logged` : "") + "!");
+      ` · ${refArr.length} referee(s) logged!`);
     document.getElementById("submitBtn").classList.remove("show");
     newMatches = [];
   } catch(err) {
@@ -955,6 +1001,7 @@ function doClear() {
   document.getElementById("refSummary").classList.remove("show");
   newMatches = [];
   clearStatus();
+  clearRefError();
 }
 
 // ════════════════════════════════════════
