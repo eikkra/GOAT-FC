@@ -6,11 +6,11 @@
 <title>Club Analytics System</title>
 <link rel="icon" type="image/png" href="https://i.imgur.com/LY3Bb9m.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-:root {
-  --gold:#F5C842;--gold-dim:#c9a22a;--gold-glow:rgba(245,200,66,.18);
-  --bg:#090b0f;--bg2:#0f1117;--bg3:#161b24;--bg4:#1e2433;--bg5:#252d3e;
+:root{
+  --gold:#F5C842;--gold-dim:#c9a22a;
+  --bg:#090b0f;--bg2:#0f1117;--bg3:#161b24;--bg4:#1e2433;
   --border:rgba(255,255,255,.07);--border-g:rgba(245,200,66,.25);
   --text:#eef0f4;--text2:#8891a6;--text3:#4a5268;
   --green:#3ecf8e;--green-bg:rgba(62,207,142,.10);
@@ -35,7 +35,7 @@ body::after{content:'';position:fixed;top:-300px;right:-300px;width:700px;height
 .gate-input:focus{border-color:var(--border-g);}
 .gate-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);display:flex;align-items:center;}
 .gate-eye:hover{color:var(--text2);}
-.gate-btn{width:100%;padding:13px;background:var(--gold);color:#090b0f;border:none;border-radius:var(--r-sm);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.5px;transition:all .18s;}
+.gate-btn{width:100%;padding:13px;background:var(--gold);color:#090b0f;border:none;border-radius:var(--r-sm);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .18s;}
 .gate-btn:hover{background:#ffd84d;box-shadow:0 6px 24px rgba(245,200,66,.3);}
 .gate-err{font-size:12px;color:var(--red);margin-top:10px;display:none;}
 .gate-err.show{display:block;}
@@ -68,7 +68,7 @@ body::after{content:'';position:fixed;top:-300px;right:-300px;width:700px;height
 .ref-panel.ref-error{border-color:rgba(242,107,107,.5);}
 .ref-required-hint{display:none;font-size:11px;color:var(--red);margin-top:8px;align-items:center;gap:5px;}
 .ref-required-hint.show{display:flex;}
-.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:10px;}
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px;margin-top:10px;}
 .ref-chip{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:all .15s;user-select:none;font-size:13px;color:var(--text2);}
 .ref-chip:hover{background:var(--bg4);border-color:rgba(255,255,255,.12);color:var(--text);}
 .ref-chip.selected{background:rgba(245,200,66,.1);border-color:var(--border-g);color:var(--gold);}
@@ -109,15 +109,12 @@ textarea::placeholder{color:var(--text3);}
 .preview-title{font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;}
 .preview-title span{color:var(--gold);}
 .goat-side-tag{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace;}
+/* 5-col stats */
 .stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-bottom:1px solid var(--border);}
 .stat-cell{background:var(--bg2);padding:14px 8px;text-align:center;}
 .stat-num{font-family:'Bebas Neue',sans-serif;font-size:28px;line-height:1;margin-bottom:4px;}
-.stat-num.w{color:var(--green);}
-.stat-num.d{color:var(--amber);}
-.stat-num.l{color:var(--red);}
-.stat-num.motm{color:#a78bfa;}
-.stat-num.yc{color:#fbbf24;}
-.stat-num.rc{color:var(--red);}
+.stat-num.w{color:var(--green);}.stat-num.d{color:var(--amber);}.stat-num.l{color:var(--red);}
+.stat-num.motm{color:#a78bfa;}.stat-num.cards{color:#fbbf24;}
 .stat-lbl{font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);}
 .dup-block{display:none;margin:14px 20px 0;padding:10px 14px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:var(--r-sm);font-size:12px;color:var(--amber);gap:8px;align-items:flex-start;}
 .dup-block.show{display:flex;}
@@ -133,8 +130,7 @@ textarea::placeholder{color:var(--text3);}
 .match-item:last-child{border-bottom:none;}
 .match-item:hover{background:var(--bg3);}
 .match-item.dup-item{opacity:.3;}
-.p-goat{font-size:13px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
-.icon-badge{font-size:12px;}
+.p-goat{font-size:13px;font-weight:500;color:var(--text);display:flex;align-items:flex-start;gap:6px;}
 .p-opp{font-size:12px;color:var(--text2);text-align:right;}
 .score-box{display:flex;align-items:center;border:1px solid var(--border);border-radius:7px;overflow:hidden;flex-shrink:0;}
 .sg{padding:4px 10px;font-family:'Bebas Neue',sans-serif;font-size:18px;background:var(--bg4);color:var(--gold);min-width:32px;text-align:center;line-height:1;}
@@ -144,12 +140,12 @@ textarea::placeholder{color:var(--text3);}
 .result-chip.win{background:var(--green-bg);color:var(--green);}
 .result-chip.draw{background:var(--amber-bg);color:var(--amber);}
 .result-chip.loss{background:var(--red-bg);color:var(--red);}
-.pts-badges{display:flex;gap:4px;margin-top:3px;}
-.pts-badge{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;}
-.pts-badge.motm{background:rgba(167,139,250,.15);color:#a78bfa;}
-.pts-badge.yc{background:rgba(251,191,36,.12);color:#fbbf24;}
-.pts-badge.rc{background:var(--red-bg);color:var(--red);}
-.footer{text-align:center;margin-top:44px;font-size:11px;color:var(--text3);letter-spacing:.5px;}
+.icon-row{display:flex;gap:3px;flex-wrap:wrap;margin-top:3px;}
+.ic-badge{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;}
+.ic-badge.motm{background:rgba(167,139,250,.15);color:#a78bfa;}
+.ic-badge.yc{background:rgba(251,191,36,.12);color:#fbbf24;}
+.ic-badge.rc{background:var(--red-bg);color:var(--red);}
+.footer{text-align:center;margin-top:44px;font-size:11px;color:var(--text3);}
 .footer span{color:var(--gold-dim);}
 @media(max-width:540px){
   .page{padding:14px 12px 56px;}
@@ -182,7 +178,7 @@ textarea::placeholder{color:var(--text3);}
     <div class="gate-sub">Club Analytics System &nbsp;·&nbsp; Admin Access</div>
     <div class="gate-input-wrap">
       <input type="password" id="passInput" class="gate-input" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPass()"/>
-      <button class="gate-eye" onclick="toggleEye()" id="eyeBtn" title="Show/hide">
+      <button class="gate-eye" onclick="toggleEye()">
         <svg id="eyeOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         <svg id="eyeClosed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
       </button>
@@ -228,7 +224,7 @@ textarea::placeholder{color:var(--text3);}
   <div class="ref-panel" id="refPanel" style="margin-bottom:14px;">
     <div class="sec-label" style="margin-bottom:0;">
       Select Referees
-      <span style="color:var(--red);font-size:11px;letter-spacing:.5px;font-weight:600;text-transform:none;">*required</span>
+      <span style="color:var(--red);font-size:11px;font-weight:600;text-transform:none;">*required</span>
       <span style="color:var(--text3);font-size:10px;font-weight:400;text-transform:none;">(minimum 1)</span>
     </div>
     <div class="ref-grid" id="refGrid"><div class="ref-empty">Select a Team Type to see referees.</div></div>
@@ -247,7 +243,12 @@ textarea::placeholder{color:var(--text3);}
       </div>
       <div class="char-count" id="charCount">0 chars</div>
     </div>
-    <textarea id="matchText" placeholder="GOAT FC ⚒️ OPPONENT CLUB&#10;First Day: May 22 | Response 12:20am-12:30am&#10;Sofi-ullah Sofi 🟥 🔑 4🆚3 Nahid Bin Zaman&#10;Faiaz ur Rahman 👑 0🆚0 Mehedi Hasan Mahim 🔑&#10;..."></textarea>
+    <textarea id="matchText" placeholder="eFootball League (Division 6) — Round 6 / 205
+GOAT FC ⚒️ ARCANE SYNDICATE
+First Day: May 22 | Response 12:20am
+Sofi-ullah Sofi 🟥 🔑 4🆚3 Nahid Bin Zaman
+Faiaz ur Rahman 👑 0🆚0 Mehedi Hasan 🔑
+..."></textarea>
   </div>
 
   <div class="btn-row">
@@ -276,18 +277,17 @@ textarea::placeholder{color:var(--text3);}
       <div class="goat-side-tag" id="goatSideLabel"></div>
     </div>
 
-    <!-- 5-col stats: W D L MOTM YC/RC -->
     <div class="stats-row">
       <div class="stat-cell"><div class="stat-num w" id="sW">0</div><div class="stat-lbl">Wins</div></div>
       <div class="stat-cell"><div class="stat-num d" id="sD">0</div><div class="stat-lbl">Draws</div></div>
       <div class="stat-cell"><div class="stat-num l" id="sL">0</div><div class="stat-lbl">Losses</div></div>
       <div class="stat-cell"><div class="stat-num motm" id="sMOTM">0</div><div class="stat-lbl">👑 MOTM</div></div>
-      <div class="stat-cell"><div class="stat-num yc" id="sCards">0</div><div class="stat-lbl">🟨🟥 Cards</div></div>
+      <div class="stat-cell"><div class="stat-num cards" id="sCards">0</div><div class="stat-lbl">🟨🟥 Cards</div></div>
     </div>
 
     <div class="dup-block" id="dupBlock">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0;margin-top:1px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      <div><div style="font-weight:600;margin-bottom:2px;">Duplicate matches detected — এগুলো skip হবে</div><ul class="dup-list" id="dupList"></ul></div>
+      <div><div style="font-weight:600;margin-bottom:2px;">Duplicate matches — এগুলো skip হবে</div><ul class="dup-list" id="dupList"></ul></div>
     </div>
 
     <div class="ref-summary" id="refSummary">
@@ -304,15 +304,15 @@ textarea::placeholder{color:var(--text3);}
 
 <script>
 // ════════════════════════════════════════
-// CONFIG
+// CONFIG — edit here
 // ════════════════════════════════════════
 const CONFIG = {
   password: "goatfc@20231228",
-  scriptUrl: "https://script.google.com/macros/s/AKfycbxoSuD54pl-4d8n4T5chU56P9ilhoyZFivY2tD8iGM19lHVyfn89AOCX-r6IOQ7fHt0/exec",
+  scriptUrl: "https://script.google.com/macros/s/AKfycbwucmPNhWprUOur3duKmotv5Ht26NdeIn23OiDeUpAMhfcVVjHfdJEPuAOk1OEeC4Cl/exec",
   referees: {
-    Main:     ["Joy das","Ishmam Wahid","Md Shah Newaj","Sanjil Chowdhury","Arniv Rahman","Empty Slot"],
-    Academy:  ["Rian Forhad","Ahmed Samir","Ashaduzzaman Tuha","Sheikh Imtiaz","Empty Slot","Empty Slot"],
-    Youth:    ["Empty Slot","Empty Slot","Empty Slot","Empty Slot","Empty Slot","Empty Slot"],
+    Main:    ["Joy das","Ishmam Wahid","Md Shah Newaj","Sanjil Chowdhury","Arniv Rahman","Empty Slot"],
+    Academy: ["Rian Forhad","Ahmed Samir","Ashaduzzaman Tuha","Sheikh Imtiaz","Empty Slot","Empty Slot"],
+    Youth:   ["Empty Slot","Empty Slot","Empty Slot","Empty Slot","Empty Slot","Empty Slot"],
   }
 };
 CONFIG.referees.Overall = [...new Set([...CONFIG.referees.Main,...CONFIG.referees.Academy,...CONFIG.referees.Youth])];
@@ -321,11 +321,12 @@ CONFIG.referees.Overall = [...new Set([...CONFIG.referees.Main,...CONFIG.referee
 // GATE
 // ════════════════════════════════════════
 function checkPass(){
-  const val=document.getElementById("passInput").value;
-  if(val===CONFIG.password){
+  if(document.getElementById("passInput").value===CONFIG.password){
     document.getElementById("gate").style.display="none";
     document.getElementById("app").style.display="block";
-    updateDate();
+    const d=new Date();
+    document.getElementById("topbarDate").textContent=d.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"});
+    renderRefGrid();
   } else {
     document.getElementById("gateErr").classList.add("show");
     document.getElementById("passInput").style.borderColor="var(--red)";
@@ -333,19 +334,19 @@ function checkPass(){
   }
 }
 function toggleEye(){
-  const inp=document.getElementById("passInput");
-  const isPass=inp.type==="password";
-  inp.type=isPass?"text":"password";
-  document.getElementById("eyeOpen").style.display=isPass?"none":"block";
-  document.getElementById("eyeClosed").style.display=isPass?"block":"none";
+  const inp=document.getElementById("passInput"),isP=inp.type==="password";
+  inp.type=isP?"text":"password";
+  document.getElementById("eyeOpen").style.display=isP?"none":"block";
+  document.getElementById("eyeClosed").style.display=isP?"block":"none";
 }
-function updateDate(){
-  const d=new Date();
-  document.getElementById("topbarDate").textContent=d.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"});
-}
+document.addEventListener("DOMContentLoaded",()=>{
+  document.getElementById("matchText").addEventListener("input",function(){
+    document.getElementById("charCount").textContent=this.value.length+" chars";
+  });
+});
 
 // ════════════════════════════════════════
-// TEAM TYPE / REFEREE
+// REFEREES
 // ════════════════════════════════════════
 let selectedRefs=new Set();
 function onTeamTypeChange(){
@@ -359,32 +360,26 @@ function renderRefGrid(){
   const list=CONFIG.referees[type]||[];
   const grid=document.getElementById("refGrid");
   if(!list.length){grid.innerHTML='<div class="ref-empty">No referees configured.</div>';return;}
-  grid.innerHTML=list.map(name=>`
-    <div class="ref-chip" id="rc_${esc(name)}" onclick="toggleRef('${esc(name)}')">
+  grid.innerHTML=list.map(n=>`
+    <div class="ref-chip" id="rc_${esc(n)}" onclick="toggleRef('${esc(n)}')">
       <div class="ref-check"><svg viewBox="0 0 24 24" fill="none" stroke="#090b0f" stroke-width="3" width="10" height="10"><polyline points="20 6 9 17 4 12"/></svg></div>
-      ${esc(name)}
+      ${esc(n)}
     </div>`).join("");
 }
-function toggleRef(name){
-  if(selectedRefs.has(name))selectedRefs.delete(name);
-  else selectedRefs.add(name);
-  const chip=document.getElementById("rc_"+name);
-  if(chip)chip.classList.toggle("selected",selectedRefs.has(name));
+function toggleRef(n){
+  if(selectedRefs.has(n))selectedRefs.delete(n);else selectedRefs.add(n);
+  const c=document.getElementById("rc_"+n);
+  if(c)c.classList.toggle("selected",selectedRefs.has(n));
   updateRefDisplay();
   if(selectedRefs.size>0)clearRefError();
 }
 function updateRefDisplay(){
   const arr=[...selectedRefs];
-  const badge=document.getElementById("refCountBadge");
-  const disp=document.getElementById("refSelectedDisplay");
+  document.getElementById("refCountBadge").textContent=arr.length?arr.length+" selected":"";
+  const d=document.getElementById("refSelectedDisplay");
   if(arr.length){
-    badge.textContent=arr.length+" selected";
-    disp.innerHTML=arr.map(r=>`<span style="display:inline-block;background:var(--bg4);border:1px solid var(--border-g);color:var(--gold);border-radius:20px;padding:2px 9px;font-size:11px;margin:2px 3px 2px 0;">${esc(r)}</span>`).join("");
-  } else {
-    badge.textContent="";
-    disp.textContent="No referee selected";
-    disp.style.color="var(--text3)";
-  }
+    d.innerHTML=arr.map(r=>`<span style="display:inline-block;background:var(--bg4);border:1px solid var(--border-g);color:var(--gold);border-radius:20px;padding:2px 9px;font-size:11px;margin:2px 3px 2px 0;">${esc(r)}</span>`).join("");
+  } else {d.textContent="No referee selected";d.style.color="var(--text3)";}
 }
 function showRefError(){
   document.getElementById("refPanel").classList.add("ref-error");
@@ -395,54 +390,36 @@ function clearRefError(){
   document.getElementById("refPanel").classList.remove("ref-error");
   document.getElementById("refRequiredHint").classList.remove("show");
 }
-document.addEventListener("DOMContentLoaded",()=>{
-  renderRefGrid();
-  document.getElementById("matchText").addEventListener("input",function(){
-    document.getElementById("charCount").textContent=this.value.length+" chars";
-  });
-});
 
 // ════════════════════════════════════════
-// ICON DETECTION (GOAT FC player side only)
-// Crown = 👑 (U+1F451)
-// Yellow = 🟨 (U+1F7E8)
-// Red    = 🟥 (U+1F7E5)
+// PARSE CORE
 // ════════════════════════════════════════
-function detectIcons(raw) {
-  return {
-    motm:   /👑/.test(raw),
-    yellow: /🟨/.test(raw),
-    red:    /🟥/.test(raw),
-  };
-}
 
-// ════════════════════════════════════════
-// PARSE
-// ════════════════════════════════════════
+// Detect which side GOAT FC is on
+// Scans top lines for the header "GOAT FC ⚒️ OPPONENT" or reverse
 function detectGoatSide(text){
-  const m=text.match(/([^\n]*GOAT[^\n]*)/i);
-  if(!m)return"right";
-  const line=m[0];
-  const gi=line.search(/GOAT/i);
-  const si=line.search(/⚒️|🆚/);
-  return(si!==-1&&gi<si)?"left":"right";
+  const lines=text.split("\n").map(l=>l.trim()).filter(Boolean);
+  for(const line of lines){
+    if(/GOAT/i.test(line)&&/FC/i.test(line)){
+      const goatIdx=line.search(/GOAT/i);
+      const sepIdx=line.search(/⚒️|⚔|🆚|\bVS\b/i);
+      if(sepIdx!==-1) return goatIdx<sepIdx ? "left" : "right";
+      return "left";
+    }
+  }
+  return "left";
 }
 
-// Strip @, leading symbols, ALL emojis except 🆚 🔑 👑 🟨 🟥 from player name raw string
-function stripName(raw){
-  return raw
-    .replace(/^[@#\*\-–—•►▶︎▷❯»·\s]+/,"")
-    // remove emojis that are NOT our special ones
-    .replace(/(?![\u{1F19A}\u{1F511}\u{1F451}\u{1F7E8}\u{1F7E5}])[\u{1F300}-\u{1FFFF}\u{2600}-\u{27BF}]/gu,"")
-    .replace(/\s{2,}/g," ").trim();
-}
-
-// Clean final player name: remove ALL icons + @ for storage
-function cleanName(raw){
-  return raw
-    .replace(/[@👑🟨🟥🔑🆚]/gu,"")
-    .replace(/^[\s\-–—•►▶︎▷❯»·]+/,"")
-    .replace(/\s{2,}/g," ").trim();
+// Extract round: "Round 6 / 205" → "Round 6/205", "R031/140", "GRP12-R6/29"
+function extractRound(text){
+  const head=text.split("\n").map(l=>l.trim()).filter(Boolean).slice(0,4).join(" ");
+  const r1=head.match(/Round\s+(\d+)\s*\/\s*(\d+)/i);
+  if(r1) return `Round ${r1[1]}/${r1[2]}`;
+  const r2=head.match(/\bR(\d+)\s*\/\s*(\d+)/i);
+  if(r2) return `R${r2[1]}/${r2[2]}`;
+  const r3=head.match(/GRP[\w\-\/\s\d]+/i);
+  if(r3) return r3[0].trim().replace(/\s+/g," ");
+  return "";
 }
 
 const SESSION_MAP=[
@@ -455,43 +432,62 @@ const SESSION_MAP=[
   {r:/evening/i,l:"Evening"},
 ];
 
+// Strip player name raw string from icons+@ for storage
+function cleanName(raw){
+  return raw
+    .replace(/[@👑🟨🟥🔑]/gu,"")
+    .replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}]/gu,"")
+    .replace(/^[\s\-–—•►▶❯»·]+/,"")
+    .replace(/\s{2,}/g," ").trim();
+}
+
 function parseMatches(text){
   const goatSide=detectGoatSide(text);
+  const round=extractRound(text);
   const lines=text.split("\n").map(l=>l.trim()).filter(Boolean);
   const results=[];
   let session="General";
 
-  const roundMatch=text.match(/GRP[\w\-\/\s\d]+|\bR\d+[\-\/]\d+|\bRound\s*\d+/i);
-  const round=roundMatch?roundMatch[0].trim().replace(/\s+/g," "):"";
-
   lines.forEach(line=>{
     for(const s of SESSION_MAP){if(s.r.test(line)){session=s.l;return;}}
 
-    const stripped=stripName(line);
-    const m=stripped.match(/^(.+?)\s+(\d+)\s*🆚\s*(\d+)\s+(.+)$/);
-    if(!m)return;
+    // Clean: strip @ and leading junk, keep 🆚 🔑 👑 🟨 🟥
+    const cleaned=line
+      .replace(/^[@#\*\-–—•►▶▷❯»·\s]+/,"")
+      .replace(/(?![\u{1F19A}\u{1F511}\u{1F451}\u{1F7E8}\u{1F7E5}])[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}]/gu,"")
+      .replace(/\s{2,}/g," ").trim();
 
-    const p1raw=m[1], s1=parseInt(m[2]), s2=parseInt(m[3]), p2raw=m[4];
+    const m=cleaned.match(/^(.+?)\s+(\d+)\s*🆚\s*(\d+)\s+(.+)$/);
+    if(!m) return;
 
-    // Determine which raw side is GOAT FC
-    const goatRaw = goatSide==="right" ? p2raw : p1raw;
-    const oppRaw  = goatSide==="right" ? p1raw : p2raw;
+    const leftRaw=m[1].trim();
+    const leftScore=parseInt(m[2]);
+    const rightScore=parseInt(m[3]);
+    const rightRaw=m[4].trim();
 
-    const goatPlayer = cleanName(goatRaw);
-    const oppPlayer  = cleanName(oppRaw);
-    const goatScore  = goatSide==="right" ? s2 : s1;
-    const oppScore   = goatSide==="right" ? s1 : s2;
-    const isKey      = goatRaw.includes("🔑");
+    // ── GOAT FC side assignment ──
+    // goatSide="left"  → left player is GOAT FC
+    // goatSide="right" → right player is GOAT FC
+    const goatRaw   = goatSide==="left" ? leftRaw   : rightRaw;
+    const oppRaw    = goatSide==="left" ? rightRaw  : leftRaw;
+    const goatScore = goatSide==="left" ? leftScore  : rightScore;
+    const oppScore  = goatSide==="left" ? rightScore : leftScore;
 
-    // Icons: only check GOAT FC player's raw string
-    const icons = detectIcons(goatRaw);
+    const goatPlayer=cleanName(goatRaw);
+    const oppPlayer =cleanName(oppRaw);
+    if(!goatPlayer||!oppPlayer) return;
+
+    // Icons: ONLY from GOAT FC player's raw string
+    const motm  =/👑/.test(goatRaw);
+    const yellow=/🟨/.test(goatRaw);
+    const red   =/🟥/.test(goatRaw);
+    const isKey =/🔑/.test(goatRaw);
 
     let result="Draw";
-    if(goatScore>oppScore)result="Win";
-    else if(goatScore<oppScore)result="Loss";
+    if(goatScore>oppScore) result="Win";
+    else if(goatScore<oppScore) result="Loss";
 
-    results.push({goatPlayer,oppPlayer,goatScore,oppScore,result,session,isKey,round,
-                  motm:icons.motm, yellow:icons.yellow, red:icons.red});
+    results.push({goatPlayer,oppPlayer,goatScore,oppScore,result,session,isKey,round,motm,yellow,red});
   });
 
   return{matches:results,goatSide,round};
@@ -500,13 +496,13 @@ function parseMatches(text){
 // ════════════════════════════════════════
 // DUPLICATE HASH
 // ════════════════════════════════════════
-const HASH_KEY="goatfc_hashes_v3";
+const HASH_KEY="goatfc_hashes_v4";
 function loadHashes(){try{return new Set(JSON.parse(localStorage.getItem(HASH_KEY)||"[]"));}catch{return new Set();}}
-function saveHashes(set){localStorage.setItem(HASH_KEY,JSON.stringify([...set]));}
-function makeHash(m,teamType){
+function saveHashes(s){localStorage.setItem(HASH_KEY,JSON.stringify([...s]));}
+function makeHash(m,tt){
   return[m.goatPlayer.toLowerCase().trim(),m.oppPlayer.toLowerCase().trim(),
          m.goatScore,m.oppScore,m.session.toLowerCase().trim(),
-         teamType.toLowerCase().trim(),(m.round||"").toLowerCase().trim()].join("|");
+         tt.toLowerCase().trim(),(m.round||"").toLowerCase().trim()].join("|");
 }
 
 let newMatches=[];
@@ -517,10 +513,10 @@ let newMatches=[];
 function doPreview(){
   const text=document.getElementById("matchText").value.trim();
   if(!text){showStatus("error","Match text paste করো আগে।");return;}
-  if(selectedRefs.size===0){showRefError();showStatus("error","Preview এর আগে কমপক্ষে ১ জন referee select করো।");return;}
+  if(selectedRefs.size===0){showRefError();showStatus("error","কমপক্ষে ১ জন referee select করো।");return;}
   clearRefError();
 
-  const teamType=document.getElementById("teamType").value;
+  const tt=document.getElementById("teamType").value;
   const{matches,goatSide,round}=parseMatches(text);
 
   if(!matches.length){
@@ -533,52 +529,49 @@ function doPreview(){
   const stored=loadHashes();
   const dups=[],fresh=[];
   matches.forEach(m=>{
-    const h=makeHash(m,teamType);
-    if(stored.has(h))dups.push(`${m.goatPlayer} vs ${m.oppPlayer} (${m.goatScore}–${m.oppScore})`);
+    const h=makeHash(m,tt);
+    if(stored.has(h)) dups.push(`${m.goatPlayer} vs ${m.oppPlayer} (${m.goatScore}–${m.oppScore})`);
     else fresh.push(m);
   });
   newMatches=fresh;
 
-  document.getElementById("sW").textContent=fresh.filter(m=>m.result==="Win").length;
-  document.getElementById("sD").textContent=fresh.filter(m=>m.result==="Draw").length;
-  document.getElementById("sL").textContent=fresh.filter(m=>m.result==="Loss").length;
+  document.getElementById("sW").textContent   =fresh.filter(m=>m.result==="Win").length;
+  document.getElementById("sD").textContent   =fresh.filter(m=>m.result==="Draw").length;
+  document.getElementById("sL").textContent   =fresh.filter(m=>m.result==="Loss").length;
   document.getElementById("sMOTM").textContent=fresh.filter(m=>m.motm).length;
   document.getElementById("sCards").textContent=fresh.filter(m=>m.yellow||m.red).length;
   document.getElementById("matchCountLabel").textContent=fresh.length+" match"+(fresh.length!==1?"es":"");
-  document.getElementById("goatSideLabel").textContent=(round?round+" · ":"")+"GOAT FC → "+(goatSide==="right"?"right side":"left side");
+  document.getElementById("goatSideLabel").textContent=
+    (round?round+" · ":"")+"GOAT FC → "+(goatSide==="left"?"left side":"right side");
 
-  const dupBlock=document.getElementById("dupBlock");
-  if(dups.length){dupBlock.classList.add("show");document.getElementById("dupList").innerHTML=dups.map(d=>`<li>${esc(d)}</li>`).join("");}
-  else dupBlock.classList.remove("show");
+  // dup block
+  const db=document.getElementById("dupBlock");
+  if(dups.length){db.classList.add("show");document.getElementById("dupList").innerHTML=dups.map(d=>`<li>${esc(d)}</li>`).join("");}
+  else db.classList.remove("show");
 
+  // ref summary
   const refArr=[...selectedRefs];
-  const refSummary=document.getElementById("refSummary");
-  refSummary.classList.add("show");
-  document.getElementById("refSummaryText").textContent=`${refArr.length} referee(s): ${refArr.join(", ")} — 5 pts × ${fresh.length} match(es) submitted`;
+  document.getElementById("refSummary").classList.add("show");
+  document.getElementById("refSummaryText").textContent=
+    `${refArr.length} referee(s): ${refArr.join(", ")} — 5 pts × ${fresh.length} match(es)`;
 
+  // match list
   let html="",lastSess="";
   const renderList=fresh.length?fresh:matches;
   renderList.forEach((m,i)=>{
     if(m.session!==lastSess){html+=`<div class="session-div">${esc(m.session)}</div>`;lastSess=m.session;}
-    const rc=m.result.toLowerCase();
-    const isDup=!fresh.includes(m);
-
-    // icon badges for GOAT FC player
-    let ptBadges="";
-    if(m.motm)  ptBadges+=`<span class="pts-badge motm">👑 +2 MOTM</span>`;
-    if(m.yellow)ptBadges+=`<span class="pts-badge yc">🟨 -7</span>`;
-    if(m.red)   ptBadges+=`<span class="pts-badge rc">🟥 -14</span>`;
-
-    const iconStr=(m.isKey?'<span class="key-ic">🔑</span>':'')
-                 +(m.motm?'<span class="icon-badge">👑</span>':'')
-                 +(m.yellow?'<span class="icon-badge">🟨</span>':'')
-                 +(m.red?'<span class="icon-badge">🟥</span>':'');
-
+    const rc=m.result.toLowerCase(),isDup=!fresh.includes(m);
+    let badges="";
+    if(m.motm)  badges+=`<span class="ic-badge motm">👑 +2</span>`;
+    if(m.yellow)badges+=`<span class="ic-badge yc">🟨 -7</span>`;
+    if(m.red)   badges+=`<span class="ic-badge rc">🟥 -14</span>`;
     html+=`
       <div class="match-item${isDup?" dup-item":""}" style="animation-delay:${i*30}ms">
         <div class="p-goat">
-          ${iconStr}
-          <div><div>${esc(m.goatPlayer)}</div>${ptBadges?`<div class="pts-badges">${ptBadges}</div>`:""}</div>
+          <div>
+            <div>${m.isKey?'🔑 ':''}<strong>${esc(m.goatPlayer)}</strong></div>
+            ${badges?`<div class="icon-row">${badges}</div>`:""}
+          </div>
         </div>
         <div class="score-box">
           <div class="sg">${m.goatScore}</div><div class="ssep">vs</div><div class="so">${m.oppScore}</div>
@@ -591,7 +584,7 @@ function doPreview(){
   document.getElementById("previewPanel").classList.add("show");
 
   if(fresh.length){document.getElementById("submitBtn").classList.add("show");clearStatus();}
-  else{document.getElementById("submitBtn").classList.remove("show");showStatus("warn","সব matches আগেই submit হয়েছে। কোনো নতুন data নেই।");}
+  else{document.getElementById("submitBtn").classList.remove("show");showStatus("warn","সব matches আগেই submit হয়েছে।");}
 }
 
 // ════════════════════════════════════════
@@ -599,37 +592,31 @@ function doPreview(){
 // ════════════════════════════════════════
 async function doSubmit(){
   if(!newMatches.length){showStatus("warn","কোনো নতুন match নেই।");return;}
-  if(selectedRefs.size===0){showRefError();showStatus("error","Submit এর আগে কমপক্ষে ১ জন referee select করো।");return;}
-
-  const submitBtn=document.getElementById("submitBtn");
-  const previewBtn=document.getElementById("previewBtn");
-  submitBtn.disabled=previewBtn.disabled=true;
+  if(selectedRefs.size===0){showRefError();showStatus("error","কমপক্ষে ১ জন referee select করো।");return;}
+  const sb=document.getElementById("submitBtn"),pb=document.getElementById("previewBtn");
+  sb.disabled=pb.disabled=true;
   showStatus("loading","Google Sheet এ submit হচ্ছে…",true);
-
   const text=document.getElementById("matchText").value.trim();
-  const teamType=document.getElementById("teamType").value;
+  const tt=document.getElementById("teamType").value;
   const refArr=[...selectedRefs];
-
   try{
     const body=new URLSearchParams();
     body.append("text",text);
-    body.append("teamType",teamType);
+    body.append("teamType",tt);
     body.append("referees",refArr.join(","));
     await fetch(CONFIG.scriptUrl,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:body.toString(),mode:"no-cors"});
-
     const stored=loadHashes();
-    newMatches.forEach(m=>stored.add(makeHash(m,teamType)));
+    newMatches.forEach(m=>stored.add(makeHash(m,tt)));
     saveHashes(stored);
-
     showStatus("success",`✓ ${newMatches.length} match${newMatches.length!==1?"es":""} submitted · ${refArr.length} referee(s) logged!`);
     document.getElementById("submitBtn").classList.remove("show");
     newMatches=[];
   }catch(err){showStatus("error","Submit failed: "+err.message);}
-  submitBtn.disabled=previewBtn.disabled=false;
+  sb.disabled=pb.disabled=false;
 }
 
 // ════════════════════════════════════════
-// CLEAR
+// CLEAR + HELPERS
 // ════════════════════════════════════════
 function doClear(){
   document.getElementById("matchText").value="";
@@ -640,16 +627,14 @@ function doClear(){
   document.getElementById("refSummary").classList.remove("show");
   newMatches=[];clearStatus();clearRefError();
 }
-
 function showStatus(type,msg,spin){
-  const bar=document.getElementById("statusBar");
-  const icon=document.getElementById("statusIcon");
+  const bar=document.getElementById("statusBar"),icon=document.getElementById("statusIcon");
   document.getElementById("statusMsg").textContent=msg;
   bar.className="status show "+type;
-  if(spin)icon.innerHTML=`<span class="spin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></span>`;
-  else if(type==="success")icon.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px"><polyline points="20 6 9 17 4 12"/></svg>`;
-  else if(type==="error")icon.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
-  else if(type==="warn")icon.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+  if(spin) icon.innerHTML=`<span class="spin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></span>`;
+  else if(type==="success") icon.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px"><polyline points="20 6 9 17 4 12"/></svg>`;
+  else if(type==="error")   icon.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
+  else if(type==="warn")    icon.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
   else icon.innerHTML="";
 }
 function clearStatus(){document.getElementById("statusBar").className="status";}
