@@ -601,34 +601,116 @@ textarea::placeholder{color:var(--text3);}
 .footer span{color:var(--gold-dim);}
 
 /* ════════════════════════════════════════════════
-   RESPONSIVE
+   RESPONSIVE — MOBILE COMPACT
 ════════════════════════════════════════════════ */
 @media(max-width:600px){
-  .page{padding:14px 12px 60px;}
-  .topbar{padding:12px 14px;margin-bottom:18px;}
-  .brand-logo{width:36px;height:36px;}
-  .brand-name{font-size:15px;}
-  .meta-row{grid-template-columns:1fr;}
-  .ref-grid{grid-template-columns:repeat(auto-fill,minmax(136px,1fr));}
-  .stats-row{grid-template-columns:repeat(3,1fr);}
-  .stat-cell:nth-child(4),.stat-cell:nth-child(5){
-    border-top:1px solid var(--border);
+  .page{padding:10px 10px 60px;}
+  .topbar{padding:10px 12px;margin-bottom:14px;gap:8px;}
+  .brand-logo{width:32px;height:32px;}
+  .brand-name{font-size:13px;letter-spacing:2px;}
+  .brand-sub{font-size:8px;}
+  .hud-pill{font-size:9px;padding:4px 10px;}
+  .hud-live{font-size:9px;padding:4px 9px;}
+
+  .sec-head{margin-bottom:8px;}
+  .sec-num{font-size:8px;padding:2px 6px;}
+  .sec-title{font-size:9px;letter-spacing:2px;}
+
+  .meta-row{grid-template-columns:1fr;gap:8px;margin-bottom:10px;}
+  .ref-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px;}
+  .ref-chip{font-size:12px;padding:7px 10px;}
+  .ref-panel{padding:12px;margin-bottom:10px;}
+
+  textarea{font-size:11px;min-height:140px;padding:12px;}
+  .card{margin-bottom:10px;}
+
+  .btn{padding:9px 12px;font-size:8px;letter-spacing:1px;}
+  .btn-row{gap:7px;margin-bottom:12px;}
+
+  /* ── Stats: all 5 in ONE row, ultra-compact ── */
+  .stats-row{
+    display:flex;
+    flex-direction:row;
+    gap:0;
+    background:var(--border);
+    border-bottom:1px solid var(--border);
+    overflow:hidden;
   }
-  .stat-num{font-size:24px;}
+  .stat-cell{
+    flex:1;
+    padding:8px 2px;
+    min-width:0;
+    border-top:none !important;
+  }
+  .stat-num{
+    font-size:18px;
+    margin-bottom:2px;
+  }
+  .stat-lbl{
+    font-size:7px;
+    letter-spacing:.5px;
+  }
+
+  /* ── Match item: compact single-line layout ── */
   .match-item{
-    grid-template-columns:1fr auto;
-    grid-template-rows:auto auto;
-    gap:5px;padding:10px 14px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 10px;
+    flex-wrap:nowrap;
   }
-  .p-goat{grid-column:1;grid-row:1;}
-  .score-box{grid-column:2;grid-row:1/3;}
-  .p-opp{grid-column:1;grid-row:2;text-align:left;}
-  .result-chip{display:none;}
-  .sg,.so{padding:4px 9px;font-size:16px;min-width:28px;}
-  .btn{padding:10px 14px;font-size:9px;letter-spacing:1px;}
-  textarea{font-size:11px;min-height:160px;}
-  .gate-card{padding:32px 20px;}
+  /* GOAT player: shrinks, clips overflow */
+  .p-goat{
+    flex:1;
+    min-width:0;
+    font-size:11px;
+    gap:2px;
+  }
+  .p-goat-name{
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-size:11px;
+  }
+  .p-goat-name strong{font-weight:600;}
+  .badge-row{gap:2px;margin-top:2px;}
+  .badge{font-size:7px;padding:1px 4px;}
+
+  /* score box: smaller */
+  .score-box{flex-shrink:0;}
+  .sg,.so{padding:3px 7px;font-size:14px;min-width:22px;}
+  .ssep{padding:3px 4px;font-size:7px;}
+
+  /* opponent: shrinks, clips */
+  .p-opp{
+    flex:1;
+    min-width:0;
+    font-size:11px;
+    text-align:right;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  /* result chip: tight */
+  .result-chip{
+    flex-shrink:0;
+    padding:3px 7px;
+    font-size:8px;
+    letter-spacing:.5px;
+  }
+
+  .session-div{padding:8px 10px 4px;font-size:8px;}
+  .preview-head{padding:10px 12px;}
+  .preview-title{font-size:10px;}
+  .goat-side-tag{font-size:9px;padding:3px 8px;}
+
+  .dup-block{margin:10px 10px 0;padding:8px 12px;font-size:11px;}
+  .ref-summary{margin:8px 10px 0;padding:8px 12px;font-size:11px;}
+
+  .gate-card{padding:28px 18px;}
   .gate-title{font-size:22px;}
+  .gate-logo{width:60px;height:60px;}
 }
 </style>
 </head>
