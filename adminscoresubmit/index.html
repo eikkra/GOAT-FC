@@ -109,7 +109,6 @@ textarea::placeholder{color:var(--text3);}
 .preview-title{font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;}
 .preview-title span{color:var(--gold);}
 .goat-side-tag{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace;}
-/* 5-col stats */
 .stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-bottom:1px solid var(--border);}
 .stat-cell{background:var(--bg2);padding:14px 8px;text-align:center;}
 .stat-num{font-family:'Bebas Neue',sans-serif;font-size:28px;line-height:1;margin-bottom:4px;}
@@ -308,7 +307,7 @@ Faiaz ur Rahman 👑 0🆚0 Mehedi Hasan 🔑
 // ════════════════════════════════════════
 const CONFIG = {
   password: "goatfc@20231228",
-  scriptUrl: "https://script.google.com/macros/s/AKfycby8TARJWw70X5KmRIkRTGZA3AE3hfioiwSU0wF2uThBKGUZPibQE_8JPkPYcd70DOcU/exec",
+  scriptUrl: "https://script.google.com/macros/s/AKfycbw6M2rcqlTRa7RmV4tvlxyKBRzaFKLa5Ecxg_I8BaImls835ojRLjF8uPZsCXLxsn7P/exec",
   referees: {
     Main:    ["Joy das","Ishmam Wahid","Md Shah Newaj","Sanjil Chowdhury","Arniv Rahman","Empty Slot"],
     Academy: ["Rian Forhad","Ahmed Samir","Ashaduzzaman Tuha","Sheikh Imtiaz","Empty Slot","Empty Slot"],
@@ -330,7 +329,10 @@ function checkPass(){
   } else {
     document.getElementById("gateErr").classList.add("show");
     document.getElementById("passInput").style.borderColor="var(--red)";
-    setTimeout(()=>{document.getElementById("gateErr").classList.remove("show");document.getElementById("passInput").style.borderColor="";},2500);
+    setTimeout(()=>{
+      document.getElementById("gateErr").classList.remove("show");
+      document.getElementById("passInput").style.borderColor="";
+    },2500);
   }
 }
 function toggleEye(){
@@ -349,8 +351,12 @@ document.addEventListener("DOMContentLoaded",()=>{
 // REFEREES
 // ════════════════════════════════════════
 let selectedRefs=new Set();
+
 function onTeamTypeChange(){
-  selectedRefs.clear();renderRefGrid();updateRefDisplay();clearRefError();
+  selectedRefs.clear();
+  renderRefGrid();
+  updateRefDisplay();
+  clearRefError();
   document.getElementById("previewPanel").classList.remove("show");
   document.getElementById("submitBtn").classList.remove("show");
   clearStatus();
@@ -367,11 +373,11 @@ function renderRefGrid(){
     </div>`).join("");
 }
 function toggleRef(n){
-  if(selectedRefs.has(n))selectedRefs.delete(n);else selectedRefs.add(n);
+  if(selectedRefs.has(n)) selectedRefs.delete(n); else selectedRefs.add(n);
   const c=document.getElementById("rc_"+n);
-  if(c)c.classList.toggle("selected",selectedRefs.has(n));
+  if(c) c.classList.toggle("selected",selectedRefs.has(n));
   updateRefDisplay();
-  if(selectedRefs.size>0)clearRefError();
+  if(selectedRefs.size>0) clearRefError();
 }
 function updateRefDisplay(){
   const arr=[...selectedRefs];
@@ -379,7 +385,7 @@ function updateRefDisplay(){
   const d=document.getElementById("refSelectedDisplay");
   if(arr.length){
     d.innerHTML=arr.map(r=>`<span style="display:inline-block;background:var(--bg4);border:1px solid var(--border-g);color:var(--gold);border-radius:20px;padding:2px 9px;font-size:11px;margin:2px 3px 2px 0;">${esc(r)}</span>`).join("");
-  } else {d.textContent="No referee selected";d.style.color="var(--text3)";}
+  } else { d.textContent="No referee selected"; d.style.color="var(--text3)"; }
 }
 function showRefError(){
   document.getElementById("refPanel").classList.add("ref-error");
@@ -395,22 +401,21 @@ function clearRefError(){
 // PARSE CORE
 // ════════════════════════════════════════
 
-// Detect which side GOAT FC is on
-// Scans top lines for the header "GOAT FC ⚒️ OPPONENT" or reverse
+// Detect which side GOAT FC is on from the header line
 function detectGoatSide(text){
   const lines=text.split("\n").map(l=>l.trim()).filter(Boolean);
   for(const line of lines){
-    if(/GOAT/i.test(line)&&/FC/i.test(line)){
+    if(/GOAT/i.test(line) && /FC/i.test(line)){
       const goatIdx=line.search(/GOAT/i);
       const sepIdx=line.search(/⚒️|⚔|🆚|\bVS\b/i);
-      if(sepIdx!==-1) return goatIdx<sepIdx ? "left" : "right";
+      if(sepIdx!==-1) return goatIdx < sepIdx ? "left" : "right";
       return "left";
     }
   }
   return "left";
 }
 
-// Extract round: "Round 6 / 205" → "Round 6/205", "R031/140", "GRP12-R6/29"
+// Extract round from first 4 lines
 function extractRound(text){
   const head=text.split("\n").map(l=>l.trim()).filter(Boolean).slice(0,4).join(" ");
   const r1=head.match(/Round\s+(\d+)\s*\/\s*(\d+)/i);
@@ -423,66 +428,74 @@ function extractRound(text){
 }
 
 const SESSION_MAP=[
-  {r:/first\s*day/i,l:"First Day"},
-  {r:/\bstar\b.*?(\||may)/i,l:"Star"},
-  {r:/mid[\s_]?night/i,l:"Mid Night"},
-  {r:/late[\s_]?night/i,l:"Late Night"},
-  {r:/morning/i,l:"Morning"},
-  {r:/afternoon/i,l:"Afternoon"},
-  {r:/evening/i,l:"Evening"},
+  {r:/first\s*day/i,         l:"First Day"},
+  {r:/\bstar\b.*?(\||may)/i, l:"Star"},
+  {r:/mid[\s_]?night/i,      l:"Mid Night"},
+  {r:/late[\s_]?night/i,     l:"Late Night"},
+  {r:/morning/i,             l:"Morning"},
+  {r:/afternoon/i,           l:"Afternoon"},
+  {r:/evening/i,             l:"Evening"},
 ];
 
-// Strip player name raw string from icons+@ for storage
-function cleanName(raw){
+// Clean player name: remove @ and all icons, keep name text only
+function cleanPlayerName(raw){
   return raw
-    .replace(/[@👑🟨🟥🔑]/gu,"")
+    .replace(/@/g,"")
+    .replace(/👑|🟨|🟥|🔑/gu,"")
     .replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}]/gu,"")
-    .replace(/^[\s\-–—•►▶❯»·]+/,"")
-    .replace(/\s{2,}/g," ").trim();
+    .replace(/\s{2,}/g," ")
+    .trim();
 }
 
 function parseMatches(text){
-  const goatSide=detectGoatSide(text);
-  const round=extractRound(text);
-  const lines=text.split("\n").map(l=>l.trim()).filter(Boolean);
-  const results=[];
-  let session="General";
+  const goatSide = detectGoatSide(text);
+  const round    = extractRound(text);
+  const lines    = text.split("\n").map(l=>l.trim()).filter(Boolean);
+  const results  = [];
+  let session    = "General";
 
-  lines.forEach(line=>{
-    for(const s of SESSION_MAP){if(s.r.test(line)){session=s.l;return;}}
+  lines.forEach(line => {
+    // session label check
+    for(const s of SESSION_MAP){ if(s.r.test(line)){ session=s.l; return; } }
 
-    // Clean: strip @ and leading junk, keep 🆚 🔑 👑 🟨 🟥
-    const cleaned=line
-      .replace(/^[@#\*\-–—•►▶▷❯»·\s]+/,"")
-      .replace(/(?![\u{1F19A}\u{1F511}\u{1F451}\u{1F7E8}\u{1F7E5}])[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}]/gu,"")
-      .replace(/\s{2,}/g," ").trim();
+    // Step 1: Strip leading line-level symbols only (NOT @, keep raw player text intact)
+    // Keep: 🆚(U+1F19A) 🔑(U+1F511) 👑(U+1F451) 🟨(U+1F7E8) 🟥(U+1F7E5)
+    // Remove: other emojis, leading #*-–—•►▶▷❯»· bullets
+    const cleaned = line
+      .replace(/^[#\*\-–—•►▶▷❯»·\s]+/, "")
+      .replace(/(?![\u{1F19A}\u{1F511}\u{1F451}\u{1F7E8}\u{1F7E5}])[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}]/gu, "")
+      .replace(/\s{2,}/g," ")
+      .trim();
 
-    const m=cleaned.match(/^(.+?)\s+(\d+)\s*🆚\s*(\d+)\s+(.+)$/);
+    // Step 2: match score pattern
+    const m = cleaned.match(/^(.+?)\s+(\d+)\s*🆚\s*(\d+)\s+(.+)$/);
     if(!m) return;
 
-    const leftRaw=m[1].trim();
-    const leftScore=parseInt(m[2]);
-    const rightScore=parseInt(m[3]);
-    const rightRaw=m[4].trim();
+    const leftRaw    = m[1].trim();
+    const leftScore  = parseInt(m[2]);
+    const rightScore = parseInt(m[3]);
+    const rightRaw   = m[4].trim();
 
-    // ── GOAT FC side assignment ──
-    // goatSide="left"  → left player is GOAT FC
-    // goatSide="right" → right player is GOAT FC
-    const goatRaw   = goatSide==="left" ? leftRaw   : rightRaw;
-    const oppRaw    = goatSide==="left" ? rightRaw  : leftRaw;
+    // Step 3: assign GOAT FC vs opponent
+    // goatSide="left"  → leftRaw is GOAT FC player, leftScore is GOAT score
+    // goatSide="right" → rightRaw is GOAT FC player, rightScore is GOAT score
+    const goatRaw   = goatSide==="left" ? leftRaw    : rightRaw;
+    const oppRaw    = goatSide==="left" ? rightRaw   : leftRaw;
     const goatScore = goatSide==="left" ? leftScore  : rightScore;
     const oppScore  = goatSide==="left" ? rightScore : leftScore;
 
-    const goatPlayer=cleanName(goatRaw);
-    const oppPlayer =cleanName(oppRaw);
-    if(!goatPlayer||!oppPlayer) return;
+    // Step 4: clean names
+    const goatPlayer = cleanPlayerName(goatRaw);
+    const oppPlayer  = cleanPlayerName(oppRaw);
+    if(!goatPlayer || !oppPlayer) return;
 
-    // Icons: ONLY from GOAT FC player's raw string
-    const motm  =/👑/.test(goatRaw);
-    const yellow=/🟨/.test(goatRaw);
-    const red   =/🟥/.test(goatRaw);
-    const isKey =/🔑/.test(goatRaw);
+    // Step 5: detect icons ONLY from goatRaw
+    const motm   = /👑/.test(goatRaw);
+    const yellow = /🟨/.test(goatRaw);
+    const red    = /🟥/.test(goatRaw);
+    const isKey  = /🔑/.test(goatRaw);
 
+    // Step 6: result
     let result="Draw";
     if(goatScore>oppScore) result="Win";
     else if(goatScore<oppScore) result="Loss";
@@ -490,19 +503,24 @@ function parseMatches(text){
     results.push({goatPlayer,oppPlayer,goatScore,oppScore,result,session,isKey,round,motm,yellow,red});
   });
 
-  return{matches:results,goatSide,round};
+  return { matches:results, goatSide, round };
 }
 
 // ════════════════════════════════════════
-// DUPLICATE HASH
+// DUPLICATE HASH (localStorage)
 // ════════════════════════════════════════
 const HASH_KEY="goatfc_hashes_v4";
-function loadHashes(){try{return new Set(JSON.parse(localStorage.getItem(HASH_KEY)||"[]"));}catch{return new Set();}}
-function saveHashes(s){localStorage.setItem(HASH_KEY,JSON.stringify([...s]));}
+function loadHashes(){ try{ return new Set(JSON.parse(localStorage.getItem(HASH_KEY)||"[]")); }catch{ return new Set(); } }
+function saveHashes(s){ localStorage.setItem(HASH_KEY,JSON.stringify([...s])); }
 function makeHash(m,tt){
-  return[m.goatPlayer.toLowerCase().trim(),m.oppPlayer.toLowerCase().trim(),
-         m.goatScore,m.oppScore,m.session.toLowerCase().trim(),
-         tt.toLowerCase().trim(),(m.round||"").toLowerCase().trim()].join("|");
+  return [
+    m.goatPlayer.toLowerCase().trim(),
+    m.oppPlayer.toLowerCase().trim(),
+    m.goatScore, m.oppScore,
+    m.session.toLowerCase().trim(),
+    tt.toLowerCase().trim(),
+    (m.round||"").toLowerCase().trim()
+  ].join("|");
 }
 
 let newMatches=[];
@@ -512,12 +530,12 @@ let newMatches=[];
 // ════════════════════════════════════════
 function doPreview(){
   const text=document.getElementById("matchText").value.trim();
-  if(!text){showStatus("error","Match text paste করো আগে।");return;}
-  if(selectedRefs.size===0){showRefError();showStatus("error","কমপক্ষে ১ জন referee select করো।");return;}
+  if(!text){ showStatus("error","Match text paste করো আগে।"); return; }
+  if(selectedRefs.size===0){ showRefError(); showStatus("error","কমপক্ষে ১ জন referee select করো।"); return; }
   clearRefError();
 
   const tt=document.getElementById("teamType").value;
-  const{matches,goatSide,round}=parseMatches(text);
+  const {matches,goatSide,round}=parseMatches(text);
 
   if(!matches.length){
     showStatus("error","কোনো match line detect হয়নি। 🆚 format ঠিক আছে কিনা দেখো।");
@@ -535,18 +553,18 @@ function doPreview(){
   });
   newMatches=fresh;
 
-  document.getElementById("sW").textContent   =fresh.filter(m=>m.result==="Win").length;
-  document.getElementById("sD").textContent   =fresh.filter(m=>m.result==="Draw").length;
-  document.getElementById("sL").textContent   =fresh.filter(m=>m.result==="Loss").length;
-  document.getElementById("sMOTM").textContent=fresh.filter(m=>m.motm).length;
-  document.getElementById("sCards").textContent=fresh.filter(m=>m.yellow||m.red).length;
-  document.getElementById("matchCountLabel").textContent=fresh.length+" match"+(fresh.length!==1?"es":"");
-  document.getElementById("goatSideLabel").textContent=
+  document.getElementById("sW").textContent    = fresh.filter(m=>m.result==="Win").length;
+  document.getElementById("sD").textContent    = fresh.filter(m=>m.result==="Draw").length;
+  document.getElementById("sL").textContent    = fresh.filter(m=>m.result==="Loss").length;
+  document.getElementById("sMOTM").textContent = fresh.filter(m=>m.motm).length;
+  document.getElementById("sCards").textContent= fresh.filter(m=>m.yellow||m.red).length;
+  document.getElementById("matchCountLabel").textContent = fresh.length+" match"+(fresh.length!==1?"es":"");
+  document.getElementById("goatSideLabel").textContent   =
     (round?round+" · ":"")+"GOAT FC → "+(goatSide==="left"?"left side":"right side");
 
   // dup block
   const db=document.getElementById("dupBlock");
-  if(dups.length){db.classList.add("show");document.getElementById("dupList").innerHTML=dups.map(d=>`<li>${esc(d)}</li>`).join("");}
+  if(dups.length){ db.classList.add("show"); document.getElementById("dupList").innerHTML=dups.map(d=>`<li>${esc(d)}</li>`).join(""); }
   else db.classList.remove("show");
 
   // ref summary
@@ -559,12 +577,12 @@ function doPreview(){
   let html="",lastSess="";
   const renderList=fresh.length?fresh:matches;
   renderList.forEach((m,i)=>{
-    if(m.session!==lastSess){html+=`<div class="session-div">${esc(m.session)}</div>`;lastSess=m.session;}
-    const rc=m.result.toLowerCase(),isDup=!fresh.includes(m);
+    if(m.session!==lastSess){ html+=`<div class="session-div">${esc(m.session)}</div>`; lastSess=m.session; }
+    const rc=m.result.toLowerCase(), isDup=!fresh.includes(m);
     let badges="";
-    if(m.motm)  badges+=`<span class="ic-badge motm">👑 +2</span>`;
-    if(m.yellow)badges+=`<span class="ic-badge yc">🟨 -7</span>`;
-    if(m.red)   badges+=`<span class="ic-badge rc">🟥 -14</span>`;
+    if(m.motm)   badges+=`<span class="ic-badge motm">👑 +2</span>`;
+    if(m.yellow) badges+=`<span class="ic-badge yc">🟨 -7</span>`;
+    if(m.red)    badges+=`<span class="ic-badge rc">🟥 -14</span>`;
     html+=`
       <div class="match-item${isDup?" dup-item":""}" style="animation-delay:${i*30}ms">
         <div class="p-goat">
@@ -583,35 +601,50 @@ function doPreview(){
   document.getElementById("matchList").innerHTML=html;
   document.getElementById("previewPanel").classList.add("show");
 
-  if(fresh.length){document.getElementById("submitBtn").classList.add("show");clearStatus();}
-  else{document.getElementById("submitBtn").classList.remove("show");showStatus("warn","সব matches আগেই submit হয়েছে।");}
+  if(fresh.length){ document.getElementById("submitBtn").classList.add("show"); clearStatus(); }
+  else { document.getElementById("submitBtn").classList.remove("show"); showStatus("warn","সব matches আগেই submit হয়েছে।"); }
 }
 
 // ════════════════════════════════════════
 // SUBMIT
 // ════════════════════════════════════════
 async function doSubmit(){
-  if(!newMatches.length){showStatus("warn","কোনো নতুন match নেই।");return;}
-  if(selectedRefs.size===0){showRefError();showStatus("error","কমপক্ষে ১ জন referee select করো।");return;}
-  const sb=document.getElementById("submitBtn"),pb=document.getElementById("previewBtn");
+  if(!newMatches.length){ showStatus("warn","কোনো নতুন match নেই।"); return; }
+  if(selectedRefs.size===0){ showRefError(); showStatus("error","কমপক্ষে ১ জন referee select করো।"); return; }
+
+  const sb=document.getElementById("submitBtn"), pb=document.getElementById("previewBtn");
   sb.disabled=pb.disabled=true;
   showStatus("loading","Google Sheet এ submit হচ্ছে…",true);
-  const text=document.getElementById("matchText").value.trim();
-  const tt=document.getElementById("teamType").value;
+
+  const text  =document.getElementById("matchText").value.trim();
+  const tt    =document.getElementById("teamType").value;
   const refArr=[...selectedRefs];
+
   try{
+    // URL-encoded body — Apps Script e.parameter তে সঠিকভাবে আসে
     const body=new URLSearchParams();
-    body.append("text",text);
-    body.append("teamType",tt);
-    body.append("referees",refArr.join(","));
-    await fetch(CONFIG.scriptUrl,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:body.toString(),mode:"no-cors"});
+    body.append("text",     text);
+    body.append("teamType", tt);
+    body.append("referees", refArr.join(","));
+
+    await fetch(CONFIG.scriptUrl,{
+      method:"POST",
+      headers:{"Content-Type":"application/x-www-form-urlencoded"},
+      body:body.toString(),
+      mode:"no-cors"
+    });
+
+    // save hashes locally
     const stored=loadHashes();
     newMatches.forEach(m=>stored.add(makeHash(m,tt)));
     saveHashes(stored);
+
     showStatus("success",`✓ ${newMatches.length} match${newMatches.length!==1?"es":""} submitted · ${refArr.length} referee(s) logged!`);
     document.getElementById("submitBtn").classList.remove("show");
     newMatches=[];
-  }catch(err){showStatus("error","Submit failed: "+err.message);}
+  } catch(err){
+    showStatus("error","Submit failed: "+err.message);
+  }
   sb.disabled=pb.disabled=false;
 }
 
@@ -631,14 +664,14 @@ function showStatus(type,msg,spin){
   const bar=document.getElementById("statusBar"),icon=document.getElementById("statusIcon");
   document.getElementById("statusMsg").textContent=msg;
   bar.className="status show "+type;
-  if(spin) icon.innerHTML=`<span class="spin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></span>`;
+  if(spin)         icon.innerHTML=`<span class="spin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></span>`;
   else if(type==="success") icon.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px"><polyline points="20 6 9 17 4 12"/></svg>`;
   else if(type==="error")   icon.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
   else if(type==="warn")    icon.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
   else icon.innerHTML="";
 }
-function clearStatus(){document.getElementById("statusBar").className="status";}
-function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function clearStatus(){ document.getElementById("statusBar").className="status"; }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 </script>
 </body>
 </html>
