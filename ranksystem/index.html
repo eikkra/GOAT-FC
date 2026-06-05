@@ -21,6 +21,8 @@
   --neon-green:#00ff88;
   --neon-pink:#ff007a;
   --neon-yellow:#f5ff00;
+  --neon-gold:#ffd700;
+  --neon-gold2:#ffaa00;
   --text:#eef0ff;
   --muted:#5a5a80;
   --muted2:#383860;
@@ -55,12 +57,9 @@
   50%{background-position:100% 50%;}
   100%{background-position:0% 50%;}
 }
-@keyframes slideshow{
-  0%{opacity:0;transform:scale(1.04);}
-  8%{opacity:1;transform:scale(1);}
-  30%{opacity:1;transform:scale(1);}
-  38%{opacity:0;transform:scale(0.97);}
-  100%{opacity:0;transform:scale(1.04);}
+@keyframes goldShimmer{
+  0%{background-position:200% center;}
+  100%{background-position:-200% center;}
 }
 
 html{scroll-behavior:smooth;}
@@ -212,7 +211,6 @@ body::after{
 .rank-card:hover{transform:translateY(-4px);}
 .rank-card:hover .rank-card-inner{background:var(--surface2);}
 
-/* scan line */
 .rank-card-inner::before{
   content:"";position:absolute;left:0;right:0;
   height:2px;
@@ -222,7 +220,6 @@ body::after{
 }
 .rank-card:hover .rank-card-inner::before{opacity:1;animation-play-state:running;}
 
-/* grid overlay */
 .rank-card-inner::after{
   content:"";position:absolute;inset:0;
   background-image:
@@ -308,113 +305,136 @@ body::after{
 .rank-card:nth-child(2):hover .card-btn{background:rgba(191,0,255,0.2);box-shadow:0 0 18px rgba(191,0,255,0.3);}
 
 /* ══════════════════════════════════════
-   PROMO BANNER — no ads-related naming
+   PROMO BANNER
 ══════════════════════════════════════ */
 .promo-section{
   margin-bottom:28px;
   animation:fadeUp 0.5s ease 0.65s both;
 }
 
-/* section label reused */
-
 .promo-frame{
   position:relative;
   border-radius:10px;overflow:hidden;
   border:1px solid rgba(0,240,255,0.14);
   background:var(--surface);
-  /* smart height: taller on desktop, compact mobile */
-  height:130px;
+  /* height auto based on image — min/max controlled */
+  width:100%;
+  aspect-ratio:16/6;      /* default ratio — auto adjusts */
+  min-height:140px;
+  max-height:260px;
 }
 
-/* subtle rainbow rim */
+/* subtle rim */
 .promo-frame::before{
   content:"";position:absolute;inset:0;border-radius:10px;
   box-shadow:inset 0 0 0 1px rgba(0,240,255,0.08);
   z-index:3;pointer-events:none;
 }
 
-/* fade left/right edges */
+/* fade edges */
 .promo-frame::after{
   content:"";position:absolute;inset:0;
   background:linear-gradient(90deg,
-    rgba(6,6,16,0.65) 0%,
-    transparent 14%,
-    transparent 86%,
-    rgba(6,6,16,0.65) 100%
+    rgba(6,6,16,0.5) 0%,transparent 12%,
+    transparent 88%,rgba(6,6,16,0.5) 100%
   );
   z-index:2;pointer-events:none;
 }
 
-/* dots/indicator row */
 .promo-dots{
-  position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
+  position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
   display:flex;gap:5px;z-index:4;
 }
 .promo-dot{
   width:5px;height:5px;border-radius:50%;
-  background:rgba(0,240,255,0.25);
-  transition:all 0.4s;
+  background:rgba(0,240,255,0.3);
+  transition:all 0.4s;cursor:pointer;
 }
 .promo-dot.active{
   background:var(--neon-cyan);
   box-shadow:0 0 8px rgba(0,240,255,0.7);
-  width:14px;border-radius:3px;
+  width:16px;border-radius:3px;
 }
 
-/* ── slides wrapper ── */
-.promo-slides{
-  position:relative;width:100%;height:100%;
-}
+.promo-slides{position:relative;width:100%;height:100%;}
 
-/* each slide */
 .promo-slide{
   position:absolute;inset:0;
   opacity:0;
-  transition:opacity 0.7s ease, transform 0.7s ease;
+  transition:opacity 0.75s ease, transform 0.75s ease;
   transform:scale(1.03);
 }
-.promo-slide.active{
-  opacity:1;transform:scale(1);
-}
+.promo-slide.active{opacity:1;transform:scale(1);}
 
 .promo-slide img{
-  width:100%;height:100%;object-fit:cover;display:block;
-  border-radius:10px;
+  width:100%;height:100%;
+  object-fit:contain;    /* full image visible, no crop */
+  object-position:center;
+  display:block;
+  border-radius:9px;
+  background:#0d0d1a;    /* dark bg behind letterbox */
 }
 
-/* single-image: just show static, no dots */
-.promo-frame.single .promo-slide{
-  opacity:1 !important;transform:none !important;
-}
+.promo-frame.single .promo-slide{opacity:1 !important;transform:none !important;}
 .promo-frame.single .promo-dots{display:none;}
 
-/* ── SCORE SUBMIT BOX ── */
+/* ── SCORE SUBMIT BOXES ── */
 .submit-section{animation:fadeUp 0.5s ease 0.75s both;}
 
+/* shared box base */
 .submit-box{
   position:relative;border-radius:10px;overflow:hidden;
-  background:var(--surface);border:1px solid rgba(0,255,136,0.2);
+  background:var(--surface);
   padding:22px 20px;
   display:flex;align-items:center;justify-content:space-between;gap:18px;
-  box-shadow:0 0 28px rgba(0,255,136,0.06);transition:all 0.3s;
+  transition:all 0.3s;
 }
-.submit-box::before{
-  content:"";position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(0,255,136,0.04),transparent 60%,rgba(0,240,255,0.04));
-  pointer-events:none;
-}
+.submit-box::before{pointer-events:none;}
 .submit-box::after{
   content:"";position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--neon-green),transparent);opacity:0.6;
+  opacity:0.6;
 }
-.submit-box:hover{
+
+/* ── GREEN box (Friendly Score Submit) ── */
+.submit-box.green{
+  border:1px solid rgba(0,255,136,0.2);
+  box-shadow:0 0 28px rgba(0,255,136,0.06);
+  margin-bottom:14px;
+}
+.submit-box.green::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,255,136,0.04),transparent 60%,rgba(0,240,255,0.04));
+}
+.submit-box.green::after{
+  background:linear-gradient(90deg,transparent,var(--neon-green),transparent);
+}
+.submit-box.green:hover{
   border-color:rgba(0,255,136,0.4);
   box-shadow:0 0 38px rgba(0,255,136,0.12);transform:translateY(-2px);
 }
 
+/* ── GOLD box (CVC Score Submit) ── */
+.submit-box.gold{
+  border:1px solid rgba(255,215,0,0.25);
+  box-shadow:0 0 28px rgba(255,170,0,0.08);
+}
+.submit-box.gold::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,215,0,0.05),transparent 60%,rgba(255,170,0,0.04));
+}
+.submit-box.gold::after{
+  background:linear-gradient(90deg,transparent,var(--neon-gold),transparent);
+}
+.submit-box.gold:hover{
+  border-color:rgba(255,215,0,0.5);
+  box-shadow:0 0 40px rgba(255,170,0,0.18);transform:translateY(-2px);
+}
+
 .submit-info{flex:1;}
 .submit-icon-title{display:flex;align-items:center;gap:10px;margin-bottom:7px;}
-.submit-icon{
+
+/* green icon */
+.submit-icon.g{
   width:40px;height:40px;border-radius:8px;
   background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);
   display:flex;align-items:center;justify-content:center;
@@ -422,49 +442,97 @@ body::after{
   text-shadow:0 0 10px rgba(0,255,136,0.7);
   box-shadow:0 0 12px rgba(0,255,136,0.13);flex-shrink:0;
 }
+
+/* gold icon */
+.submit-icon.gold-i{
+  width:40px;height:40px;border-radius:8px;
+  background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.35);
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;color:var(--neon-gold);
+  text-shadow:0 0 10px rgba(255,215,0,0.7);
+  box-shadow:0 0 12px rgba(255,170,0,0.18);flex-shrink:0;
+}
+
 .submit-title{
   font-family:'Orbitron',sans-serif;
   font-size:13px;font-weight:900;letter-spacing:2px;color:var(--text);
 }
+
+/* gold title shimmer */
+.submit-title.gold-t{
+  background:linear-gradient(90deg,#ffd700,#ffaa00,#ffe066,#ffaa00,#ffd700);
+  background-size:200% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:goldShimmer 3s linear infinite;
+}
+
 .submit-desc{
   font-family:'Rajdhani',sans-serif;
   font-size:12px;font-weight:600;color:var(--muted);line-height:1.4;
 }
 .submit-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px;}
-.submit-tag{
+
+.submit-tag.g{
   padding:3px 7px;border-radius:3px;
   background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.2);
   font-family:'Exo 2',sans-serif;font-size:7px;font-weight:800;
   letter-spacing:1.5px;color:var(--neon-green);text-transform:uppercase;
 }
+.submit-tag.gd{
+  padding:3px 7px;border-radius:3px;
+  background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.25);
+  font-family:'Exo 2',sans-serif;font-size:7px;font-weight:800;
+  letter-spacing:1.5px;color:var(--neon-gold);text-transform:uppercase;
+}
 
+/* ── green button ── */
 .submit-dl-btn{
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:4px;
   padding:13px 20px;border-radius:8px;
-  background:linear-gradient(135deg,rgba(0,255,136,0.14),rgba(0,255,136,0.07));
-  border:1px solid rgba(0,255,136,0.35);
-  color:var(--neon-green);text-decoration:none;cursor:pointer;
+  text-decoration:none;cursor:pointer;
   transition:all 0.25s;flex-shrink:0;min-width:96px;text-align:center;
-  box-shadow:0 0 18px rgba(0,255,136,0.1);position:relative;overflow:hidden;
+  position:relative;overflow:hidden;
 }
-.submit-dl-btn:hover{
+.submit-dl-btn.g{
+  background:linear-gradient(135deg,rgba(0,255,136,0.14),rgba(0,255,136,0.07));
+  border:1px solid rgba(0,255,136,0.35);color:var(--neon-green);
+  box-shadow:0 0 18px rgba(0,255,136,0.1);
+}
+.submit-dl-btn.g:hover{
   background:linear-gradient(135deg,rgba(0,255,136,0.24),rgba(0,255,136,0.11));
   border-color:rgba(0,255,136,0.6);
-  box-shadow:0 0 28px rgba(0,255,136,0.28),0 4px 18px rgba(0,255,136,0.13);
-  transform:translateY(-2px);
+  box-shadow:0 0 28px rgba(0,255,136,0.28);transform:translateY(-2px);
 }
+
+/* ── gold button ── */
+.submit-dl-btn.gd{
+  background:linear-gradient(135deg,rgba(255,215,0,0.14),rgba(255,170,0,0.07));
+  border:1px solid rgba(255,215,0,0.4);color:var(--neon-gold);
+  box-shadow:0 0 18px rgba(255,170,0,0.12);
+}
+.submit-dl-btn.gd:hover{
+  background:linear-gradient(135deg,rgba(255,215,0,0.26),rgba(255,170,0,0.14));
+  border-color:rgba(255,215,0,0.7);
+  box-shadow:0 0 32px rgba(255,215,0,0.3);transform:translateY(-2px);
+}
+
 .submit-dl-btn:active{transform:scale(0.97);}
-.btn-icon{font-size:19px;text-shadow:0 0 12px rgba(0,255,136,0.8);transition:transform 0.3s;}
+.btn-icon{font-size:19px;transition:transform 0.3s;}
+.btn-icon.g{text-shadow:0 0 12px rgba(0,255,136,0.8);}
+.btn-icon.gd{text-shadow:0 0 12px rgba(255,215,0,0.8);}
 .submit-dl-btn:hover .btn-icon{transform:translateY(-3px);}
 .btn-text{
   font-family:'Exo 2',sans-serif;font-size:8px;font-weight:800;
-  letter-spacing:2px;text-transform:uppercase;text-shadow:0 0 8px rgba(0,255,136,0.5);
+  letter-spacing:2px;text-transform:uppercase;
 }
+.btn-text.g{text-shadow:0 0 8px rgba(0,255,136,0.5);}
+.btn-text.gd{text-shadow:0 0 8px rgba(255,215,0,0.5);}
 .btn-sub{
-  font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;
-  color:rgba(0,255,136,0.5);letter-spacing:1px;
+  font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;letter-spacing:1px;
 }
+.btn-sub.g{color:rgba(0,255,136,0.5);}
+.btn-sub.gd{color:rgba(255,215,0,0.5);}
 
 /* ── RESPONSIVE ── */
 @media(max-width:420px){
@@ -475,7 +543,7 @@ body::after{
   .card-icon-wrap i{font-size:18px;}
   .card-desc{font-size:10px;}
   .rank-card-inner{padding:16px 10px 14px;}
-  .promo-frame{height:100px;}
+  .promo-frame{aspect-ratio:16/7;min-height:110px;}
   .submit-box{flex-direction:column;text-align:center;}
   .submit-icon-title{justify-content:center;}
   .submit-tags{justify-content:center;}
@@ -483,7 +551,7 @@ body::after{
 }
 
 @media(min-width:600px){
-  .promo-frame{height:160px;}
+  .promo-frame{aspect-ratio:16/5;max-height:280px;}
   .card-title{font-size:13px;}
   .rank-card-inner{padding:26px 18px 22px;}
   .card-icon-wrap{width:64px;height:64px;}
@@ -491,7 +559,7 @@ body::after{
 }
 
 @media(min-width:860px){
-  .promo-frame{height:180px;}
+  .promo-frame{aspect-ratio:16/4.5;max-height:300px;}
   .card-title{font-size:14px;}
 }
 </style>
@@ -587,71 +655,95 @@ body::after{
     </div>
 
     <div class="promo-frame" id="promoFrame">
-      <div class="promo-slides" id="promoSlides">
-        <!-- slides injected by JS -->
-      </div>
+      <div class="promo-slides" id="promoSlides"></div>
       <div class="promo-dots" id="promoDots"></div>
     </div>
   </div>
 
-  <!-- SCORE SUBMIT -->
+  <!-- SCORE SUBMIT BOXES -->
   <div class="submit-section">
     <div class="section-label">
       <span>Submit Your Score</span>
     </div>
 
-    <div class="submit-box">
+    <!-- GREEN: Friendly Score Submit -->
+    <div class="submit-box green">
       <div class="submit-info">
         <div class="submit-icon-title">
-          <div class="submit-icon">
+          <div class="submit-icon g">
             <i class="fa-solid fa-file-arrow-up"></i>
           </div>
           <div class="submit-title">SCORE SUBMIT</div>
         </div>
         <div class="submit-desc">Played a match? Submit your score now to update the leaderboard and earn your rank points.</div>
         <div class="submit-tags">
-          <span class="submit-tag"><i class="fa-solid fa-bolt" style="margin-right:3px;"></i>Quick Form</span>
-          <span class="submit-tag"><i class="fa-solid fa-shield-check" style="margin-right:3px;"></i>Verified</span>
-          <span class="submit-tag"><i class="fa-solid fa-clock" style="margin-right:3px;"></i>Instant</span>
+          <span class="submit-tag g"><i class="fa-solid fa-bolt" style="margin-right:3px;"></i>Quick Form</span>
+          <span class="submit-tag g"><i class="fa-solid fa-shield-check" style="margin-right:3px;"></i>Verified</span>
+          <span class="submit-tag g"><i class="fa-solid fa-clock" style="margin-right:3px;"></i>Instant</span>
         </div>
       </div>
-
       <a href="https://docs.google.com/forms/d/e/1FAIpQLSf5kM0gDSmLJp88tZ2Zuat1McFvI5h_cSR9DTbGD_By0216zA/viewform"
-         target="_blank" rel="noopener" class="submit-dl-btn">
-        <div class="btn-icon"><i class="fa-solid fa-paper-plane"></i></div>
+         target="_blank" rel="noopener" class="submit-dl-btn g">
+        <div class="btn-icon g"><i class="fa-solid fa-paper-plane"></i></div>
         <div>
-          <div class="btn-text">Submit Now</div>
-          <div class="btn-sub">Open Form</div>
+          <div class="btn-text g">Submit Now</div>
+          <div class="btn-sub g">Open Form</div>
         </div>
       </a>
     </div>
+
+    <!-- GOLD: CVC Score Submit -->
+    <div class="submit-box gold">
+      <div class="submit-info">
+        <div class="submit-icon-title">
+          <div class="submit-icon gold-i">
+            <i class="fa-solid fa-trophy"></i>
+          </div>
+          <div class="submit-title gold-t">CVC SCORE SUBMIT</div>
+        </div>
+        <div class="submit-desc">Club vs Club match result? Submit CVC scores here to update the official club battle standings.</div>
+        <div class="submit-tags">
+          <span class="submit-tag gd"><i class="fa-solid fa-shield-halved" style="margin-right:3px;"></i>CvC Only</span>
+          <span class="submit-tag gd"><i class="fa-solid fa-crown" style="margin-right:3px;"></i>Official</span>
+          <span class="submit-tag gd"><i class="fa-solid fa-bolt" style="margin-right:3px;"></i>Instant</span>
+        </div>
+      </div>
+      <a href="https://goatfcbd.com/adminscoresubmit"
+         target="_blank" rel="noopener" class="submit-dl-btn gd">
+        <div class="btn-icon gd"><i class="fa-solid fa-crown"></i></div>
+        <div>
+          <div class="btn-text gd">Submit CVC</div>
+          <div class="btn-sub gd">Open Form</div>
+        </div>
+      </a>
+    </div>
+
   </div>
 
 </div>
 
 <script>
-/* ══════════════════════════════════════════════
-   PROMO SLIDESHOW
-   ▸ 1 image  → static display, no dots
-   ▸ 2+ images → auto-cycle with dot indicators
+/*
+  ══════════════════════════════════════════════
+  PROMO SLIDESHOW
 
-   HOW TO ADD YOUR IMAGES:
-   Put your image URLs inside the promoImages array below.
-   You can add as many as you want.
-   Example:
-     'https://i.imgur.com/YOURIMAGE1.jpg',
-     'https://i.imgur.com/YOURIMAGE2.jpg',
-══════════════════════════════════════════════ */
+  ▸ 1 image  → static, no dots, no animation
+  ▸ 2+ images → auto-cycle every 3.5s with dots
 
+  IMAGE URLS দেওয়ার নিয়ম:
+  নিচের promoImages array তে তোমার image URL গুলো দাও।
+  যত খুশি তত image দেওয়া যাবে।
+
+  উদাহরণ:
+    'https://i.imgur.com/IMAGE1.jpg',
+    'https://i.imgur.com/IMAGE2.jpg',
+  ══════════════════════════════════════════════
+*/
 const promoImages = [
-  /* ── REPLACE / ADD YOUR IMAGE URLS HERE ─────────────────
-     'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhNOu0wNkHwq4pNAa6WUx42CRQyZRYTsz33_RItN8dqMJnXgTVfnzlwSwI8EdEcGGuA28NdA3MJzZhf15ZSACEOK-6tuh9Ci_S-u9xZN8zqhNuXK4V6mM08ZrGGHpGMIRKoV2_X_UoxlV4wqWwn-4wVvaBpxCZNeK33cwTaKJ7pvPNGmNWnXDsZEmo2QCM/s320/05be0a38-3953-44c8-9d42-790ff71dad1f.jpg',
-     'https://i.imgur.com/YOURIMAGE2.jpg',
-     'https://i.imgur.com/YOURIMAGE3.jpg',
-  ─────────────────────────────────────────────────────── */
-  'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhNOu0wNkHwq4pNAa6WUx42CRQyZRYTsz33_RItN8dqMJnXgTVfnzlwSwI8EdEcGGuA28NdA3MJzZhf15ZSACEOK-6tuh9Ci_S-u9xZN8zqhNuXK4V6mM08ZrGGHpGMIRKoV2_X_UoxlV4wqWwn-4wVvaBpxCZNeK33cwTaKJ7pvPNGmNWnXDsZEmo2QCM/s320/05be0a38-3953-44c8-9d42-790ff71dad1f.jpg',   // placeholder 1
-  'https://i.imgur.com/LY3Bb9m.png',   // placeholder 2
-  'https://i.imgur.com/LY3Bb9m.png',   // placeholder 3
+  'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhNOu0wNkHwq4pNAa6WUx42CRQyZRYTsz33_RItN8dqMJnXgTVfnzlwSwI8EdEcGGuA28NdA3MJzZhf15ZSACEOK-6tuh9Ci_S-u9xZN8zqhNuXK4V6mM08ZrGGHpGMIRKoV2_X_UoxlV4wqWwn-4wVvaBpxCZNeK33cwTaKJ7pvPNGmNWnXDsZEmo2QCM/s320/05be0a38-3953-44c8-9d42-790ff71dad1f.jpg',
+  /* ── আরও image URL এখানে add করো ── */
+  /* 'https://তোমার_image_url_2.jpg', */
+  /* 'https://তোমার_image_url_3.jpg', */
 ];
 
 (function initPromo() {
@@ -662,7 +754,6 @@ const promoImages = [
 
   if (!imgs.length) { frame.style.display = 'none'; return; }
 
-  // inject slides
   imgs.forEach((src, i) => {
     const el = document.createElement('div');
     el.className = 'promo-slide' + (i === 0 ? ' active' : '');
@@ -670,13 +761,11 @@ const promoImages = [
     slides.appendChild(el);
   });
 
-  // single image: static, no controls
   if (imgs.length === 1) {
     frame.classList.add('single');
     return;
   }
 
-  // build dots
   imgs.forEach((_, i) => {
     const d = document.createElement('div');
     d.className = 'promo-dot' + (i === 0 ? ' active' : '');
@@ -684,22 +773,19 @@ const promoImages = [
     dots.appendChild(d);
   });
 
-  let current = 0;
-  let timer;
+  let current = 0, timer;
 
   function goTo(n) {
-    const allSlides = slides.querySelectorAll('.promo-slide');
-    const allDots   = dots.querySelectorAll('.promo-dot');
-    allSlides[current].classList.remove('active');
-    allDots[current].classList.remove('active');
+    const sl = slides.querySelectorAll('.promo-slide');
+    const dt = dots.querySelectorAll('.promo-dot');
+    sl[current].classList.remove('active');
+    dt[current].classList.remove('active');
     current = (n + imgs.length) % imgs.length;
-    allSlides[current].classList.add('active');
-    allDots[current].classList.add('active');
+    sl[current].classList.add('active');
+    dt[current].classList.add('active');
   }
 
-  function next() { goTo(current + 1); }
-
-  function start() { timer = setInterval(next, 3500); }
+  function start() { timer = setInterval(() => goTo(current + 1), 3500); }
   function stop()  { clearInterval(timer); }
 
   start();
