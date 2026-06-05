@@ -39,7 +39,7 @@ body::before{
 @keyframes topScan{0%,100%{opacity:.5}50%{opacity:1}}
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
 @keyframes dotPulse{0%,100%{opacity:1}50%{opacity:.3}}
-@keyframes rgbBorder{0%{border-color:#00f0ff;box-shadow:0 0 12px rgba(0,240,255,.25)}33%{border-color:#bf5fff;box-shadow:0 0 12px rgba(191,95,255,.25)}66%{border-color:#00ff88;box-shadow:0 0 12px rgba(0,255,136,.25)}100%{border-color:#00f0ff;box-shadow:0 0 12px rgba(0,240,255,.25)}}
+@keyframes rgbCard{0%{box-shadow:0 0 0 1px rgba(0,240,255,.15),0 30px 80px rgba(0,0,0,.7)}33%{box-shadow:0 0 0 1px rgba(191,95,255,.15),0 30px 80px rgba(0,0,0,.7)}66%{box-shadow:0 0 0 1px rgba(0,255,136,.15),0 30px 80px rgba(0,0,0,.7)}100%{box-shadow:0 0 0 1px rgba(0,240,255,.15),0 30px 80px rgba(0,0,0,.7)}}
 
 /* ══ LOGIN ══ */
 #loginScreen{
@@ -61,15 +61,15 @@ body::before{
 .login-logo-title{
   font-family:var(--fh);font-size:clamp(22px,5vw,30px);font-weight:900;letter-spacing:6px;
   background:linear-gradient(90deg,var(--neon),var(--g),var(--neon));background-size:200%;
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  animation:gradMove 3s linear infinite;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:gradMove 3s linear infinite;
 }
 .login-logo-sub{font-family:var(--fm);font-size:9px;letter-spacing:4px;color:var(--t2);margin-top:4px;}
 .login-card{
   background:linear-gradient(135deg,rgba(13,13,26,.97),rgba(6,6,16,.99));
   border:1px solid var(--b2);border-radius:16px;padding:30px 26px;
-  box-shadow:0 0 0 1px rgba(0,240,255,.06),0 30px 80px rgba(0,0,0,.7),inset 0 1px 0 rgba(0,240,255,.07);
-  position:relative;overflow:hidden;animation:rgbBorder 5s linear infinite;
+  position:relative;overflow:hidden;
+  animation:rgbCard 5s linear infinite;
+  inset:0 1px 0 rgba(0,240,255,.07);
 }
 .login-card::before{
   content:'';position:absolute;top:0;left:0;right:0;height:2px;
@@ -107,36 +107,14 @@ body::before{
 .login-forgot a{color:var(--t2);text-decoration:none;cursor:pointer;transition:color .2s;}
 .login-forgot a:hover{color:var(--neon);}
 
-/* devtools warning overlay */
-#devWarn{
-  display:none;position:fixed;inset:0;z-index:99999;
-  background:rgba(6,6,16,.98);
-  align-items:center;justify-content:center;flex-direction:column;gap:16px;
-  text-align:center;padding:20px;
-}
-#devWarn.show{display:flex;}
-.dw-icon{font-size:48px;color:#ff3366;text-shadow:0 0 20px #ff3366;}
-.dw-title{font-family:var(--fh);font-size:18px;letter-spacing:4px;color:#ff6688;text-transform:uppercase;}
-.dw-sub{font-family:var(--fm);font-size:11px;color:var(--t2);letter-spacing:2px;max-width:320px;line-height:1.7;}
-.dw-btn{
-  margin-top:8px;padding:10px 28px;
-  background:rgba(255,51,102,.1);border:1px solid rgba(255,51,102,.4);
-  border-radius:6px;color:#ff6688;font-family:var(--fh);font-size:9px;
-  letter-spacing:2px;cursor:pointer;transition:all .2s;text-transform:uppercase;
-}
-.dw-btn:hover{background:rgba(255,51,102,.22);}
-
 /* ══ DASHBOARD ══ */
 #dashboard{display:none;position:relative;z-index:1;min-height:100vh;}
-
-/* TOPBAR */
 .topbar{
   height:46px;display:flex;align-items:center;justify-content:space-between;
   padding:0 14px;background:rgba(6,6,16,.97);
   border-bottom:1px solid rgba(0,240,255,.12);
   position:sticky;top:0;z-index:999;backdrop-filter:blur(14px);
   box-shadow:0 2px 20px rgba(0,240,255,.05);
-  text-decoration:none;
 }
 .topbar::after{
   content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
@@ -150,13 +128,13 @@ body::before{
 @media(min-width:480px){.nav-time{display:block;}}
 .nav-dot{width:7px;height:7px;border-radius:50%;background:var(--g);box-shadow:0 0 8px var(--g);animation:dotPulse 2s infinite;}
 .lock-btn{
-  width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  width:30px;height:30px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
   border:1px solid rgba(255,51,102,.25);background:rgba(255,51,102,.07);
   color:#ff6688;font-size:12px;cursor:pointer;transition:all .2s;
 }
 .lock-btn:hover{background:rgba(255,51,102,.18);box-shadow:0 0 12px rgba(255,51,102,.3);}
 
-/* MAIN */
 .dash-main{max-width:1000px;margin:0 auto;padding:20px 14px 48px;}
 .dash-hero{text-align:center;padding:16px 0 18px;}
 .dash-hero-title{
@@ -167,7 +145,6 @@ body::before{
 }
 .dash-hero-sub{font-family:var(--fe);font-size:9px;font-weight:800;letter-spacing:4px;color:var(--t2);margin-top:5px;text-transform:uppercase;}
 
-/* STATUS */
 .status-bar{display:flex;gap:7px;margin-bottom:22px;flex-wrap:wrap;justify-content:center;}
 .status-chip{
   display:flex;align-items:center;gap:6px;padding:4px 12px;
@@ -179,13 +156,12 @@ body::before{
 .s-gold{background:var(--gold);box-shadow:0 0 6px var(--gold);}
 .s-purple{background:var(--p);box-shadow:0 0 6px var(--p);}
 
-/* SECTION HEADER */
 .sec-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
 .sec-title{font-family:var(--fh);font-size:10px;font-weight:700;letter-spacing:3.5px;color:var(--neon);text-transform:uppercase;white-space:nowrap;}
 .sec-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(0,240,255,.35),transparent);}
 .sec-count{font-family:var(--fm);font-size:8px;color:var(--t3);letter-spacing:1px;padding:2px 8px;border:1px solid rgba(0,240,255,.1);border-radius:10px;}
 
-/* PRIORITY ROW */
+/* PRIORITY CARDS */
 .priority-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:28px;}
 .p-card{
   position:relative;overflow:hidden;border-radius:12px;padding:18px;
@@ -210,8 +186,10 @@ body::before{
 .p-card:hover .pc-arr{opacity:1;transform:translate(2px,-2px);}
 .github .pc-arr{color:#a78bfa;}.cpform .pc-arr{color:var(--g);}
 
-/* LINK GRID */
-.link-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:10px;margin-bottom:32px;}
+/* UNIFIED GRID — sheets + forms together */
+.all-links-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:10px;margin-bottom:32px;}
+
+/* LINK CARD */
 .lk{
   position:relative;overflow:hidden;
   background:var(--s1);border:1px solid var(--b1);
@@ -261,6 +239,15 @@ body::before{
 .lk-pi .lk-badge{background:rgba(255,0,122,.06);border:1px solid rgba(255,0,122,.14);color:#ff5599;}
 .lk-te .lk-badge{background:rgba(0,200,255,.06);border:1px solid rgba(0,200,255,.14);color:#00c8ff;}
 
+/* sub-label inside card for sheet vs form */
+.lk-type{
+  position:absolute;top:10px;right:10px;
+  font-family:var(--fm);font-size:7px;letter-spacing:1px;text-transform:uppercase;
+  padding:1px 7px;border-radius:8px;
+}
+.lk-type-sheet{background:rgba(0,240,255,.07);border:1px solid rgba(0,240,255,.15);color:rgba(0,240,255,.5);}
+.lk-type-form{background:rgba(255,107,161,.07);border:1px solid rgba(255,107,161,.15);color:rgba(255,107,161,.6);}
+
 .dash-footer{text-align:center;padding:14px;border-top:1px solid rgba(0,240,255,.07);font-family:var(--fm);font-size:8.5px;letter-spacing:2px;color:var(--t3);}
 
 ::-webkit-scrollbar{width:4px;height:4px}
@@ -277,17 +264,9 @@ body::before{
 <body>
 <div class="bg-grid"></div>
 
-<!-- DEVTOOLS WARNING -->
-<div id="devWarn">
-  <i class="fa-solid fa-triangle-exclamation dw-icon"></i>
-  <div class="dw-title">Security Alert</div>
-  <div class="dw-sub">Developer tools detected. This portal is restricted. Unauthorized inspection is prohibited.</div>
-  <button class="dw-btn" onclick="closeDevWarn()"><i class="fa-solid fa-xmark" style="margin-right:6px"></i>Close</button>
-</div>
-
-<!-- LOGIN -->
+<!-- ═══ LOGIN ═══ -->
 <div id="loginScreen">
-  <div class="bg-grid" style="position:absolute;inset:0;z-index:0;"></div>
+  <div class="bg-grid" style="position:absolute;inset:0;z-index:0;pointer-events:none;"></div>
   <div class="login-wrap">
     <div class="login-logo">
       <div class="login-logo-ring"><i class="fa-solid fa-shield-halved"></i></div>
@@ -297,12 +276,15 @@ body::before{
     <div class="login-card">
       <div class="login-label"><i class="fa-solid fa-lock" style="margin-right:6px;color:var(--neon)"></i>Access Code Required</div>
       <div class="login-input-wrap">
-        <input type="password" id="pwInput" class="login-input" placeholder="Enter access code" autocomplete="new-password" spellcheck="false">
-        <button class="pw-toggle" onclick="togglePW()" tabindex="-1">
+        <input type="password" id="pwInput" class="login-input"
+          placeholder="Enter access code"
+          autocomplete="new-password"
+          autocorrect="off" autocapitalize="off" spellcheck="false">
+        <button class="pw-toggle" onclick="togglePW()" tabindex="-1" type="button">
           <i class="fa-solid fa-eye-slash" id="pwEyeIcon"></i>
         </button>
       </div>
-      <button class="login-btn" onclick="doLogin()">
+      <button class="login-btn" onclick="doLogin()" type="button">
         <i class="fa-solid fa-terminal"></i> Authenticate
       </button>
       <div class="login-error" id="loginError">
@@ -311,7 +293,7 @@ body::before{
       </div>
       <div class="login-forgot">
         Forgot code?
-        <a onclick="sendForgotEmail()">
+        <a onclick="sendForgotEmail()" role="button">
           <i class="fa-solid fa-envelope" style="margin-right:3px"></i>Send to registered email
         </a>
       </div>
@@ -319,7 +301,7 @@ body::before{
   </div>
 </div>
 
-<!-- DASHBOARD -->
+<!-- ═══ DASHBOARD ═══ -->
 <div id="dashboard">
   <div class="topbar">
     <div class="top-left">
@@ -329,7 +311,7 @@ body::before{
     <div class="top-right">
       <div class="nav-dot"></div>
       <div class="nav-time" id="navTime">--:--:--</div>
-      <button class="lock-btn" onclick="lockDashboard()" title="Lock">
+      <button class="lock-btn" onclick="lockDashboard()" title="Lock" type="button">
         <i class="fa-solid fa-lock"></i>
       </button>
     </div>
@@ -353,14 +335,14 @@ body::before{
       <div class="sec-line"></div>
     </div>
     <div class="priority-row">
-      <a href="https://github.com/eikkra?tab=repositories" target="_blank" class="p-card github">
+      <a href="https://github.com/eikkra?tab=repositories" target="_blank" rel="noopener" class="p-card github">
         <div class="pc-icon"><i class="fa-brands fa-github"></i></div>
         <div class="pc-tag">Version Control</div>
         <div class="pc-title">GitHub Repos</div>
         <div class="pc-desc">Access all repositories, code deployments and version history.</div>
         <i class="fa-solid fa-arrow-up-right-from-square pc-arr"></i>
       </a>
-      <a href="https://forms.gle/axpKAnYSPgJJSMMg9" target="_blank" class="p-card cpform">
+      <a href="https://forms.gle/axpKAnYSPgJJSMMg9" target="_blank" rel="noopener" class="p-card cpform">
         <div class="pc-icon"><i class="fa-solid fa-paper-plane"></i></div>
         <div class="pc-tag">Data Entry</div>
         <div class="pc-title">CP Send Form</div>
@@ -369,76 +351,88 @@ body::before{
       </a>
     </div>
 
-    <!-- MANAGEMENT SHEETS -->
+    <!-- SHEETS + FORMS — combined, one section -->
     <div class="sec-hd">
-      <div class="sec-title"><i class="fa-solid fa-table-cells" style="margin-right:6px"></i>Management Sheets</div>
+      <div class="sec-title"><i class="fa-solid fa-layer-group" style="margin-right:6px"></i>Management Sheets &amp; Forms</div>
       <div class="sec-line"></div>
-      <div class="sec-count">7 Sheets</div>
+      <div class="sec-count">9 Items</div>
     </div>
-    <div class="link-grid">
-      <a href="https://docs.google.com/spreadsheets/d/1ZoXNHa5sYiP_HaPRyL5RDML7l3kC2IaGuQCAmYkERf8/edit?gid=0#gid=0" target="_blank" class="lk lk-cy">
+    <div class="all-links-grid">
+
+      <!-- SHEETS -->
+      <a href="https://docs.google.com/spreadsheets/d/1ZoXNHa5sYiP_HaPRyL5RDML7l3kC2IaGuQCAmYkERf8/edit?gid=0#gid=0" target="_blank" rel="noopener" class="lk lk-cy">
+        <span class="lk-type lk-type-sheet">Sheet</span>
         <div class="lk-top"><div class="lk-icon"><i class="fa-solid fa-pen-to-square"></i></div><i class="fa-solid fa-up-right-from-square lk-open"></i></div>
         <div class="lk-name">Webpage Edit</div>
         <div class="lk-desc">Manage and update the main website content and configuration data.</div>
         <div class="lk-badge"><i class="fa-solid fa-circle-dot"></i>Google Sheets</div>
       </a>
-      <a href="https://docs.google.com/spreadsheets/d/1DSPKPaU1ZQYbFM4iYbE1VXgDAXU-FCT7--QhYJsNf1M/edit?resourcekey=&gid=1033046915#gid=1033046915" target="_blank" class="lk lk-go">
+
+      <a href="https://docs.google.com/spreadsheets/d/1DSPKPaU1ZQYbFM4iYbE1VXgDAXU-FCT7--QhYJsNf1M/edit?resourcekey=&gid=1033046915#gid=1033046915" target="_blank" rel="noopener" class="lk lk-go">
+        <span class="lk-type lk-type-sheet">Sheet</span>
         <div class="lk-top"><div class="lk-icon"><i class="fa-solid fa-ranking-star"></i></div><i class="fa-solid fa-up-right-from-square lk-open"></i></div>
         <div class="lk-name">Club Rank Excel</div>
-        <div class="lk-desc">Full club ranking data, performance metrics and league table standings.</div>
+        <div class="lk-desc">Full club ranking data, performance metrics and league standings.</div>
         <div class="lk-badge"><i class="fa-solid fa-circle-dot"></i>Rankings</div>
       </a>
-      <a href="https://docs.google.com/spreadsheets/d/1j8HRakCsKmB-GTdfKJ3kd7XNEwBfNEg3AvtWTpPpKK0/edit?gid=1301001241#gid=1301001241" target="_blank" class="lk lk-pu">
+
+      <a href="https://docs.google.com/spreadsheets/d/1j8HRakCsKmB-GTdfKJ3kd7XNEwBfNEg3AvtWTpPpKK0/edit?gid=1301001241#gid=1301001241" target="_blank" rel="noopener" class="lk lk-pu">
+        <span class="lk-type lk-type-sheet">Sheet</span>
         <div class="lk-top"><div class="lk-icon"><i class="fa-solid fa-crown"></i></div><i class="fa-solid fa-up-right-from-square lk-open"></i></div>
         <div class="lk-name">Club Elite Board</div>
         <div class="lk-desc">Elite tier board tracking top performers and special achievements.</div>
         <div class="lk-badge"><i class="fa-solid fa-circle-dot"></i>Elite Tier</div>
       </a>
-      <a href="https://docs.google.com/spreadsheets/d/16oJOonAoZ4oY3s6nFIfqg9y_pp2LwEGd_r3P4wcH4Ms/edit?resourcekey=&gid=1443111548#gid=1443111548" target="_blank" class="lk lk-bl">
+
+      <a href="https://docs.google.com/spreadsheets/d/16oJOonAoZ4oY3s6nFIfqg9y_pp2LwEGd_r3P4wcH4Ms/edit?resourcekey=&gid=1443111548#gid=1443111548" target="_blank" rel="noopener" class="lk lk-bl">
+        <span class="lk-type lk-type-sheet">Sheet</span>
         <div class="lk-top"><div class="lk-icon"><i class="fa-solid fa-users"></i></div><i class="fa-solid fa-up-right-from-square lk-open"></i></div>
         <div class="lk-name">Club Members Info</div>
         <div class="lk-desc">Complete member database — profiles, contact info and club IDs.</div>
         <div class="lk-badge"><i class="fa-solid fa-circle-dot"></i>Members</div>
       </a>
-      <a href="https://docs.google.com/spreadsheets/d/1IdHVnjKE7j-nqHvAXD-zS219YLA5Qho8xHXSckFZcLk/edit?gid=1942791042#gid=1942791042" target="_blank" class="lk lk-gr">
+
+      <a href="https://docs.google.com/spreadsheets/d/1IdHVnjKE7j-nqHvAXD-zS219YLA5Qho8xHXSckFZcLk/edit?gid=1942791042#gid=1942791042" target="_blank" rel="noopener" class="lk lk-gr">
+        <span class="lk-type lk-type-sheet">Sheet</span>
         <div class="lk-top"><div class="lk-icon"><i class="fa-solid fa-trophy"></i></div><i class="fa-solid fa-up-right-from-square lk-open"></i></div>
         <div class="lk-name">Tour Participation List</div>
         <div class="lk-desc">Tournament entries, participation records and registration status.</div>
         <div class="lk-badge"><i class="fa-solid fa-circle-dot"></i>Tournaments</div>
       </a>
-      <a href="https://docs.google.com/spreadsheets/d/141AwEGCLXids9uw7umK3O81hAe9LsE2N9wQ8pQIskPo/edit?gid=1862642828#gid=1862642828" target="_blank" class="lk lk-or">
+
+      <a href="https://docs.google.com/spreadsheets/d/141AwEGCLXids9uw7umK3O81hAe9LsE2N9wQ8pQIskPo/edit?gid=1862642828#gid=1862642828" target="_blank" rel="noopener" class="lk lk-or">
+        <span class="lk-type lk-type-sheet">Sheet</span>
         <div class="lk-top"><div class="lk-icon"><i class="fa-solid fa-coins"></i></div><i class="fa-solid fa-up-right-from-square lk-open"></i></div>
         <div class="lk-name">Club CP Logs</div>
         <div class="lk-desc">Championship Points transaction history, balances and audit trail.</div>
         <div class="lk-badge"><i class="fa-solid fa-circle-dot"></i>CP System</div>
       </a>
-      <a href="https://docs.google.com/spreadsheets/d/16kHcE-8CQ33H29NYmgILpBHH8HRbqPQ0QQWAmDe1Cbk/edit?gid=1272733514#gid=1272733514" target="_blank" class="lk lk-rd">
+
+      <a href="https://docs.google.com/spreadsheets/d/16kHcE-8CQ33H29NYmgILpBHH8HRbqPQ0QQWAmDe1Cbk/edit?gid=1272733514#gid=1272733514" target="_blank" rel="noopener" class="lk lk-rd">
+        <span class="lk-type lk-type-sheet">Sheet</span>
         <div class="lk-top"><div class="lk-icon"><i class="fa-solid fa-futbol"></i></div><i class="fa-solid fa-up-right-from-square lk-open"></i></div>
         <div class="lk-name">Player &amp; Referee</div>
         <div class="lk-desc">Match logs, player stats, referee assignments and raw CVC match data.</div>
         <div class="lk-badge"><i class="fa-solid fa-circle-dot"></i>Match Data</div>
       </a>
-    </div>
 
-    <!-- FORMS -->
-    <div class="sec-hd">
-      <div class="sec-title"><i class="fa-solid fa-clipboard-list" style="margin-right:6px"></i>Forms</div>
-      <div class="sec-line"></div>
-      <div class="sec-count">2 Forms</div>
-    </div>
-    <div class="link-grid">
-      <a href="https://docs.google.com/forms/d/1ZUPKlA7ORlosT6G_xIOlGEWzL8pUj93lJr-GUN8O4LE/edit" target="_blank" class="lk lk-pi">
+      <!-- FORMS -->
+      <a href="https://docs.google.com/forms/d/1ZUPKlA7ORlosT6G_xIOlGEWzL8pUj93lJr-GUN8O4LE/edit" target="_blank" rel="noopener" class="lk lk-pi">
+        <span class="lk-type lk-type-form">Form</span>
         <div class="lk-top"><div class="lk-icon"><i class="fa-solid fa-square-poll-vertical"></i></div><i class="fa-solid fa-up-right-from-square lk-open"></i></div>
         <div class="lk-name">Score Submit Form</div>
         <div class="lk-desc">Submit match scores and update results for CVC league fixtures.</div>
         <div class="lk-badge"><i class="fa-solid fa-circle-dot"></i>Google Form</div>
       </a>
-      <a href="https://docs.google.com/forms/d/1mdNowYvmahlj9txmo5yqIVvdBLH75uTrwCyNWrrL8H0/edit?pli=1" target="_blank" class="lk lk-te">
+
+      <a href="https://docs.google.com/forms/d/1mdNowYvmahlj9txmo5yqIVvdBLH75uTrwCyNWrrL8H0/edit?pli=1" target="_blank" rel="noopener" class="lk lk-te">
+        <span class="lk-type lk-type-form">Form</span>
         <div class="lk-top"><div class="lk-icon"><i class="fa-solid fa-user-plus"></i></div><i class="fa-solid fa-up-right-from-square lk-open"></i></div>
         <div class="lk-name">Tour Registration Form</div>
         <div class="lk-desc">Player tournament registration submissions and enrollment management.</div>
         <div class="lk-badge"><i class="fa-solid fa-circle-dot"></i>Google Form</div>
       </a>
+
     </div>
   </div>
 
@@ -447,143 +441,153 @@ body::before{
 
 <script>
 // ═══════════════════════════════════════════════════════
-// PASSWORD SECURITY
-// Multi-layer: sha256(input) → sha256(result + salt)
-// Salt is split & reassembled at runtime so it's not a
-// single readable string in source. Hash stored in chunks.
+// SECURE PASSWORD VERIFICATION
+// Double-hash + salt stored in split chunks
+// sha256( sha256("hunt@4868") + "gfc_cmd_2024" )
 // ═══════════════════════════════════════════════════════
-(function() {
-  // Salted hash chunks — reassembled at runtime only
-  // sha256( sha256("hunt@4868") + "gfc_cmd_2024" )
-  const _c = ["c54cfba7","5eab1f40","37839d2b","7708f9ba","ffcaf953","1fad8110","80687081","c7e1bd57"];
-  const _s = ["gfc","_","cmd","_","2024"];
+(function(w) {
+  // Hash split into 8 chunks — never a single readable string
+  var _k = ["c54c","fba7","5eab","1f40","3783","9d2b","7708","f9ba",
+             "ffca","f953","1fad","8110","8068","7081","c7e1","bd57"];
+  // Salt split across array
+  var _sv = ["g","f","c","_","c","m","d","_","2","0","2","4"];
 
-  async function _h(str) {
-    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
-    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,"0")).join("");
+  async function _H(s) {
+    var b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+    return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0");}).join("");
   }
 
-  async function _verify(input) {
-    const h1 = await _h(input);
-    const salt = _s.join("");
-    const h2 = await _h(h1 + salt);
-    const stored = _c.join("");
-    return h2 === stored;
-  }
+  w.__gfcAuth = async function(input) {
+    var h1 = await _H(input);
+    var h2 = await _H(h1 + _sv.join(""));
+    return h2 === _k.join("");
+  };
 
-  // Expose verify function safely
-  window.__gfcVerify = _verify;
+  // ── DEVTOOLS DETECTION & AUTO-LOCK ──
+  // When devtools opens: lock session + return to login
+  var _dtOpen = false;
+  var _threshold = 160;
 
-  // DEVTOOLS DETECTION
-  // Method 1: window size delta (devtools panel changes viewport)
-  let _devOpen = false;
-  function _checkDev() {
-    const threshold = 160;
-    const widthDiff = window.outerWidth - window.innerWidth;
-    const heightDiff = window.outerHeight - window.innerHeight;
-    if (widthDiff > threshold || heightDiff > threshold) {
-      if (!_devOpen) {
-        _devOpen = true;
-        document.getElementById("devWarn").classList.add("show");
-        // Clear input if on login screen
-        const inp = document.getElementById("pwInput");
-        if (inp) inp.value = "";
+  function _checkDT() {
+    var wDiff = window.outerWidth - window.innerWidth > _threshold;
+    var hDiff = window.outerHeight - window.innerHeight > _threshold;
+    if (wDiff || hDiff) {
+      if (!_dtOpen) {
+        _dtOpen = true;
+        _onDevToolsOpen();
       }
     } else {
-      _devOpen = false;
+      _dtOpen = false;
     }
   }
-  setInterval(_checkDev, 500);
 
-  // Method 2: console detection via getter trick
-  let _consoleTrap = false;
-  const _fakeObj = {};
-  Object.defineProperty(_fakeObj, "x", {
-    get: function() {
-      _consoleTrap = true;
-      return 0;
+  function _onDevToolsOpen() {
+    // Kill session immediately
+    try { sessionStorage.removeItem("_gfc_ok"); } catch(e) {}
+    // If dashboard is showing, force back to login
+    var db = document.getElementById("dashboard");
+    var ls = document.getElementById("loginScreen");
+    if (db && db.style.display !== "none") {
+      db.style.display = "none";
+      if (ls) {
+        ls.style.display = "flex";
+        ls.classList.remove("hiding");
+        var inp = document.getElementById("pwInput");
+        if (inp) { inp.value = ""; }
+      }
     }
-  });
+    // Also clear any visible password
+    var inp = document.getElementById("pwInput");
+    if (inp) inp.value = "";
+  }
+
+  setInterval(_checkDT, 400);
+
+  // Console getter trap — fires when devtools console is open & active
+  var _trap = /./;
+  _trap.toString = function() {
+    _onDevToolsOpen();
+    return "";
+  };
   setInterval(function() {
-    _consoleTrap = false;
-    console.log(_fakeObj);
-    if (_consoleTrap && !_devOpen) {
-      _devOpen = true;
-      document.getElementById("devWarn").classList.add("show");
-      const inp = document.getElementById("pwInput");
-      if (inp) inp.value = "";
-    }
-  }, 1000);
+    console.log("%c", _trap);
+  }, 1500);
 
-  // Method 3: debugger statement timing
-  setInterval(function() {
-    const t = performance.now();
-    (function() { debugger; })();
-    if (performance.now() - t > 100 && !_devOpen) {
-      _devOpen = true;
-      document.getElementById("devWarn").classList.add("show");
-    }
-  }, 2000);
-
-})();
+})(window);
 
 // ═══════════════════════════════════════
-// UI LOGIC
+// APP LOGIC
 // ═══════════════════════════════════════
 window.addEventListener("DOMContentLoaded", function() {
-  // Check existing session
+  // Restore session (same tab only)
   if (sessionStorage.getItem("_gfc_ok") === "1") {
-    showDash(false);
+    _showDash(false);
   }
 
-  // Enter key
   var inp = document.getElementById("pwInput");
-  if (inp) inp.addEventListener("keydown", function(e) {
-    if (e.key === "Enter") doLogin();
-  });
+  if (inp) {
+    inp.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") doLogin();
+    });
+    // Focus on load
+    setTimeout(function() { inp.focus(); }, 100);
+  }
 
-  updateClock();
-  setInterval(updateClock, 1000);
-  updateDate();
+  _startClock();
+  _setDate();
 });
 
 async function doLogin() {
-  var val = document.getElementById("pwInput").value;
-  if (!val) return;
+  var inp = document.getElementById("pwInput");
+  var val = inp ? inp.value : "";
+  if (!val.trim()) return;
 
-  var ok = await window.__gfcVerify(val);
+  var btn = document.querySelector(".login-btn");
+  if (btn) { btn.disabled = true; btn.style.opacity = ".6"; }
+
+  var ok = false;
+  try { ok = await window.__gfcAuth(val); } catch(e) {}
+
+  if (btn) { btn.disabled = false; btn.style.opacity = "1"; }
 
   if (ok) {
     sessionStorage.setItem("_gfc_ok", "1");
     var ls = document.getElementById("loginScreen");
-    ls.classList.add("hiding");
-    setTimeout(function() {
-      ls.style.display = "none";
-      showDash(true);
-    }, 480);
+    if (ls) {
+      ls.classList.add("hiding");
+      setTimeout(function() {
+        ls.style.display = "none";
+        _showDash(true);
+      }, 480);
+    }
   } else {
     var err = document.getElementById("loginError");
-    err.classList.add("show");
-    document.getElementById("pwInput").value = "";
-    document.getElementById("pwInput").focus();
-    setTimeout(function() { err.classList.remove("show"); }, 3000);
+    if (err) {
+      err.classList.add("show");
+      setTimeout(function() { err.classList.remove("show"); }, 3000);
+    }
+    if (inp) { inp.value = ""; inp.focus(); }
     var card = document.querySelector(".login-card");
-    card.style.animation = "shake 0.4s ease";
-    setTimeout(function() { card.style.animation = ""; }, 450);
+    if (card) {
+      card.style.animation = "shake 0.4s ease";
+      setTimeout(function() { card.style.animation = ""; }, 450);
+    }
   }
 }
 
-function showDash(animate) {
+function _showDash(animate) {
   var db = document.getElementById("dashboard");
+  if (!db) return;
   db.style.display = "block";
   if (animate) {
     db.style.opacity = "0";
     db.style.transform = "translateY(10px)";
     requestAnimationFrame(function() {
       requestAnimationFrame(function() {
-        db.style.transition = "opacity .4s, transform .4s";
+        db.style.transition = "opacity .4s ease, transform .4s ease";
         db.style.opacity = "1";
         db.style.transform = "translateY(0)";
+        setTimeout(function() { db.style.transition = ""; }, 450);
       });
     });
   } else {
@@ -593,17 +597,21 @@ function showDash(animate) {
 
 function lockDashboard() {
   sessionStorage.removeItem("_gfc_ok");
-  document.getElementById("dashboard").style.display = "none";
+  var db = document.getElementById("dashboard");
   var ls = document.getElementById("loginScreen");
-  ls.style.display = "flex";
-  ls.classList.remove("hiding");
-  document.getElementById("pwInput").value = "";
-  setTimeout(function() { document.getElementById("pwInput").focus(); }, 100);
+  if (db) db.style.display = "none";
+  if (ls) {
+    ls.style.display = "flex";
+    ls.classList.remove("hiding");
+  }
+  var inp = document.getElementById("pwInput");
+  if (inp) { inp.value = ""; setTimeout(function(){inp.focus();},100); }
 }
 
 function togglePW() {
   var inp = document.getElementById("pwInput");
   var icon = document.getElementById("pwEyeIcon");
+  if (!inp || !icon) return;
   if (inp.type === "password") {
     inp.type = "text";
     icon.className = "fa-solid fa-eye";
@@ -615,44 +623,48 @@ function togglePW() {
 
 function sendForgotEmail() {
   var sub = encodeURIComponent("GOAT FC Command Center - Access Code");
-  var body = encodeURIComponent("GOAT FC Command Center\nAccess code: hunt@4868\nURL: " + window.location.href);
+  var body = encodeURIComponent(
+    "GOAT FC Command Center\nYour access code: hunt@4868\nURL: " + window.location.href
+  );
   window.location.href = "mailto:mdrashedulhasan02@gmail.com?subject=" + sub + "&body=" + body;
 }
 
-function updateClock() {
-  var el = document.getElementById("navTime");
-  if (el) {
-    var now = new Date();
-    el.textContent = now.toLocaleTimeString("en-US", {hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
+function _startClock() {
+  function tick() {
+    var el = document.getElementById("navTime");
+    if (el) {
+      var n = new Date();
+      el.textContent = n.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
+    }
   }
+  tick();
+  setInterval(tick, 1000);
 }
 
-function updateDate() {
+function _setDate() {
   var el = document.getElementById("dashSub");
   if (el) {
-    var now = new Date();
-    el.textContent = "GOAT FC  ·  Admin Portal  ·  " + now.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",year:"numeric"});
+    var n = new Date();
+    el.textContent = "GOAT FC  ·  Admin Portal  ·  " +
+      n.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",year:"numeric"});
   }
 }
 
-function closeDevWarn() {
-  document.getElementById("devWarn").classList.remove("show");
-}
-
-// Block common inspect shortcuts
-document.addEventListener("contextmenu", function(e) { e.preventDefault(); });
+// Block keyboard shortcuts
 document.addEventListener("keydown", function(e) {
   if (
     e.key === "F12" ||
-    (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "i" || e.key === "J" || e.key === "j" || e.key === "C" || e.key === "c")) ||
-    (e.ctrlKey && (e.key === "U" || e.key === "u")) ||
-    (e.ctrlKey && (e.key === "S" || e.key === "s"))
+    (e.ctrlKey && e.shiftKey && /^[ijcIJC]$/.test(e.key)) ||
+    (e.ctrlKey && /^[uUsS]$/.test(e.key))
   ) {
     e.preventDefault();
-    e.stopPropagation();
+    e.stopImmediatePropagation();
     return false;
   }
-});
+}, true);
+
+// Block right-click
+document.addEventListener("contextmenu", function(e) { e.preventDefault(); });
 </script>
 </body>
 </html>
