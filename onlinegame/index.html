@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Archery</title>
+<title>GOAT FC — Precision Archery</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -589,7 +589,7 @@ function placeTarget(){
   S.tBaseX=GW*(.44+Math.random()*.44);
   S.tBaseY=GH*(.2+Math.random()*.58);
   S.tgt.x=S.tBaseX;S.tgt.y=S.tBaseY;
-  S.bowX=GW*(mob?.05:.06);S.bowY=GH*.5;
+  S.bowX=GW*(mob?.07:.09);S.bowY=GH*.5;
   S.tPhase=Math.random()*Math.PI*2;
   setWind();
 }
@@ -746,147 +746,268 @@ function drawTarget(x,y,r){
   gx.restore();
 }
 
-/* ══ IMPROVED BOW ══ */
+/* ══ BIG BOLD BOW ══ */
 function drawBow(x,y,ax,ay,held,pwr){
   const ang=Math.atan2(ay-y,ax-x);
-  const sc=Math.min(GW,GH)/620;
-  // bow dimensions
-  const bowH=80*sc;   // total limb span
-  const bowCurve=30*sc; // how much limb curves back
-  const pullback=held?(12+pwr*26)*sc:0;
-  const halfH=bowH/2;
+  const sc=Math.min(GW,GH)/520; // bigger scale base
+
+  // BOW GEOMETRY — large recurve
+  const H=130*sc;        // total half-height of bow (very tall)
+  const pull=held?(18+pwr*38)*sc:0; // drawback
+  const fwd=38*sc;       // how far limb tips curve forward
+  const recurveFwd=52*sc;// recurve tip extra forward curl
+  const riserLen=44*sc;  // riser height (handle)
+  const riserThick=14*sc;// riser max thickness
+
+  // tip positions
+  const tipY_top=-H, tipY_bot=H;
+  const tipX=fwd; // limb tip X (forward)
 
   gx.save();
   gx.translate(x,y);
   gx.rotate(ang);
 
-  // === RISER (handle) ===
-  // riser body — dark hardwood
-  const riserH=22*sc, riserW=9*sc;
+  /* ── OUTER BOW GLOW (idle + power glow) ── */
+  const glowR=held?H*1.1+pwr*30*sc:H*.8;
+  const glowA=held?0.06+pwr*0.09:0.04;
+  const bowGlow=gx.createRadialGradient(tipX*.3,0,H*.1, tipX*.3,0,glowR);
+  bowGlow.addColorStop(0,`rgba(0,255,135,${glowA})`);
+  bowGlow.addColorStop(1,'rgba(0,255,135,0)');
+  gx.beginPath();gx.ellipse(tipX*.3,0,glowR,glowR*.6,0,0,Math.PI*2);
+  gx.fillStyle=bowGlow;gx.fill();
+
+  /* ── LOWER LIMB (draw first so riser is on top) ── */
+  _drawBowLimb(gx,sc, 1, H,fwd,recurveFwd,riserLen,riserThick,pull,pwr,held);
+  /* ── UPPER LIMB ── */
+  _drawBowLimb(gx,sc,-1, H,fwd,recurveFwd,riserLen,riserThick,pull,pwr,held);
+
+  /* ── RISER (handle body) ── */
+  // Shadow
   gx.save();
-  // riser shadow
-  gx.shadowColor='rgba(0,0,0,.8)';gx.shadowBlur=12*sc;gx.shadowOffsetX=3*sc;gx.shadowOffsetY=3*sc;
-  // riser main shape — slightly tapered
+  gx.shadowColor='rgba(0,0,0,.9)';gx.shadowBlur=22*sc;gx.shadowOffsetX=5*sc;gx.shadowOffsetY=6*sc;
+  // Riser shape — ergonomic pistol-grip silhouette
   gx.beginPath();
-  gx.moveTo(-riserW*.5,-riserH);
-  gx.bezierCurveTo(-riserW*.7,-riserH*.6, -riserW*.7,riserH*.6, -riserW*.5,riserH);
-  gx.bezierCurveTo(-riserW*.2,riserH*.8, -riserW*.2,-riserH*.8, -riserW*.5,-riserH);
-  gx.fillStyle='#2a1505';gx.fill();
-  // riser highlight side
-  gx.beginPath();
-  gx.moveTo(riserW*.3,-riserH*.9);
-  gx.bezierCurveTo(riserW*.5,-riserH*.5, riserW*.5,riserH*.5, riserW*.3,riserH*.9);
-  gx.bezierCurveTo(riserW*.1,riserH*.5, riserW*.1,-riserH*.5, riserW*.3,-riserH*.9);
-  gx.fillStyle='#1e0f03';gx.fill();
+  // top-back corner
+  gx.moveTo(-riserThick*.5, -riserLen);
+  // back edge curves inward (belly side)
+  gx.bezierCurveTo(-riserThick*.9,-riserLen*.6, -riserThick*.9,riserLen*.6, -riserThick*.4,riserLen);
+  // bottom curve
+  gx.bezierCurveTo(-riserThick*.1,riserLen*.85, riserThick*.3,riserLen*.7, riserThick*.5,riserLen*.4);
+  // front edge (face side) — slim at grip
+  gx.bezierCurveTo(riserThick*.65,riserLen*.1, riserThick*.65,-riserLen*.1, riserThick*.45,-riserLen*.45);
+  // top curve back
+  gx.bezierCurveTo(riserThick*.2,-riserLen*.75, -riserThick*.1,-riserLen, -riserThick*.5,-riserLen);
+  gx.closePath();
+  // Riser base color — dark machined aluminium/wood
+  const rg=gx.createLinearGradient(-riserThick,0,riserThick*.8,0);
+  rg.addColorStop(0,'#0d0a05');rg.addColorStop(.3,'#2e1a08');
+  rg.addColorStop(.6,'#1e1208');rg.addColorStop(1,'#0a0805');
+  gx.fillStyle=rg;gx.fill();
   gx.restore();
 
-  // riser grip wrap — paracord texture
-  for(let i=-4;i<=4;i++){
-    gx.beginPath();
-    gx.moveTo(-riserW*.6,i*3.5*sc);gx.lineTo(riserW*.6,i*3.5*sc);
-    gx.strokeStyle=`rgba(20,80,30,${i%2===0?.55:.3})`;gx.lineWidth=1.8*sc;gx.stroke();
-  }
-
-  // riser metal sight window cutout hint
+  // Riser edge highlight
   gx.beginPath();
-  gx.arc(-riserW*.1,0,3.5*sc,0,Math.PI*2);
-  gx.strokeStyle='rgba(0,255,135,.25)';gx.lineWidth=.8*sc;gx.stroke();
+  gx.moveTo(-riserThick*.5,-riserLen);
+  gx.bezierCurveTo(-riserThick*.9,-riserLen*.6,-riserThick*.9,riserLen*.6,-riserThick*.4,riserLen);
+  gx.strokeStyle='rgba(255,200,80,.12)';gx.lineWidth=1.5*sc;gx.stroke();
 
-  // === UPPER LIMB ===
-  drawLimb(gx,sc, -halfH,  bowCurve, pullback, pwr, held, 1);
-  // === LOWER LIMB ===
-  drawLimb(gx,sc,  halfH, -bowCurve, pullback, pwr, held,-1);
-
-  // === STRING ===
-  const strAlpha=held?(0.55+pwr*.4):0.45;
-  // string from upper tip to nock to lower tip
-  const upperTipY=-halfH, lowerTipY=halfH;
-  // tip X positions depend on limb forward bend
-  const limbTipX=bowCurve*.55;
-  const nockX=-pullback;
-
-  // string glow when drawing
-  if(held&&pwr>.1){
-    gx.beginPath();
-    gx.moveTo(limbTipX,upperTipY);gx.lineTo(nockX,0);gx.lineTo(limbTipX,lowerTipY);
-    gx.strokeStyle=`rgba(0,255,135,${pwr*.25})`;gx.lineWidth=6*sc;gx.stroke();
-  }
-  // main string
+  // Riser face highlight edge
   gx.beginPath();
-  gx.moveTo(limbTipX,upperTipY);gx.lineTo(nockX,0);gx.lineTo(limbTipX,lowerTipY);
-  gx.strokeStyle=`rgba(220,240,220,${strAlpha})`;gx.lineWidth=1.2*sc;
-  gx.lineJoin='round';gx.stroke();
+  gx.moveTo(riserThick*.45,-riserLen*.45);
+  gx.bezierCurveTo(riserThick*.65,-riserLen*.1,riserThick*.65,riserLen*.1,riserThick*.5,riserLen*.4);
+  gx.strokeStyle='rgba(0,255,135,.18)';gx.lineWidth=2*sc;gx.stroke();
 
-  // serving (center string wrap)
-  for(let i=-4;i<=4;i++){
-    const t=(i+4)/8;
-    const sy=nockX+(limbTipX-nockX)*t;// slight interpolation for angle
+  // === GRIP WRAP — thick rubber/leather wrap at center ===
+  gx.save();
+  gx.beginPath();
+  gx.rect(-riserThick*.8,-riserLen*.32, riserThick*1.6, riserLen*.64);
+  gx.clip();
+  for(let i=-8;i<=8;i++){
+    const gy2=i*4.8*sc;
     gx.beginPath();
-    gx.moveTo(nockX-(2*sc),i*2.5*sc);gx.lineTo(nockX+(2*sc),i*2.5*sc);
-    gx.strokeStyle=`rgba(0,200,80,${.25+pwr*.25})`;gx.lineWidth=1.2*sc;gx.stroke();
+    gx.moveTo(-riserThick*.8,gy2);gx.lineTo(riserThick*.8,gy2);
+    const a=i%2===0?.6:.3;
+    gx.strokeStyle=`rgba(0,40,15,${a})`;gx.lineWidth=2.6*sc;gx.stroke();
+  }
+  // grip overlay color
+  gx.beginPath();
+  gx.rect(-riserThick*.8,-riserLen*.32,riserThick*1.6,riserLen*.64);
+  gx.fillStyle='rgba(0,60,20,.18)';gx.fill();
+  gx.restore();
+
+  // Grip band borders
+  gx.beginPath();
+  gx.moveTo(-riserThick*.75,-riserLen*.32);gx.lineTo(riserThick*.65,-riserLen*.32);
+  gx.moveTo(-riserThick*.75, riserLen*.32);gx.lineTo(riserThick*.65, riserLen*.32);
+  gx.strokeStyle='rgba(0,200,80,.35)';gx.lineWidth=1.8*sc;gx.stroke();
+
+  // === SIGHT WINDOW CUTOUT ===
+  const swx=riserThick*.15, swy=-riserLen*.05;
+  gx.beginPath();
+  gx.roundRect(swx-5*sc, swy-8*sc, 10*sc, 16*sc, 2*sc);
+  gx.strokeStyle='rgba(0,255,135,.3)';gx.lineWidth=1.2*sc;gx.stroke();
+  gx.fillStyle='rgba(0,255,135,.04)';gx.fill();
+
+  // center pin dot
+  gx.beginPath();gx.arc(swx,swy,2*sc,0,Math.PI*2);
+  gx.fillStyle='rgba(0,255,135,.5)';gx.fill();
+
+  // === ARROW REST ===
+  gx.beginPath();
+  gx.moveTo(riserThick*.5,-2*sc);gx.lineTo(riserThick*.9,-2*sc);
+  gx.moveTo(riserThick*.5, 2*sc);gx.lineTo(riserThick*.9, 2*sc);
+  gx.strokeStyle='rgba(0,255,135,.45)';gx.lineWidth=2*sc;gx.stroke();
+
+  /* ── STRING ── */
+  const nockX=-pull;
+  const strAlpha=held?0.65+pwr*.35:0.5;
+
+  // string tension glow
+  if(held&&pwr>0.05){
+    gx.beginPath();
+    gx.moveTo(tipX,tipY_top);gx.lineTo(nockX,0);gx.lineTo(tipX,tipY_bot);
+    gx.strokeStyle=`rgba(0,255,135,${pwr*.3})`;gx.lineWidth=10*sc;gx.lineJoin='round';gx.stroke();
+    gx.strokeStyle=`rgba(120,255,180,${pwr*.2})`;gx.lineWidth=5*sc;gx.stroke();
+  }
+  // string main
+  gx.beginPath();
+  gx.moveTo(tipX,tipY_top);gx.lineTo(nockX,0);gx.lineTo(tipX,tipY_bot);
+  gx.strokeStyle=`rgba(210,240,215,${strAlpha})`;gx.lineWidth=2.2*sc;gx.lineJoin='round';gx.stroke();
+  // string highlight
+  gx.beginPath();
+  gx.moveTo(tipX,tipY_top);gx.lineTo(nockX,0);gx.lineTo(tipX,tipY_bot);
+  gx.strokeStyle=`rgba(255,255,255,${strAlpha*.3})`;gx.lineWidth=.8*sc;gx.stroke();
+
+  // serving wrap at nock point
+  for(let i=-5;i<=5;i++){
+    const sy=nockX-2*sc+i*0;
+    gx.beginPath();
+    gx.moveTo(nockX-3.5*sc,i*3*sc);gx.lineTo(nockX+3.5*sc,i*3*sc);
+    gx.strokeStyle=`rgba(0,220,80,${.5+pwr*.3})`;gx.lineWidth=2*sc;gx.stroke();
   }
 
-  // === ARROW ON STRING (when held) ===
+  /* ── ARROW ON BOW (while holding) ── */
   if(held){
-    const arrL=28*sc;
-    gx.beginPath();gx.moveTo(nockX,0);gx.lineTo(nockX+arrL,0);
-    gx.strokeStyle='rgba(0,255,135,.7)';gx.lineWidth=1.8*sc;
-    gx.setLineDash([]);gx.stroke();
+    const arrLen=55*sc;
+    // shaft
+    gx.beginPath();gx.moveTo(nockX,0);gx.lineTo(nockX+arrLen,0);
+    const ashaft=gx.createLinearGradient(nockX,0,nockX+arrLen,0);
+    ashaft.addColorStop(0,'rgba(0,180,60,.5)');
+    ashaft.addColorStop(.5,'rgba(0,255,135,.85)');
+    ashaft.addColorStop(1,'rgba(0,255,135,.9)');
+    gx.strokeStyle=ashaft;gx.lineWidth=3*sc;gx.stroke();
     // arrowhead
     gx.beginPath();
-    gx.moveTo(nockX+arrL,0);gx.lineTo(nockX+arrL-7*sc,-3*sc);gx.lineTo(nockX+arrL-7*sc,3*sc);
-    gx.closePath();gx.fillStyle='#00ff87';gx.fill();
-    // fletching
-    gx.beginPath();
-    gx.moveTo(nockX,0);gx.lineTo(nockX-10*sc,-6*sc);gx.moveTo(nockX,0);gx.lineTo(nockX-10*sc,6*sc);
-    gx.strokeStyle='rgba(0,160,60,.6)';gx.lineWidth=1.5*sc;gx.stroke();
+    gx.moveTo(nockX+arrLen+2*sc,0);
+    gx.lineTo(nockX+arrLen-10*sc,-5*sc);
+    gx.lineTo(nockX+arrLen-8*sc,0);
+    gx.lineTo(nockX+arrLen-10*sc, 5*sc);
+    gx.closePath();
+    gx.fillStyle='#00ff87';gx.fill();
+    gx.strokeStyle='rgba(0,200,60,.6)';gx.lineWidth=.8*sc;gx.stroke();
+    // fletching × 3 vanes
+    const fvx=nockX-8*sc;
+    [[-1,-8],[1,-8],[0,9]].forEach(([fx,fy])=>{
+      gx.beginPath();
+      gx.moveTo(fvx+4*sc,0);
+      gx.lineTo(fvx-10*sc,fy*sc);
+      gx.lineTo(fvx-14*sc,fy*sc*.5);
+      gx.lineTo(fvx,0);
+      gx.strokeStyle=`rgba(${fx===0?'255,100,0':'0,200,80'},.65)`;
+      gx.lineWidth=1.5*sc;gx.stroke();
+      gx.fillStyle=`rgba(${fx===0?'200,60,0':'0,150,60'},.25)`;gx.fill();
+    });
+    // nock
+    gx.beginPath();gx.arc(nockX,0,3*sc,0,Math.PI*2);
+    gx.fillStyle='rgba(0,255,135,.6)';gx.fill();
   }
 
-  // === BOW LIMB TIPS (recurve ends) ===
-  gx.beginPath();gx.arc(limbTipX,upperTipY,2.2*sc,0,Math.PI*2);
-  gx.fillStyle='rgba(0,255,135,.35)';gx.fill();
-  gx.beginPath();gx.arc(limbTipX,lowerTipY,2.2*sc,0,Math.PI*2);
-  gx.fillStyle='rgba(0,255,135,.35)';gx.fill();
+  /* ── LIMB TIPS glow dots ── */
+  [tipY_top,tipY_bot].forEach(ty=>{
+    gx.beginPath();gx.arc(recurveFwd,ty,4.5*sc,0,Math.PI*2);
+    gx.fillStyle=`rgba(0,255,135,${0.25+pwr*.3})`;gx.fill();
+    gx.beginPath();gx.arc(recurveFwd,ty,2*sc,0,Math.PI*2);
+    gx.fillStyle='rgba(0,255,135,.8)';gx.fill();
+  });
 
   gx.restore();
 }
 
-function drawLimb(ctx,sc,endY,curveX,pull,pwr,held,dir){
-  const halfH=Math.abs(endY);
-  const riserW=9*sc;
-  const limbW=5.5*sc; // base thickness
-  const tipW=1.8*sc;
-  const limbTipX=curveX*.55; // tip X
-  const limbTipY=endY;
+function _drawBowLimb(ctx,sc,dir,H,fwd,rfwd,riserLen,riserThick,pull,pwr,held){
+  // dir: -1=upper, 1=lower
+  const startY=dir*riserLen*.88;
+  const midY=dir*H*.52;
+  const tipY=dir*H;
+  const midX=fwd*1.1;
+  const tipX=rfwd; // recurve tip is further forward
 
-  // limb outer shape (back of limb)
+  // Limb BACK (outer face — thicker at base, tapers to tip)
+  // We draw as a filled shape
+  const limbThickBase=11*sc;
+  const limbThickTip=3.5*sc;
+
+  // Compute limb path: outer edge then inner edge
   ctx.save();
   ctx.beginPath();
-  ctx.moveTo(-riserW*.4,dir*18*sc);
-  ctx.bezierCurveTo(curveX*.6,dir*halfH*.45, curveX*.8,dir*halfH*.75, limbTipX,limbTipY);
-  // limb belly (inner face)
-  ctx.bezierCurveTo(curveX*.7,limbTipY+dir*3*sc, curveX*.4,dir*halfH*.65, -riserW*.2,dir*18*sc+dir*3*sc);
+
+  // outer back edge
+  ctx.moveTo(-riserThick*.35, startY);
+  ctx.bezierCurveTo(
+    midX*.3, dir*H*.25,
+    midX*.75, dir*H*.55,
+    tipX-4*sc, tipY
+  );
+  // recurve tip hook
+  ctx.bezierCurveTo(tipX+8*sc, tipY+dir*8*sc, tipX+12*sc, tipY+dir*2*sc, tipX, tipY);
+
+  // inner face edge (belly)
+  ctx.bezierCurveTo(
+    midX*.55, tipY-dir*limbThickTip*2.5,
+    midX*.25, dir*H*.45,
+    -riserThick*.1, startY+dir*limbThickBase
+  );
   ctx.closePath();
 
-  // limb wood gradient
-  const lg=ctx.createLinearGradient(curveX*.8,dir*halfH*.6,0,dir*halfH*.4);
-  lg.addColorStop(0,'#1a0b02');
-  lg.addColorStop(.4,'#3d1e07');
-  lg.addColorStop(.7,'#2e1705');
-  lg.addColorStop(1,'#160903');
+  // Limb gradient — dark wood with laminate look
+  const lg=ctx.createLinearGradient(-riserThick*.4,startY, midX*.9,tipY);
+  lg.addColorStop(0,'#1a0c03');
+  lg.addColorStop(.25,'#3a1c08');
+  lg.addColorStop(.5,'#2c1506');
+  lg.addColorStop(.8,'#1d0e04');
+  lg.addColorStop(1,'#100804');
   ctx.fillStyle=lg;ctx.fill();
 
-  // limb highlight stripe (back)
+  // Limb border edge (outer back face — lighter)
   ctx.beginPath();
-  ctx.moveTo(-riserW*.3,dir*20*sc);
-  ctx.bezierCurveTo(curveX*.5,dir*halfH*.4, curveX*.75,dir*halfH*.7, limbTipX+2*sc,limbTipY-dir*2*sc);
-  ctx.strokeStyle='rgba(80,40,10,.4)';ctx.lineWidth=1.5*sc;ctx.stroke();
+  ctx.moveTo(-riserThick*.35, startY);
+  ctx.bezierCurveTo(midX*.3,dir*H*.25, midX*.75,dir*H*.55, tipX-4*sc,tipY);
+  ctx.bezierCurveTo(tipX+8*sc,tipY+dir*8*sc, tipX+12*sc,tipY+dir*2*sc, tipX,tipY);
+  ctx.strokeStyle='rgba(100,55,10,.5)';ctx.lineWidth=1.8*sc;ctx.stroke();
 
-  // limb belly stripe (green fiberglass facing)
+  // Limb belly face — green carbon/fiberglass stripe
   ctx.beginPath();
-  ctx.moveTo(-riserW*.15,dir*20*sc+dir*3*sc);
-  ctx.bezierCurveTo(curveX*.35,dir*halfH*.55, curveX*.6,dir*halfH*.78, limbTipX-2*sc,limbTipY);
-  ctx.strokeStyle='rgba(0,120,50,.3)';ctx.lineWidth=2*sc;ctx.stroke();
+  ctx.moveTo(-riserThick*.1, startY+dir*limbThickBase*.7);
+  ctx.bezierCurveTo(midX*.2,dir*H*.42, midX*.5,dir*H*.68, tipX-6*sc,tipY-dir*limbThickTip*.8);
+  ctx.strokeStyle='rgba(0,140,60,.45)';ctx.lineWidth=3.5*sc;ctx.stroke();
+  // second thinner carbon stripe
+  ctx.beginPath();
+  ctx.moveTo(-riserThick*.05, startY+dir*limbThickBase*.5);
+  ctx.bezierCurveTo(midX*.18,dir*H*.38, midX*.45,dir*H*.62, tipX-7*sc,tipY-dir*limbThickTip*1.2);
+  ctx.strokeStyle='rgba(0,200,80,.18)';ctx.lineWidth=1.5*sc;ctx.stroke();
+
+  // Limb back highlight (outer bright edge)
+  ctx.beginPath();
+  ctx.moveTo(-riserThick*.3, startY+dir*2*sc);
+  ctx.bezierCurveTo(midX*.25,dir*H*.22, midX*.7,dir*H*.5, tipX-5*sc,tipY-dir*2*sc);
+  ctx.strokeStyle='rgba(200,120,40,.22)';ctx.lineWidth=1.2*sc;ctx.stroke();
+
+  // Limb bolts / laminate rivet dots
+  [[midX*.22,dir*H*.18],[midX*.55,dir*H*.44]].forEach(([bx,by])=>{
+    ctx.beginPath();ctx.arc(bx,by,2.2*sc,0,Math.PI*2);
+    ctx.fillStyle='rgba(0,0,0,.7)';ctx.fill();
+    ctx.strokeStyle='rgba(0,200,80,.3)';ctx.lineWidth=.8*sc;ctx.stroke();
+  });
+
   ctx.restore();
 }
 
