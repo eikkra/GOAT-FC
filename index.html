@@ -896,7 +896,7 @@ Promise.all([
         +'</div></div></a>';
     }).join('');
     document.getElementById('rankTrack').innerHTML = cards + cards;
-    makeSlider(document.getElementById('rankWrap'), document.getElementById('rankTrack'), 40);
+    makeSlider(document.getElementById('rankWrap'), document.getElementById('rankTrack'), 30);
   } else {
     document.getElementById('rankTrack').innerHTML='<div style="padding:20px;font-family:\'Exo 2\',sans-serif;font-size:10px;color:var(--muted);">No ranked players yet</div>';
   }
@@ -926,7 +926,7 @@ Promise.all([
         +'</div></div>';
     }).join('');
     document.getElementById('adminTrack').innerHTML = adminCards + adminCards;
-    makeSlider(document.getElementById('adminWrap'), document.getElementById('adminTrack'), 35);
+    makeSlider(document.getElementById('adminWrap'), document.getElementById('adminTrack'), 28);
   } else {
     document.getElementById('adminTrack').innerHTML='<div style="padding:20px;font-family:\'Exo 2\',sans-serif;font-size:10px;color:var(--muted);">No data</div>';
   }
