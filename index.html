@@ -162,6 +162,9 @@ body::after{content:"";position:fixed;inset:0;background-image:repeating-linear-
 .rank-slider-wrap,.admin-slider-wrap{
   overflow:hidden;position:relative;width:100%;
   cursor:grab;user-select:none;-webkit-user-select:none;
+  /* GPU layer for wrapper too */
+  -webkit-transform:translateZ(0);
+  transform:translateZ(0);
 }
 .rank-slider-wrap:active,.admin-slider-wrap:active{cursor:grabbing;}
 .rank-slider-wrap::before,.rank-slider-wrap::after,
@@ -171,11 +174,17 @@ body::after{content:"";position:fixed;inset:0;background-image:repeating-linear-
 .rank-slider-wrap::before,.admin-slider-wrap::before{left:0;background:linear-gradient(90deg,var(--bg),transparent);}
 .rank-slider-wrap::after,.admin-slider-wrap::after{right:0;background:linear-gradient(270deg,var(--bg),transparent);}
 
-/* Tracks — NO CSS animation; pure JS scroll */
+/* Tracks */
 .rank-track,.admin-track{
   display:flex;gap:10px;
   width:max-content;
   will-change:transform;
+  /* Force GPU compositing — eliminates jank on mobile */
+  -webkit-transform:translateZ(0);
+  transform:translateZ(0);
+  /* Prevent sub-pixel blur on some Android devices */
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
 }
 
 /* ── RANK CARD — compact ── */
@@ -264,11 +273,9 @@ body::after{content:"";position:fixed;inset:0;background-image:repeating-linear-
 .status-badge .s-dot{width:4px;height:4px;border-radius:50%;animation:statusPulse 1.5s ease-in-out infinite;flex-shrink:0;}
 .status-badge.active .s-dot{background:#00ff88;box-shadow:0 0 4px #00ff88;}
 .status-badge.busy .s-dot{background:#ffaa00;box-shadow:0 0 4px #ffaa00;}
-/* CHANGED: center-align admin body content */
 .admin-body{padding:6px 7px 8px;text-align:center;}
 .admin-name{font-family:'Exo 2',sans-serif;font-size:9.5px;font-weight:900;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;}
 .admin-role{font-family:'Exo 2',sans-serif;font-size:7px;font-weight:800;letter-spacing:0.5px;color:var(--neon-cyan);text-transform:uppercase;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;}
-/* CHANGED: center-justify stars */
 .admin-stars{display:flex;align-items:center;justify-content:center;gap:2px;}
 .admin-stars i{font-size:9px;color:#ffd700;}
 .admin-stars i.empty{color:var(--muted2);}
@@ -637,76 +644,161 @@ function formatWinPct(val){
 }
 
 /* ════════════════════════════════════════════
-   PURE JS AUTO-SCROLL + DRAG SLIDER
-   — identical logic for both rank and admin tracks
+   SMOOTH INFINITE AUTO-SCROLL + MOMENTUM DRAG
+   — butter-smooth on mobile, no lag/jank
    ════════════════════════════════════════════ */
-function makeSlider(wrapEl, trackEl, speedPx) {
-  if(!wrapEl||!trackEl) return;
+function makeSlider(wrapEl, trackEl, autoSpeedPx) {
+  if (!wrapEl || !trackEl) return;
 
-  let pos = 0;
-  let halfW = 0;
-  let raf = null;
-  let lastTime = null;
-  let dragging = false;
-  let dragStartX = 0;
-  let dragStartPos = 0;
-  let moved = false;
-  let paused = false;
+  /* --- state --- */
+  let pos         = 0;      // current translateX (negative = scrolled right)
+  let velocity    = 0;      // px/ms — used for momentum after drag release
+  let halfW       = 0;      // half of total track width (one full copy)
+  let raf         = null;
+  let prevTime    = null;
 
-  function getHalfW(){ return trackEl.scrollWidth / 2; }
+  let dragging    = false;
+  let moved       = false;
+  let lastX       = 0;
+  let lastTouchT  = 0;
+  let prevX       = 0;
+  let prevT       = 0;
 
-  function applyPos(p){
+  let hovered     = false;  // mouse hover pauses auto-scroll
+  let touching    = false;  // finger down pauses auto-scroll
+
+  /* --- helpers --- */
+  function getHalfW() {
+    // half = one copy of the duplicated content
+    return trackEl.scrollWidth / 2;
+  }
+
+  function wrapPos(p) {
     halfW = getHalfW();
-    if(halfW > 0){
-      while(p > 0) p -= halfW;
-      while(p < -halfW) p += halfW;
+    if (halfW <= 0) return p;
+    // keep pos in range [-halfW, 0)
+    while (p > 0)       p -= halfW;
+    while (p < -halfW)  p += halfW;
+    return p;
+  }
+
+  function commit(p) {
+    pos = wrapPos(p);
+    // Use matrix3d to stay on GPU compositor thread — zero layout/paint
+    trackEl.style.transform = 'translate3d(' + pos + 'px,0,0)';
+  }
+
+  /* --- RAF loop --- */
+  function loop(ts) {
+    raf = requestAnimationFrame(loop);
+
+    const dt = prevTime === null ? 16 : Math.min(ts - prevTime, 50); // clamp to 50ms max
+    prevTime = ts;
+
+    if (dragging) {
+      // while dragging: position is set directly in event handler, no loop movement
+      return;
     }
-    pos = p;
-    trackEl.style.transform = 'translateX('+pos+'px)';
-  }
 
-  function step(ts){
-    if(lastTime===null) lastTime=ts;
-    const dt = Math.min(ts - lastTime, 50);
-    lastTime = ts;
-    if(!dragging && !paused){
-      applyPos(pos - speedPx * dt / 1000);
+    if (velocity !== 0) {
+      // momentum deceleration after drag release
+      commit(pos + velocity * dt);
+      // friction: exponential decay — feels natural, not abrupt
+      velocity *= Math.pow(0.92, dt / 16); // per-frame at 60fps = 0.92
+      if (Math.abs(velocity) < 0.01) velocity = 0;
+    } else if (!hovered && !touching) {
+      // normal auto-scroll
+      commit(pos - autoSpeedPx * dt / 1000);
     }
-    raf = requestAnimationFrame(step);
   }
 
-  function startRAF(){ if(!raf) raf=requestAnimationFrame(step); }
-
-  wrapEl.addEventListener('mouseenter', ()=>{ paused=true; });
-  wrapEl.addEventListener('mouseleave', ()=>{ if(!dragging) paused=false; });
-
-  function onDragStart(clientX){
-    dragging=true; moved=false;
-    dragStartX=clientX; dragStartPos=pos;
-    wrapEl.style.cursor='grabbing';
-  }
-  function onDragMove(clientX){
-    if(!dragging) return;
-    const dx = clientX - dragStartX;
-    if(Math.abs(dx)>3) moved=true;
-    applyPos(dragStartPos + dx);
-  }
-  function onDragEnd(){
-    if(!dragging) return;
-    dragging=false; paused=false;
-    wrapEl.style.cursor='grab';
-    lastTime=null;
+  function startRAF() {
+    if (!raf) raf = requestAnimationFrame(loop);
   }
 
-  wrapEl.addEventListener('mousedown', e=>{ onDragStart(e.clientX); e.preventDefault(); });
-  window.addEventListener('mousemove', e=>{ if(dragging) onDragMove(e.clientX); });
-  window.addEventListener('mouseup',   ()=>{ onDragEnd(); });
+  /* --- drag start --- */
+  function dragStart(clientX) {
+    dragging  = true;
+    moved     = false;
+    velocity  = 0;
+    lastX     = clientX;
+    prevX     = clientX;
+    prevT     = performance.now();
+    wrapEl.style.cursor = 'grabbing';
+  }
 
-  wrapEl.addEventListener('touchstart', e=>{ onDragStart(e.touches[0].clientX); }, {passive:true});
-  wrapEl.addEventListener('touchmove',  e=>{ if(dragging){ e.preventDefault(); onDragMove(e.touches[0].clientX); } }, {passive:false});
-  wrapEl.addEventListener('touchend',   ()=>{ onDragEnd(); });
+  /* --- drag move --- */
+  function dragMove(clientX) {
+    if (!dragging) return;
+    const dx = clientX - lastX;
+    if (Math.abs(clientX - (lastX - (pos - pos))) > 3) moved = true; // any delta = moved
+    if (Math.abs(dx) > 1) moved = true;
 
-  wrapEl.addEventListener('click', e=>{ if(moved){ e.preventDefault(); e.stopPropagation(); } }, true);
+    commit(pos + dx);
+    lastX = clientX;
+
+    // track velocity for momentum (rolling avg of last move)
+    const now = performance.now();
+    const dt  = now - prevT;
+    if (dt > 0) {
+      const rawV = (clientX - prevX) / dt; // px/ms
+      velocity = velocity * 0.6 + rawV * 0.4; // smooth it
+    }
+    prevX = clientX;
+    prevT = performance.now();
+  }
+
+  /* --- drag end --- */
+  function dragEnd() {
+    if (!dragging) return;
+    dragging = false;
+    touching = false;
+    wrapEl.style.cursor = 'grab';
+    // velocity is already set — momentum loop will handle it
+    // clamp max momentum so it doesn't fly off
+    const maxV = 3; // px/ms
+    velocity = Math.max(-maxV, Math.min(maxV, velocity));
+  }
+
+  /* --- mouse events --- */
+  wrapEl.addEventListener('mouseenter', () => { hovered = true; });
+  wrapEl.addEventListener('mouseleave', () => { hovered = false; if (!dragging) velocity = 0; });
+
+  wrapEl.addEventListener('mousedown', e => {
+    dragStart(e.clientX);
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove', e => { if (dragging) dragMove(e.clientX); });
+  window.addEventListener('mouseup',   () => { dragEnd(); });
+
+  /* --- touch events --- */
+  wrapEl.addEventListener('touchstart', e => {
+    touching = true;
+    velocity = 0;
+    dragStart(e.touches[0].clientX);
+    lastTouchT = performance.now();
+  }, { passive: true });
+
+  wrapEl.addEventListener('touchmove', e => {
+    if (!dragging) return;
+    dragMove(e.touches[0].clientX);
+    // only prevent default if horizontal swipe (avoids blocking page scroll on vertical)
+    if (moved) e.preventDefault();
+  }, { passive: false });
+
+  wrapEl.addEventListener('touchend', () => {
+    dragEnd();
+  }, { passive: true });
+
+  wrapEl.addEventListener('touchcancel', () => {
+    dragEnd();
+    velocity = 0;
+  }, { passive: true });
+
+  /* --- block click after drag --- */
+  wrapEl.addEventListener('click', e => {
+    if (moved) { e.preventDefault(); e.stopPropagation(); }
+  }, true);
 
   startRAF();
 }
@@ -749,7 +841,6 @@ function buildStars(rateStr,isGold){
   for(let i=0;i<full;i++)html+='<i class="fa-solid fa-star"></i>';
   if(half)html+='<i class="fa-solid fa-star-half-stroke"></i>';
   for(let i=0;i<empty;i++)html+='<i class="fa-regular fa-star empty"></i>';
-  /* CHANGED: removed ELITE text — gold border animation alone indicates elite status */
   html+='</div>';
   return html;
 }
@@ -804,7 +895,6 @@ Promise.all([
         +'<div class="rank-stat goal"><div class="rank-stat-val">'+gf+'</div><div class="rank-stat-lbl">Goals</div></div>'
         +'</div></div></a>';
     }).join('');
-    /* FIXED: duplicate cards for seamless infinite loop — same as admin panel */
     document.getElementById('rankTrack').innerHTML = cards + cards;
     makeSlider(document.getElementById('rankWrap'), document.getElementById('rankTrack'), 50);
   } else {
