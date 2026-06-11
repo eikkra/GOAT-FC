@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>CP SYSTEM</title>
 <link rel="icon" type="image/png" href="https://i.imgur.com/LY3Bb9m.png">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -225,19 +225,23 @@ body::after {
   box-shadow:0 0 30px rgba(255,215,0,0.07), 0 0 60px rgba(0,0,0,0.5);
 }
 
-/* ── TABLE CONTAINER (for sticky header) ── */
+/* ── TABLE CONTAINER ── */
 .table-scroll {
   overflow-x:auto;
-  max-height:calc(100vh - 260px);
   overflow-y:auto;
+  /* Dynamic height: full viewport minus topbar(50) + header(~110) + search(~50) + wrap padding(~40) + footer(~50) */
+  max-height:calc(100vh - 310px);
+  -webkit-overflow-scrolling:touch;
 }
-.table-scroll::-webkit-scrollbar { width:4px; height:4px; }
+.table-scroll::-webkit-scrollbar { width:3px; height:3px; }
 .table-scroll::-webkit-scrollbar-track { background:rgba(255,215,0,0.03); }
 .table-scroll::-webkit-scrollbar-thumb { background:rgba(255,215,0,0.2); border-radius:4px; }
 
 table {
   width:100%;
   border-collapse:collapse;
+  /* Ensure table fits on mobile without extra horizontal scroll */
+  table-layout:fixed;
 }
 
 thead tr {
@@ -247,26 +251,38 @@ thead tr {
 }
 
 th {
-  padding:12px 8px;
+  padding:11px 6px;
   font-family:'Orbitron',sans-serif;
-  font-size:10px; font-weight:700;
-  letter-spacing:1px; text-transform:uppercase;
+  font-size:9px; font-weight:700;
+  letter-spacing:0.8px; text-transform:uppercase;
   color:var(--gold);
   text-align:center;
   white-space:nowrap;
   background:rgba(13,10,26,0.98);
+  overflow:hidden;
 }
-th:first-child { text-align:left; padding-left:14px; }
+th:first-child { text-align:left; padding-left:12px; }
+
+/* Column widths for desktop */
+th:nth-child(1) { width:30%; }
+th:nth-child(2) { width:9%; }
+th:nth-child(3) { width:9%; }
+th:nth-child(4) { width:11%; }
+th:nth-child(5) { width:9%; }
+th:nth-child(6) { width:11%; }
+th:nth-child(7) { width:11%; }
+th:nth-child(8) { width:10%; }
 
 td {
-  padding:10px 8px;
-  font-size:12px; font-weight:600;
+  padding:9px 6px;
+  font-size:11px; font-weight:600;
   text-align:center;
   border-bottom:1px solid rgba(255,215,0,0.06);
   white-space:nowrap;
+  overflow:hidden;
   transition:background 0.2s;
 }
-td:first-child { text-align:left; padding-left:14px; }
+td:first-child { text-align:left; padding-left:12px; }
 
 tbody tr {
   animation:fadeRow 0.4s ease both;
@@ -283,32 +299,31 @@ tbody tr:last-child td { border-bottom:none; }
 
 /* ── PLAYER CELL ── */
 .club-cell {
-  display:flex; align-items:center; gap:8px;
+  display:flex; align-items:center; gap:7px;
 }
 .club-avatar {
-  width:28px; height:28px; border-radius:50%;
+  width:26px; height:26px; border-radius:50%;
   object-fit:cover;
   border:1.5px solid rgba(255,215,0,0.25);
   flex-shrink:0;
   background:rgba(255,215,0,0.05);
 }
 .club-avatar-placeholder {
-  width:28px; height:28px; border-radius:50%;
+  width:26px; height:26px; border-radius:50%;
   background:rgba(255,215,0,0.08);
   border:1.5px solid rgba(255,215,0,0.15);
   display:flex; align-items:center; justify-content:center;
-  flex-shrink:0; font-size:10px; color:var(--muted);
+  flex-shrink:0; font-size:9px; color:var(--muted);
 }
-.club-info { min-width:0; }
+.club-info { min-width:0; flex:1; }
 .player-name {
-  font-size:11px; font-weight:700; color:var(--text);
+  font-size:10px; font-weight:700; color:var(--text);
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-  max-width:130px; line-height:1.2;
+  line-height:1.2;
 }
 .club-id-sub {
-  font-size:9px; color:var(--muted); letter-spacing:0.5px;
+  font-size:8px; color:var(--muted); letter-spacing:0.5px;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-  max-width:130px;
 }
 
 /* ── BID COMBINED ── */
@@ -316,51 +331,50 @@ tbody tr:last-child td { border-bottom:none; }
   display:flex; flex-direction:column; align-items:center; gap:1px;
   line-height:1.2;
 }
-.bid-earn { color:#39ff14; font-size:10px; font-weight:700; }
-.bid-deduct { color:#ff3b3b; font-size:10px; font-weight:700; }
-.bid-divider { width:1px; height:10px; background:rgba(255,255,255,0.12); display:none; }
+.bid-earn { color:#39ff14; font-size:9px; font-weight:700; }
+.bid-deduct { color:#ff3b3b; font-size:9px; font-weight:700; }
 
 /* ── CP VALUES ── */
 .val-base    { color:#a0d4ff; }
 .val-tour    { color:#c084fc; }
-.val-bonus   { color:var(--gold3); }
 .val-sell    { color:#38bdf8; }
 
 .val-net-pos {
   color:var(--gold);
   font-family:'Orbitron',sans-serif;
-  font-size:11px; font-weight:700;
+  font-size:10px; font-weight:700;
   text-shadow:0 0 8px rgba(255,215,0,0.5);
 }
 .val-net-neg {
   color:var(--red);
   font-family:'Orbitron',sans-serif;
-  font-size:11px; font-weight:700;
+  font-size:10px; font-weight:700;
 }
 
 /* ── ACTION BUTTON ── */
 .btn-claim {
-  display:inline-flex; align-items:center; gap:5px;
-  padding:6px 12px;
+  display:inline-flex; align-items:center; gap:4px;
+  padding:5px 9px;
   background:linear-gradient(135deg,var(--gold2),var(--gold));
   color:#000; border:none;
-  border-radius:6px; font-family:'Exo 2',sans-serif;
-  font-size:11px; font-weight:700; letter-spacing:0.5px;
+  border-radius:5px; font-family:'Exo 2',sans-serif;
+  font-size:10px; font-weight:700; letter-spacing:0.3px;
   cursor:pointer; transition:all 0.2s;
   box-shadow:0 0 10px rgba(255,215,0,0.4);
+  white-space:nowrap;
 }
 .btn-claim:hover {
   transform:scale(1.06);
   box-shadow:0 0 18px rgba(255,215,0,0.65);
 }
 .btn-locked {
-  display:inline-flex; align-items:center; gap:5px;
-  padding:6px 12px;
+  display:inline-flex; align-items:center; gap:4px;
+  padding:5px 9px;
   background:rgba(255,255,255,0.05);
   color:var(--muted); border:1px solid rgba(255,255,255,0.08);
-  border-radius:6px; font-family:'Exo 2',sans-serif;
-  font-size:11px; font-weight:600; letter-spacing:0.5px;
-  cursor:not-allowed;
+  border-radius:5px; font-family:'Exo 2',sans-serif;
+  font-size:10px; font-weight:600; letter-spacing:0.3px;
+  cursor:not-allowed; white-space:nowrap;
 }
 
 /* ── LOADING ── */
@@ -528,28 +542,62 @@ tbody tr:last-child td { border-bottom:none; }
 
 /* ── MOBILE ── */
 @media(max-width:600px) {
-  .wrap { padding:8px 4px 0; }
+  .wrap { padding:8px 6px 0; }
   .table-card { border-radius:10px; }
-  .table-scroll { max-height:calc(100vh - 240px); }
-  table { font-size:9px; }
-  th { font-size:8px; padding:8px 5px; letter-spacing:0; }
-  td { font-size:9px; padding:8px 5px; }
-  td:first-child { padding-left:8px; }
-  th:first-child { padding-left:8px; }
-  .player-name { max-width:72px; font-size:9px; }
-  .club-id-sub { max-width:72px; font-size:8px; }
-  .club-avatar { width:24px; height:24px; }
-  .club-avatar-placeholder { width:24px; height:24px; font-size:9px; }
-  .club-cell { gap:5px; }
-  .val-net-pos, .val-net-neg { font-size:9px; }
-  .btn-claim { padding:4px 7px; font-size:9px; gap:3px; border-radius:5px; }
-  .btn-locked { padding:4px 7px; font-size:9px; gap:3px; border-radius:5px; }
+  .table-scroll {
+    max-height:calc(100vh - 290px);
+    /* Prevent horizontal scrolling — table fits in viewport */
+    overflow-x:hidden;
+  }
+
+  table { table-layout:fixed; width:100%; }
+
+  /* Tighter column widths on mobile */
+  th:nth-child(1) { width:28%; }
+  th:nth-child(2) { width:9%; }
+  th:nth-child(3) { width:9%; }
+  th:nth-child(4) { width:11%; }
+  th:nth-child(5) { width:9%; }
+  th:nth-child(6) { width:12%; }
+  th:nth-child(7) { width:11%; }
+  th:nth-child(8) { width:11%; }
+
+  th {
+    font-size:7px; padding:8px 3px; letter-spacing:0;
+  }
+  th:first-child { padding-left:7px; }
+
+  td {
+    font-size:9px; padding:7px 3px;
+  }
+  td:first-child { padding-left:7px; }
+
+  .player-name { font-size:9px; }
+  .club-id-sub { font-size:7px; }
+  .club-avatar { width:22px; height:22px; }
+  .club-avatar-placeholder { width:22px; height:22px; font-size:8px; }
+  .club-cell { gap:4px; }
+
+  .val-net-pos, .val-net-neg { font-size:8px; }
+  .val-base, .val-tour, .val-sell { font-size:9px; }
+  .bid-earn, .bid-deduct { font-size:8px; }
+
+  .btn-claim {
+    padding:4px 5px; font-size:8px; gap:2px; border-radius:4px;
+  }
+  .btn-locked {
+    padding:4px 5px; font-size:8px; gap:2px; border-radius:4px;
+  }
+  /* Hide icons on very small screens */
   .btn-claim i, .btn-locked i { display:none; }
-  .header h1 { font-size:16px; }
-  .header-desc { font-size:10px; }
-  .bid-earn, .bid-deduct { font-size:9px; }
+
+  .header { padding:18px 12px 14px; }
+  .header h1 { font-size:15px; }
+  .header-badge { font-size:12px; padding:3px 10px; letter-spacing:2px; }
+  .header-desc { font-size:9px; }
+
   .search-box input { font-size:11px; }
-  .search-count { font-size:8px; padding:4px 7px; }
+  .search-count { font-size:7px; padding:4px 6px; }
 }
 </style>
 </head>
@@ -608,10 +656,10 @@ tbody tr:last-child td { border-bottom:none; }
             <th style="text-align:left">Club ID</th>
             <th>Base</th>
             <th>Reward</th>
-            <th>Bonus</th>
-            <th>Sell</th>
             <th>Bid+/-</th>
+            <th>Sell</th>
             <th>Net CP</th>
+            <th>BDT</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -654,24 +702,24 @@ tbody tr:last-child td { border-bottom:none; }
 </div>
 
 <script>
-const CP_URL     = "https://opensheet.elk.sh/1DSPKPaU1ZQYbFM4iYbE1VXgDAXU-FCT7--QhYJsNf1M/CP_System";
+const CP_URL      = "https://opensheet.elk.sh/1DSPKPaU1ZQYbFM4iYbE1VXgDAXU-FCT7--QhYJsNf1M/CP_System";
 const MEMBERS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=133947099&single=true&output=csv";
 
-let allRows = [];        // sorted CP data
-let membersMap = {};     // clubIdNorm -> { name, pic }
-let currentRows = [];    // filtered rows
+let allRows     = [];
+let membersMap  = {};   // clubIdNorm -> { name, pic }
+let memberKeys  = new Set(); // set of normalised IDs from CLUB MEMBERS sheet
+let currentRows = [];
 
-/* ── Normalise club ID for matching ── */
+/* ── Normalise club ID ── */
 function normId(id) {
-  return String(id).toUpperCase().replace(/[^A-Z0-9]/g,'');
+  return String(id).toUpperCase().replace(/[^A-Z0-9]/g, '');
 }
 
 /* ── Parse CSV ── */
 function parseCSV(text) {
   const lines = text.trim().split('\n');
-  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g,''));
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
   return lines.slice(1).map(line => {
-    // Handle quoted fields
     const vals = [];
     let inQ = false, cur = '';
     for (let i = 0; i < line.length; i++) {
@@ -682,12 +730,12 @@ function parseCSV(text) {
     }
     vals.push(cur);
     const obj = {};
-    headers.forEach((h, i) => { obj[h] = (vals[i]||'').trim(); });
+    headers.forEach((h, i) => { obj[h] = (vals[i] || '').trim(); });
     return obj;
   });
 }
 
-/* ── Load members ── */
+/* ── Load CLUB MEMBERS ── */
 async function loadMembers() {
   try {
     const res  = await fetch(MEMBERS_CSV);
@@ -697,16 +745,19 @@ async function loadMembers() {
       const raw = r["Club ID Number"] || r["Club ID"] || '';
       if (!raw) return;
       const key = normId(raw);
+      memberKeys.add(key);
       membersMap[key] = {
         name: r["Full Name"] || '',
         pic:  r["Profile Picture (For Web)"] || ''
       };
     });
-  } catch(e) { console.warn("Members load failed", e); }
+  } catch(e) {
+    console.warn("Members load failed", e);
+  }
 }
 
 /* ── Build avatar element ── */
-function buildAvatar(clubId, size='sm') {
+function buildAvatar(clubId) {
   const member = membersMap[normId(clubId)];
   if (member && member.pic) {
     const img = document.createElement('img');
@@ -739,19 +790,18 @@ function renderRows(data) {
   }
 
   data.forEach((club, i) => {
-    const net    = parseInt(club["Net CP"]) || 0;
-    const base   = club["Base CP"] || 0;
-    const tour   = club["Reward"] || 0;
-    const bonus  = club["Bonus CP"] || 0;
-    const earn   = club["Earn By Bid"] || 0;
-    const sell   = club["Sell CP"] || 0;
-    const deduct = club["Deduct By Bid"] || 0;
-    const clubId = club["Player Club ID"] || "—";
+    const net    = parseInt(club["Net CP"])        || 0;
+    const base   = club["Base CP"]                 || 0;
+    const tour   = club["Reward"]                  || 0;
+    const earn   = club["Earn By Bid"]             || 0;
+    const sell   = club["Sell CP"]                 || 0;
+    const deduct = club["Deduct By Bid"]           || 0;
+    const bdt    = club["BDT"]                     || 0;
+    const clubId = club["Player Club ID"]          || "—";
 
-    const member = membersMap[normId(clubId)] || {};
+    const member     = membersMap[normId(clubId)] || {};
     const playerName = member.name || clubId;
-
-    const netCls = net >= 0 ? 'val-net-pos' : 'val-net-neg';
+    const netCls     = net >= 0 ? 'val-net-pos' : 'val-net-neg';
 
     const actionBtn = (net >= 1000)
       ? `<button class="btn-claim" onclick="event.stopPropagation();withdraw('${clubId}')"><i class="fa-solid fa-coins"></i> Claim</button>`
@@ -760,10 +810,9 @@ function renderRows(data) {
     const tr = document.createElement("tr");
     tr.style.animationDelay = `${i * 0.04}s`;
     tr.setAttribute('data-clubid', clubId);
-    tr.setAttribute('data-net', net);
     tr.onclick = () => openPlayerModal(clubId, playerName, net, member.pic);
 
-    // Avatar cell
+    // Avatar / name cell
     const tdClub = document.createElement('td');
     const cellDiv = document.createElement('div');
     cellDiv.className = 'club-cell';
@@ -773,20 +822,20 @@ function renderRows(data) {
     infoDiv.innerHTML = `<div class="player-name">${playerName}</div><div class="club-id-sub">${clubId}</div>`;
     cellDiv.appendChild(infoDiv);
     tdClub.appendChild(cellDiv);
-
     tr.appendChild(tdClub);
+
     tr.innerHTML += `
       <td><span class="val-base">${base}</span></td>
       <td><span class="val-tour">${tour}</span></td>
-      <td><span class="val-bonus">${bonus}</span></td>
-      <td><span class="val-sell">${sell}</span></td>
       <td>
         <div class="bid-combined">
           <span class="bid-earn">+${earn}</span>
           <span class="bid-deduct">-${deduct}</span>
         </div>
       </td>
+      <td><span class="val-sell">${sell}</span></td>
       <td><span class="${netCls}">${net}</span></td>
+      <td><span style="color:var(--gold3);font-size:9px;">${bdt}</span></td>
       <td>${actionBtn}</td>
     `;
     tbody.appendChild(tr);
@@ -802,18 +851,11 @@ function updateCount(n) {
 /* ── Search ── */
 function applySearch(q) {
   const norm = normId(q);
-  if (!norm) {
-    currentRows = allRows;
-  } else {
-    currentRows = allRows.filter(club => {
-      const id = normId(club["Player Club ID"] || '');
-      return id.includes(norm);
-    });
-  }
+  currentRows = norm
+    ? allRows.filter(club => normId(club["Player Club ID"] || '').includes(norm))
+    : allRows;
   renderRows(currentRows);
-
-  const clearBtn = document.getElementById('search-clear');
-  clearBtn.style.display = q ? 'block' : 'none';
+  document.getElementById('search-clear').style.display = q ? 'block' : 'none';
 }
 
 document.getElementById('search-input').addEventListener('input', function() {
@@ -827,51 +869,40 @@ document.getElementById('search-clear').addEventListener('click', function() {
 
 /* ── Player Modal ── */
 function openPlayerModal(clubId, name, net, pic) {
-  const modal = document.getElementById('player-modal');
+  document.getElementById('modal-name').textContent    = name || clubId;
+  document.getElementById('modal-clubid').textContent  = clubId;
 
-  document.getElementById('modal-name').textContent = name || clubId;
-  document.getElementById('modal-clubid').textContent = clubId;
-
-  // Avatar
   const wrap = document.getElementById('modal-avatar-wrap');
   wrap.innerHTML = '';
   if (pic) {
     const img = document.createElement('img');
     img.className = 'modal-avatar';
-    img.src = pic;
-    img.alt = '';
+    img.src = pic; img.alt = '';
     img.onerror = () => {
-      const ph = document.createElement('div');
-      ph.className = 'modal-avatar-placeholder';
-      ph.innerHTML = '<i class="fa-solid fa-user"></i>';
-      img.replaceWith(ph);
+      wrap.innerHTML = '<div class="modal-avatar-placeholder"><i class="fa-solid fa-user"></i></div>';
     };
     wrap.appendChild(img);
   } else {
     wrap.innerHTML = '<div class="modal-avatar-placeholder"><i class="fa-solid fa-user"></i></div>';
   }
 
-  // Net CP
   const cpEl = document.getElementById('modal-cp-val');
   cpEl.className = net >= 0 ? 'modal-cp-val-pos' : 'modal-cp-val-neg';
   cpEl.textContent = net;
-  document.getElementById('modal-cp-sub').textContent = net >= 1000 ? '✅ Eligible to claim' : `Need ${1000 - net} more CP to claim`;
+  document.getElementById('modal-cp-sub').textContent =
+    net >= 1000 ? '✅ Eligible to claim' : `Need ${1000 - net} more CP to claim`;
 
-  // Action
   const actEl = document.getElementById('modal-action');
-  if (net >= 1000) {
-    actEl.innerHTML = `<button class="btn-claim" style="width:100%;justify-content:center;padding:10px;" onclick="withdraw('${clubId}')"><i class="fa-solid fa-coins"></i> Claim Reward</button>`;
-  } else {
-    actEl.innerHTML = `<button class="btn-locked" style="width:100%;justify-content:center;padding:10px;" disabled><i class="fa-solid fa-lock"></i> Locked</button>`;
-  }
+  actEl.innerHTML = net >= 1000
+    ? `<button class="btn-claim" style="width:100%;justify-content:center;padding:10px;" onclick="withdraw('${clubId}')"><i class="fa-solid fa-coins"></i> Claim Reward</button>`
+    : `<button class="btn-locked" style="width:100%;justify-content:center;padding:10px;" disabled><i class="fa-solid fa-lock"></i> Locked</button>`;
 
-  modal.classList.add('show');
+  document.getElementById('player-modal').classList.add('show');
 }
 
 function closePlayerModal(e) {
-  if (e.target === document.getElementById('player-modal')) {
+  if (e.target === document.getElementById('player-modal'))
     document.getElementById('player-modal').classList.remove('show');
-  }
 }
 function closePlayerModalDirect() {
   document.getElementById('player-modal').classList.remove('show');
@@ -879,13 +910,11 @@ function closePlayerModalDirect() {
 
 /* ── Withdraw ── */
 function withdraw(id) {
-  const email   = "goatfcbd@gmail.com";
   const subject = "GOAT FC CP Withdraw Request";
   const body    = `Club ID: ${id} requesting 1000 CP withdraw`;
-  window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = `mailto:goatfcbd@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   document.getElementById("popup").style.visibility = "visible";
 }
-
 function closePopup() {
   document.getElementById("popup").style.visibility = "hidden";
 }
@@ -898,11 +927,17 @@ async function loadData() {
       loadMembers()
     ]);
 
-    cpData.sort((a, b) => (parseInt(b["Net CP"]) || 0) - (parseInt(a["Net CP"]) || 0));
-    allRows = cpData;
-    currentRows = cpData;
+    // ── Filter: only show clubs that exist in CLUB MEMBERS sheet ──
+    const filtered = cpData.filter(row => {
+      const key = normId(row["Player Club ID"] || '');
+      return memberKeys.has(key);
+    });
 
-    if (!cpData.length) {
+    filtered.sort((a, b) => (parseInt(b["Net CP"]) || 0) - (parseInt(a["Net CP"]) || 0));
+    allRows     = filtered;
+    currentRows = filtered;
+
+    if (!filtered.length) {
       document.getElementById("table-body").innerHTML =
         `<tr class="empty-row"><td colspan="8"><i class="fa-solid fa-coins" style="opacity:0.3; margin-right:8px;"></i>No data available</td></tr>`;
       updateCount(0);
@@ -911,6 +946,7 @@ async function loadData() {
 
     renderRows(allRows);
   } catch(e) {
+    console.error(e);
     document.getElementById("table-body").innerHTML =
       `<tr class="empty-row"><td colspan="8">Failed to load data. Please refresh.</td></tr>`;
   } finally {
