@@ -264,14 +264,13 @@ th {
 th:first-child { text-align:left; padding-left:12px; }
 
 /* Column widths for desktop */
-th:nth-child(1) { width:30%; }
-th:nth-child(2) { width:9%; }
-th:nth-child(3) { width:9%; }
-th:nth-child(4) { width:11%; }
-th:nth-child(5) { width:9%; }
-th:nth-child(6) { width:11%; }
-th:nth-child(7) { width:11%; }
-th:nth-child(8) { width:10%; }
+th:nth-child(1) { width:32%; }
+th:nth-child(2) { width:10%; }
+th:nth-child(3) { width:10%; }
+th:nth-child(4) { width:13%; }
+th:nth-child(5) { width:10%; }
+th:nth-child(6) { width:13%; }
+th:nth-child(7) { width:12%; }
 
 td {
   padding:9px 6px;
@@ -553,14 +552,13 @@ tbody tr:last-child td { border-bottom:none; }
   table { table-layout:fixed; width:100%; }
 
   /* Tighter column widths on mobile */
-  th:nth-child(1) { width:28%; }
-  th:nth-child(2) { width:9%; }
-  th:nth-child(3) { width:9%; }
-  th:nth-child(4) { width:11%; }
-  th:nth-child(5) { width:9%; }
-  th:nth-child(6) { width:12%; }
-  th:nth-child(7) { width:11%; }
-  th:nth-child(8) { width:11%; }
+  th:nth-child(1) { width:30%; }
+  th:nth-child(2) { width:10%; }
+  th:nth-child(3) { width:10%; }
+  th:nth-child(4) { width:12%; }
+  th:nth-child(5) { width:10%; }
+  th:nth-child(6) { width:14%; }
+  th:nth-child(7) { width:14%; }
 
   th {
     font-size:7px; padding:8px 3px; letter-spacing:0;
@@ -659,7 +657,6 @@ tbody tr:last-child td { border-bottom:none; }
             <th>Bid+/-</th>
             <th>Sell</th>
             <th>Net CP</th>
-            <th>BDT</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -784,7 +781,7 @@ function renderRows(data) {
   tbody.innerHTML = "";
 
   if (!data.length) {
-    tbody.innerHTML = `<tr class="empty-row"><td colspan="8"><i class="fa-solid fa-magnifying-glass" style="opacity:0.3; margin-right:8px;"></i>No clubs found</td></tr>`;
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="7"><i class="fa-solid fa-magnifying-glass" style="opacity:0.3; margin-right:8px;"></i>No clubs found</td></tr>`;
     updateCount(0);
     return;
   }
@@ -796,7 +793,6 @@ function renderRows(data) {
     const earn   = club["Earn By Bid"]             || 0;
     const sell   = club["Sell CP"]                 || 0;
     const deduct = club["Deduct By Bid"]           || 0;
-    const bdt    = club["BDT"]                     || 0;
     const clubId = club["Player Club ID"]          || "—";
 
     const member     = membersMap[normId(clubId)] || {};
@@ -835,7 +831,6 @@ function renderRows(data) {
       </td>
       <td><span class="val-sell">${sell}</span></td>
       <td><span class="${netCls}">${net}</span></td>
-      <td><span style="color:var(--gold3);font-size:9px;">${bdt}</span></td>
       <td>${actionBtn}</td>
     `;
     tbody.appendChild(tr);
@@ -939,7 +934,7 @@ async function loadData() {
 
     if (!filtered.length) {
       document.getElementById("table-body").innerHTML =
-        `<tr class="empty-row"><td colspan="8"><i class="fa-solid fa-coins" style="opacity:0.3; margin-right:8px;"></i>No data available</td></tr>`;
+        `<tr class="empty-row"><td colspan="7"><i class="fa-solid fa-coins" style="opacity:0.3; margin-right:8px;"></i>No data available</td></tr>`;
       updateCount(0);
       return;
     }
@@ -948,7 +943,7 @@ async function loadData() {
   } catch(e) {
     console.error(e);
     document.getElementById("table-body").innerHTML =
-      `<tr class="empty-row"><td colspan="8">Failed to load data. Please refresh.</td></tr>`;
+      `<tr class="empty-row"><td colspan="7">Failed to load data. Please refresh.</td></tr>`;
   } finally {
     document.getElementById("loading").style.display = "none";
   }
