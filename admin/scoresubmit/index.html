@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GOAT FC — Club Analytics</title>
+<link rel="icon" type="image/png" href="https://i.imgur.com/LY3Bb9m.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════════
+   DESIGN TOKENS — Tactical Gaming
+═══════════════════════════════════════════════ */
+:root{
+  --gold:      #FFD700;
+  --gold2:     #FFA500;
+  --gold-glow: rgba(255,215,0,.22);
+  --gold-dim:  #B8860B;
+  --bg:        #06080D;
+  --bg2:       #0B0E18;
+  --bg3:       #111520;
+  --bg4:       #181D2E;
+  --bg5:       #1F2540;
+  --border:    rgba(255,255,255,.06);
+  --border-g:  rgba(255,215,0,.28);
+  --text:      #E8EAF2;
+  --text2:     #7A8099;
+  --text3:     #3A3F5C;
+  --green:     #00FF9C;
+  --green-bg:  rgba(0,255,156,.09);
+  --amber:     #FFB800;
+  --amber-bg:  rgba(255,184,0,.09);
+  --red:       #FF3B5C;
+  --red-bg:    rgba(255,59,92,.09);
+  --blue:      #4FC3F7;
+  --blue-bg:   rgba(79,195,247,.09);
+  --purple:    #B57BFF;
+  --purple-bg: rgba(181,123,255,.09);
+  --r:         12px;
+  --r-sm:      8px;
+  --r-xs:      5px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Rajdhani',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+  cursor:default;
+}
+
+/* ── Animated scan-line background ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(255,215,0,.012) 2px,
+      rgba(255,215,0,.012) 4px
+    ),
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,215,0,.06) 0%, transparent 60%);
+  pointer-events:none;z-index:0;
+}
+
+/* ── Corner glow orbs ── */
+body::after{
+  content:'';
+  position:fixed;
+  top:-200px;right:-200px;
+  width:600px;height:600px;
+  background:radial-gradient(circle, rgba(255,215,0,.07) 0%, transparent 70%);
+  pointer-events:none;z-index:0;
+  animation:orbpulse 8s ease-in-out infinite;
+}
+@keyframes orbpulse{0%,100%{opacity:.6;transform:scale(1);}50%{opacity:1;transform:scale(1.1);}}
+
+/* ════════════════════════════════════════════════
+   PASSWORD GATE
+════════════════════════════════════════════════ */
+#gate{
+  position:fixed;inset:0;z-index:999;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+}
+.gate-wrap{position:relative;z-index:1;}
+
+.gate-card{
+  width:min(420px,92vw);
+  background:var(--bg2);
+  border:1px solid var(--border-g);
+  border-radius:var(--r);
+  padding:48px 36px 40px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  animation:slideUp .5s cubic-bezier(.22,1,.36,1);
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+
+/* card corner accents */
+.gate-card::before,.gate-card::after{
+  content:'';position:absolute;
+  width:48px;height:48px;
+  border-color:var(--gold);border-style:solid;
+}
+.gate-card::before{top:-1px;left:-1px;border-width:2px 0 0 2px;border-radius:var(--r) 0 0 0;}
+.gate-card::after{bottom:-1px;right:-1px;border-width:0 2px 2px 0;border-radius:0 0 var(--r) 0;}
+
+.gate-logo-wrap{position:relative;display:inline-flex;margin-bottom:20px;}
+.gate-logo{
+  width:72px;height:72px;object-fit:contain;
+  filter:drop-shadow(0 0 24px rgba(255,215,0,.55));
+  animation:logopulse 3s ease-in-out infinite;
+}
+@keyframes logopulse{0%,100%{filter:drop-shadow(0 0 20px rgba(255,215,0,.5));}50%{filter:drop-shadow(0 0 36px rgba(255,215,0,.9));}}
+
+.gate-title{
+  font-family:'Orbitron',monospace;
+  font-size:28px;font-weight:900;letter-spacing:4px;
+  color:var(--gold);
+  text-shadow:0 0 30px rgba(255,215,0,.4);
+  margin-bottom:4px;
+  text-transform:uppercase;
+}
+.gate-sub{
+  font-size:12px;color:var(--text3);
+  letter-spacing:3px;text-transform:uppercase;
+  margin-bottom:32px;font-family:'JetBrains Mono',monospace;
+}
+
+.gate-input-wrap{position:relative;margin-bottom:14px;}
+.gate-input{
+  width:100%;
+  padding:14px 48px 14px 18px;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:var(--r-sm);
+  color:var(--text);
+  font-family:'JetBrains Mono',monospace;font-size:14px;
+  outline:none;transition:border-color .2s, box-shadow .2s;
+  letter-spacing:3px;
+}
+.gate-input:focus{
+  border-color:var(--border-g);
+  box-shadow:0 0 0 3px rgba(255,215,0,.08);
+}
+.gate-eye{
+  position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;color:var(--text3);
+  display:flex;align-items:center;transition:color .15s;
+}
+.gate-eye:hover{color:var(--gold);}
+
+.gate-btn{
+  width:100%;padding:14px;
+  background:linear-gradient(135deg,#B8860B,var(--gold),#B8860B);
+  background-size:200% 100%;
+  color:#06080D;
+  border:none;border-radius:var(--r-sm);
+  font-family:'Orbitron',monospace;font-size:12px;font-weight:700;
+  letter-spacing:3px;text-transform:uppercase;
+  cursor:pointer;transition:all .3s;
+}
+.gate-btn:hover{
+  background-position:100% 0;
+  box-shadow:0 8px 32px rgba(255,215,0,.4);
+  transform:translateY(-1px);
+}
+.gate-btn:active{transform:translateY(0);}
+
+.gate-err{
+  font-size:11px;color:var(--red);
+  margin-top:12px;font-family:'JetBrains Mono',monospace;
+  letter-spacing:1px;display:none;
+}
+.gate-err.show{display:block;animation:shake .3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}
+
+}
+
+/* ════════════════════════════════════════════════
+   MAIN APP
+════════════════════════════════════════════════ */
+#app{display:none;position:relative;z-index:1;}
+.page{max-width:800px;margin:0 auto;padding:28px 16px 80px;}
+
+/* ── HUD TOPBAR ── */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-bottom:2px solid var(--gold-dim);
+  border-radius:var(--r);
+  margin-bottom:24px;
+  gap:12px;flex-wrap:wrap;
+  position:relative;overflow:hidden;
+}
+.topbar::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:3px;background:linear-gradient(180deg,var(--gold),var(--gold2));
+}
+.brand{display:flex;align-items:center;gap:14px;}
+.brand-logo{
+  width:44px;height:44px;object-fit:contain;
+  filter:drop-shadow(0 0 10px rgba(255,215,0,.5));flex-shrink:0;
+}
+.brand-text{display:flex;flex-direction:column;gap:2px;}
+.brand-name{
+  font-family:'Orbitron',monospace;
+  font-size:18px;font-weight:900;letter-spacing:3px;
+  color:var(--gold);line-height:1;
+  text-shadow:0 0 20px rgba(255,215,0,.3);
+}
+.brand-sub{
+  font-size:9px;color:var(--text3);
+  letter-spacing:3px;text-transform:uppercase;
+  font-family:'JetBrains Mono',monospace;
+}
+
+.topbar-right{
+  display:flex;align-items:center;gap:8px;
+}
+.hud-pill{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--text3);
+  border:1px solid var(--border);
+  border-radius:20px;padding:5px 14px;
+  background:var(--bg3);
+}
+.hud-live{
+  display:flex;align-items:center;gap:6px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:2px;color:var(--green);
+  background:var(--green-bg);
+  border:1px solid rgba(0,255,156,.15);
+  border-radius:20px;padding:5px 12px;
+}
+.hud-live-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--green);
+  animation:blink 1.2s ease-in-out infinite;
+  flex-shrink:0;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+
+/* ── SECTION HEADER ── */
+.sec-head{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:12px;
+}
+.sec-num{
+  font-family:'Orbitron',monospace;font-size:10px;font-weight:700;
+  color:var(--gold);border:1px solid var(--border-g);
+  border-radius:var(--r-xs);padding:3px 8px;letter-spacing:1px;
+  flex-shrink:0;background:rgba(255,215,0,.05);
+}
+.sec-title{
+  font-family:'Orbitron',monospace;font-size:11px;font-weight:700;
+  letter-spacing:3px;text-transform:uppercase;color:var(--text2);
+}
+.sec-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border-g),transparent);}
+
+/* ── CARDS ── */
+.card{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--r);overflow:hidden;margin-bottom:14px;
+  transition:border-color .2s;position:relative;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);
+  opacity:0;transition:opacity .3s;
+}
+.card:focus-within::before,.card:focus-within{border-color:var(--border-g);}
+.card:focus-within::before{opacity:1;}
+
+.card-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 16px;background:var(--bg3);
+  border-bottom:1px solid var(--border);gap:8px;flex-wrap:wrap;
+}
+.card-head-left{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);font-family:'JetBrains Mono',monospace;}
+.dots{display:flex;gap:5px;}
+.dot{width:9px;height:9px;border-radius:50%;}
+.dot.r{background:#FF5F57;}.dot.y{background:#FFBD2E;}.dot.g{background:#28C840;}
+.char-count{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);}
+
+/* ── GRID ── */
+.meta-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.field-label{
+  font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  color:var(--text3);margin-bottom:6px;font-family:'JetBrains Mono',monospace;
+}
+
+.select-wrap{position:relative;}
+.select-wrap select{
+  width:100%;padding:11px 38px 11px 14px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--r-sm);color:var(--text);
+  font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:500;
+  appearance:none;outline:none;cursor:pointer;transition:border-color .2s,box-shadow .2s;
+}
+.select-wrap select:focus{border-color:var(--border-g);box-shadow:0 0 0 2px rgba(255,215,0,.08);}
+.select-arrow{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  pointer-events:none;color:var(--text3);
+}
+
+/* ── REFEREE PANEL ── */
+.ref-panel{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px;margin-bottom:14px;transition:border-color .2s;
+}
+.ref-panel.ref-error{border-color:rgba(255,59,92,.5);}
+.ref-required-hint{
+  display:none;font-size:11px;color:var(--red);
+  margin-top:10px;align-items:center;gap:6px;
+  font-family:'JetBrains Mono',monospace;letter-spacing:.5px;
+}
+.ref-required-hint.show{display:flex;}
+.ref-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));
+  gap:8px;margin-top:12px;
+}
+.ref-chip{
+  display:flex;align-items:center;gap:8px;padding:9px 12px;
+  background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);
+  cursor:pointer;transition:all .15s;user-select:none;
+  font-size:13px;font-weight:500;color:var(--text2);
+}
+.ref-chip:hover{background:var(--bg4);border-color:rgba(255,255,255,.12);color:var(--text);}
+.ref-chip.selected{
+  background:rgba(255,215,0,.07);border-color:var(--border-g);color:var(--gold);
+}
+.ref-check{
+  width:16px;height:16px;border-radius:4px;
+  border:1.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .15s;background:transparent;
+}
+.ref-chip.selected .ref-check{background:var(--gold);border-color:var(--gold);}
+.ref-check svg{display:none;}
+.ref-chip.selected .ref-check svg{display:block;}
+.ref-empty{font-size:12px;color:var(--text3);margin-top:8px;font-style:italic;}
+
+/* ── TEXTAREA ── */
+textarea{
+  width:100%;min-height:200px;resize:vertical;
+  background:transparent;color:var(--text);
+  font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8;
+  border:none;padding:16px;outline:none;
+}
+textarea::placeholder{color:var(--text3);}
+
+/* ── BUTTONS ── */
+.btn-row{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 22px;border-radius:var(--r-sm);
+  font-family:'Orbitron',monospace;font-size:11px;font-weight:700;
+  letter-spacing:2px;text-transform:uppercase;
+  cursor:pointer;border:none;transition:all .2s;white-space:nowrap;
+}
+.btn svg{width:14px;height:14px;flex-shrink:0;}
+
+.btn-primary{
+  background:linear-gradient(135deg,var(--gold-dim),var(--gold));
+  color:#06080D;
+  box-shadow:0 4px 16px rgba(255,215,0,.2);
+}
+.btn-primary:hover{
+  box-shadow:0 6px 24px rgba(255,215,0,.4);
+  transform:translateY(-1px);
+}
+.btn-primary:active{transform:translateY(0);}
+.btn-primary:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none;}
+
+.btn-submit{
+  background:linear-gradient(135deg,#0a3d24,#0d5c35);
+  color:var(--green);
+  border:1px solid rgba(0,255,156,.2);
+  box-shadow:0 4px 16px rgba(0,255,156,.1);
+  display:none;
+}
+.btn-submit.show{display:inline-flex;}
+.btn-submit:hover{
+  background:linear-gradient(135deg,#0d5c35,#10753f);
+  box-shadow:0 6px 24px rgba(0,255,156,.25);
+  transform:translateY(-1px);
+}
+.btn-submit:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none;}
+
+.btn-ghost{
+  background:transparent;color:var(--text2);
+  border:1px solid var(--border);
+}
+.btn-ghost:hover{background:var(--bg3);color:var(--text);border-color:rgba(255,255,255,.14);}
+
+/* ── STATUS BAR ── */
+.status{
+  display:none;align-items:center;gap:10px;
+  padding:12px 16px;border-radius:var(--r-sm);
+  font-size:13px;font-weight:500;
+  margin-bottom:14px;border:1px solid transparent;
+  font-family:'Rajdhani',sans-serif;
+}
+.status.show{display:flex;}
+.status.success{background:var(--green-bg);color:var(--green);border-color:rgba(0,255,156,.18);}
+.status.error{background:var(--red-bg);color:var(--red);border-color:rgba(255,59,92,.18);}
+.status.loading{background:var(--bg3);color:var(--text2);border-color:var(--border);}
+.status.warn{background:var(--amber-bg);color:var(--amber);border-color:rgba(255,184,0,.18);}
+.spin{animation:spin .8s linear infinite;display:inline-flex;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ════════════════════════════════════════════════
+   PREVIEW PANEL
+════════════════════════════════════════════════ */
+.preview{
+  display:none;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--r);overflow:hidden;animation:fadeUp .35s ease;
+}
+.preview.show{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+/* preview header */
+.preview-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px;background:var(--bg3);
+  border-bottom:1px solid var(--border);
+  flex-wrap:wrap;gap:8px;
+}
+.preview-title{
+  font-family:'Orbitron',monospace;
+  font-size:12px;font-weight:700;letter-spacing:2px;
+  display:flex;align-items:center;gap:8px;
+  text-transform:uppercase;
+}
+.preview-title span{color:var(--gold);}
+.goat-side-tag{
+  font-size:10px;color:var(--text3);
+  font-family:'JetBrains Mono',monospace;
+  background:var(--bg4);padding:4px 10px;
+  border-radius:20px;border:1px solid var(--border);
+}
+
+/* stats grid */
+.stats-row{
+  display:grid;grid-template-columns:repeat(5,1fr);
+  gap:1px;background:var(--border);border-bottom:1px solid var(--border);
+}
+.stat-cell{
+  background:var(--bg2);padding:16px 8px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.stat-cell::after{
+  content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:0;height:2px;transition:width .3s;
+}
+.stat-cell.w::after{background:var(--green);}
+.stat-cell.d::after{background:var(--amber);}
+.stat-cell.l::after{background:var(--red);}
+.stat-cell.mo::after{background:var(--purple);}
+.stat-cell.ca::after{background:var(--gold);}
+.stat-cell:hover::after{width:100%;}
+
+.stat-num{
+  font-family:'Orbitron',monospace;font-size:32px;font-weight:900;
+  line-height:1;margin-bottom:6px;
+}
+.stat-num.w{color:var(--green);text-shadow:0 0 20px rgba(0,255,156,.4);}
+.stat-num.d{color:var(--amber);text-shadow:0 0 20px rgba(255,184,0,.4);}
+.stat-num.l{color:var(--red);text-shadow:0 0 20px rgba(255,59,92,.4);}
+.stat-num.mo{color:var(--purple);text-shadow:0 0 20px rgba(181,123,255,.4);}
+.stat-num.ca{color:var(--gold);text-shadow:0 0 20px rgba(255,215,0,.4);}
+.stat-lbl{
+  font-size:9px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--text3);
+  font-family:'Orbitron',monospace;
+}
+
+/* dup block */
+.dup-block{
+  display:none;margin:14px 20px 0;padding:12px 16px;
+  background:rgba(255,184,0,.06);border:1px solid rgba(255,184,0,.2);
+  border-radius:var(--r-sm);font-size:12px;color:var(--amber);
+  gap:8px;align-items:flex-start;
+}
+.dup-block.show{display:flex;}
+.dup-list{margin-top:4px;}
+.dup-list li{
+  font-size:11px;font-family:'JetBrains Mono',monospace;
+  margin-top:3px;list-style:none;opacity:.8;
+}
+.dup-list li::before{content:'▸ ';}
+
+/* ref summary */
+.ref-summary{
+  display:none;margin:12px 20px 0;padding:10px 16px;
+  background:var(--blue-bg);border:1px solid rgba(79,195,247,.2);
+  border-radius:var(--r-sm);font-size:13px;font-weight:500;
+  color:var(--blue);align-items:center;gap:8px;
+}
+.ref-summary.show{display:flex;}
+
+/* match list */
+.match-list{padding:6px 0;}
+.session-div{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 20px 6px;
+  font-family:'Orbitron',monospace;
+  font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text3);
+}
+.session-div::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.match-item{
+  display:grid;
+  grid-template-columns:1fr auto 1fr auto;
+  align-items:center;gap:8px;
+  padding:10px 20px;
+  border-bottom:1px solid var(--border);
+  transition:background .15s;
+  animation:fadeIn .25s ease both;
+  position:relative;
+}
+.match-item:last-child{border-bottom:none;}
+.match-item:hover{background:rgba(255,215,0,.03);}
+.match-item.dup-item{opacity:.25;}
+
+/* GOAT player column */
+.p-goat{
+  font-size:14px;font-weight:600;color:var(--text);
+  display:flex;flex-direction:column;gap:4px;
+}
+.p-goat-name{display:flex;align-items:center;gap:6px;}
+.p-opp{font-size:12px;color:var(--text2);text-align:right;font-weight:500;}
+
+/* badges */
+.badge-row{display:flex;gap:4px;flex-wrap:wrap;}
+.badge{
+  font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  border-radius:4px;padding:2px 7px;
+  font-family:'Orbitron',monospace;
+}
+.badge.motm{background:rgba(181,123,255,.15);color:var(--purple);border:1px solid rgba(181,123,255,.25);}
+.badge.yc{background:rgba(255,184,0,.12);color:var(--amber);border:1px solid rgba(255,184,0,.22);}
+.badge.rc{background:rgba(255,59,92,.12);color:var(--red);border:1px solid rgba(255,59,92,.22);}
+.badge.key{background:rgba(255,215,0,.08);color:var(--gold-dim);border:1px solid rgba(255,215,0,.15);}
+
+/* score box */
+.score-box{
+  display:flex;align-items:center;
+  border:1px solid var(--border);border-radius:var(--r-sm);
+  overflow:hidden;flex-shrink:0;
+  background:var(--bg3);
+}
+.sg{
+  padding:5px 12px;
+  font-family:'Orbitron',monospace;font-size:20px;font-weight:900;
+  color:var(--gold);min-width:36px;text-align:center;line-height:1;
+}
+.ssep{
+  padding:5px 6px;font-size:8px;font-weight:700;letter-spacing:1px;
+  color:var(--text3);background:var(--bg4);
+  border-left:1px solid var(--border);border-right:1px solid var(--border);
+  font-family:'Orbitron',monospace;
+}
+.so{
+  padding:5px 12px;
+  font-family:'Orbitron',monospace;font-size:20px;font-weight:900;
+  color:var(--text2);min-width:36px;text-align:center;line-height:1;
+}
+
+/* result chip */
+.result-chip{
+  padding:5px 12px;border-radius:20px;
+  font-family:'Orbitron',monospace;
+  font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;flex-shrink:0;
+}
+.result-chip.win{background:var(--green-bg);color:var(--green);border:1px solid rgba(0,255,156,.15);}
+.result-chip.draw{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(255,184,0,.15);}
+.result-chip.loss{background:var(--red-bg);color:var(--red);border:1px solid rgba(255,59,92,.15);}
+
+/* ── FOOTER ── */
+.footer{
+  text-align:center;margin-top:48px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;
+}
+.footer span{color:var(--gold-dim);}
+
+/* ════════════════════════════════════════════════
+   RESPONSIVE — MOBILE COMPACT
+════════════════════════════════════════════════ */
+@media(max-width:600px){
+  .page{padding:10px 10px 60px;}
+  .topbar{padding:10px 12px;margin-bottom:14px;gap:8px;}
+  .brand-logo{width:32px;height:32px;}
+  .brand-name{font-size:13px;letter-spacing:2px;}
+  .brand-sub{font-size:8px;}
+  .hud-pill{font-size:9px;padding:4px 10px;}
+  .hud-live{font-size:9px;padding:4px 9px;}
+
+  .sec-head{margin-bottom:8px;}
+  .sec-num{font-size:8px;padding:2px 6px;}
+  .sec-title{font-size:9px;letter-spacing:2px;}
+
+  .meta-row{grid-template-columns:1fr;gap:8px;margin-bottom:10px;}
+  .ref-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px;}
+  .ref-chip{font-size:12px;padding:7px 10px;}
+  .ref-panel{padding:12px;margin-bottom:10px;}
+
+  textarea{font-size:11px;min-height:140px;padding:12px;}
+  .card{margin-bottom:10px;}
+
+  .btn{padding:9px 12px;font-size:8px;letter-spacing:1px;}
+  .btn-row{gap:7px;margin-bottom:12px;}
+
+  /* ── Stats: all 5 in ONE row, ultra-compact ── */
+  .stats-row{
+    display:flex;
+    flex-direction:row;
+    gap:0;
+    background:var(--border);
+    border-bottom:1px solid var(--border);
+    overflow:hidden;
+  }
+  .stat-cell{
+    flex:1;
+    padding:8px 2px;
+    min-width:0;
+    border-top:none !important;
+  }
+  .stat-num{
+    font-size:18px;
+    margin-bottom:2px;
+  }
+  .stat-lbl{
+    font-size:7px;
+    letter-spacing:.5px;
+  }
+
+  /* ── Match item: compact single-line layout ── */
+  .match-item{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 10px;
+    flex-wrap:nowrap;
+  }
+  /* GOAT player: shrinks, clips overflow */
+  .p-goat{
+    flex:1;
+    min-width:0;
+    font-size:11px;
+    gap:2px;
+  }
+  .p-goat-name{
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-size:11px;
+  }
+  .p-goat-name strong{font-weight:600;}
+  .badge-row{gap:2px;margin-top:2px;}
+  .badge{font-size:7px;padding:1px 4px;}
+
+  /* score box: smaller */
+  .score-box{flex-shrink:0;}
+  .sg,.so{padding:3px 7px;font-size:14px;min-width:22px;}
+  .ssep{padding:3px 4px;font-size:7px;}
+
+  /* opponent: shrinks, clips */
+  .p-opp{
+    flex:1;
+    min-width:0;
+    font-size:11px;
+    text-align:right;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  /* result chip: tight */
+  .result-chip{
+    flex-shrink:0;
+    padding:3px 7px;
+    font-size:8px;
+    letter-spacing:.5px;
+  }
+
+  .session-div{padding:8px 10px 4px;font-size:8px;}
+  .preview-head{padding:10px 12px;}
+  .preview-title{font-size:10px;}
+  .goat-side-tag{font-size:9px;padding:3px 8px;}
+
+  .dup-block{margin:10px 10px 0;padding:8px 12px;font-size:11px;}
+  .ref-summary{margin:8px 10px 0;padding:8px 12px;font-size:11px;}
+
+  .gate-card{padding:28px 18px;}
+  .gate-title{font-size:22px;}
+  .gate-logo{width:60px;height:60px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ GATE ═══════════ -->
+<div id="gate">
+  <div class="gate-wrap">
+    <div class="gate-card">
+      <div class="gate-logo-wrap">
+        <img src="https://i.imgur.com/SjIUSlC.png" class="gate-logo" alt="GOAT FC"/>
+      </div>
+      <div class="gate-title">GOAT FC</div>
+      <div class="gate-sub">Club Analytics · Admin Access</div>
+      <div class="gate-input-wrap">
+        <input type="password" id="passInput" class="gate-input"
+          placeholder="••••••••••••"
+          onkeydown="if(event.key==='Enter')checkPass()"/>
+        <button class="gate-eye" onclick="toggleEye()">
+          <svg id="eyeOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+          <svg id="eyeClosed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:none">
+            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+            <line x1="1" y1="1" x2="23" y2="23"/>
+          </svg>
+        </button>
+      </div>
+      <button class="gate-btn" onclick="checkPass()">ACCESS SYSTEM</button>
+      <div class="gate-err" id="gateErr">// ACCESS DENIED — invalid credentials</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ APP ═══════════ -->
+<div id="app">
+<div class="page">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="brand">
+      <img src="https://i.imgur.com/SjIUSlC.png" class="brand-logo" alt="GOAT FC"/>
+      <div class="brand-text">
+        <div class="brand-name">GOAT FC</div>
+        <div class="brand-sub">Club Analytics System</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="hud-live"><div class="hud-live-dot"></div>ONLINE</div>
+      <div class="hud-pill" id="topbarDate">—</div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 01: CONFIG ── -->
+  <div class="sec-head">
+    <div class="sec-num">01</div>
+    <div class="sec-title">Match Configuration</div>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="meta-row">
+    <div>
+      <div class="field-label">Team Type</div>
+      <div class="select-wrap">
+        <select id="teamType" onchange="onTeamTypeChange()">
+          <option value="Main">⚡ Main</option>
+          <option value="Academy">🎓 Academy</option>
+          <option value="Youth">🌱 Youth</option>
+          <option value="Overall">🌐 Overall</option>
+        </select>
+        <div class="select-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Selected Referees &nbsp;<span id="refCountBadge" style="color:var(--gold);font-size:10px;"></span></div>
+      <div id="refSelectedDisplay"
+        style="padding:11px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);font-size:12px;color:var(--text3);min-height:44px;font-family:'JetBrains Mono',monospace;">
+        No referee selected
+      </div>
+    </div>
+  </div>
+
+  <div class="ref-panel" id="refPanel">
+    <div class="sec-head" style="margin-bottom:0;">
+      <div class="sec-num" style="font-size:9px;padding:2px 7px;">REF</div>
+      <div class="sec-title" style="font-size:10px;">Select Referees</div>
+      <span style="color:var(--red);font-size:10px;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;">*required</span>
+      <div class="sec-line"></div>
+    </div>
+    <div class="ref-grid" id="refGrid">
+      <div class="ref-empty">Select a Team Type to load referees.</div>
+    </div>
+    <div class="ref-required-hint" id="refRequiredHint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;flex-shrink:0;">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      কমপক্ষে ১ জন referee select করতে হবে।
+    </div>
+  </div>
+
+  <!-- ── SECTION 02: INPUT ── -->
+  <div class="sec-head">
+    <div class="sec-num">02</div>
+    <div class="sec-title">Match Data Input</div>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="card-head-left">
+        <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+        <span>match_data.txt</span>
+      </div>
+      <div class="char-count" id="charCount">0 chars</div>
+    </div>
+    <textarea id="matchText"
+      placeholder="GOAT FC ⚒️ ARCANE SYNDICATE
+First Day: May 22
+Sofi-ullah Sofi 🟥 🔑 4🆚3 Nahid Bin Zaman
+Faiaz ur Rahman 👑 0🆚0 Mehedi Hasan 🔑
+..."></textarea>
+  </div>
+
+  <!-- ── BUTTONS ── -->
+  <div class="btn-row">
+    <button class="btn btn-primary" id="previewBtn" onclick="doPreview()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+      </svg>
+      Preview
+    </button>
+    <button class="btn btn-submit" id="submitBtn" onclick="doSubmit()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+      Submit to Sheet
+    </button>
+    <button class="btn btn-ghost" onclick="doClear()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;">
+        <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/>
+      </svg>
+      Clear
+    </button>
+  </div>
+
+  <!-- STATUS -->
+  <div class="status" id="statusBar">
+    <span id="statusIcon"></span>
+    <span id="statusMsg"></span>
+  </div>
+
+  <!-- ── PREVIEW PANEL ── -->
+  <div class="preview" id="previewPanel">
+    <div class="preview-head">
+      <div class="preview-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;color:var(--gold)">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+        </svg>
+        PARSED — <span id="matchCountLabel">0 matches</span>
+      </div>
+      <div class="goat-side-tag" id="goatSideLabel"></div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-cell w"><div class="stat-num w" id="sW">0</div><div class="stat-lbl">Wins</div></div>
+      <div class="stat-cell d"><div class="stat-num d" id="sD">0</div><div class="stat-lbl">Draws</div></div>
+      <div class="stat-cell l"><div class="stat-num l" id="sL">0</div><div class="stat-lbl">Losses</div></div>
+      <div class="stat-cell mo"><div class="stat-num mo" id="sMOTM">0</div><div class="stat-lbl">👑 MOTM</div></div>
+      <div class="stat-cell ca"><div class="stat-num ca" id="sCards">0</div><div class="stat-lbl">🟨🟥 Cards</div></div>
+    </div>
+
+    <div class="dup-block" id="dupBlock">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0;margin-top:1px;">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+      <div>
+        <div style="font-weight:700;margin-bottom:3px;font-family:'Orbitron',monospace;font-size:10px;letter-spacing:1px;">DUPLICATE MATCHES — এগুলো skip হবে</div>
+        <ul class="dup-list" id="dupList"></ul>
+      </div>
+    </div>
+
+    <div class="ref-summary" id="refSummary">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0;">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+      <span id="refSummaryText"></span>
+    </div>
+
+    <div class="match-list" id="matchList"></div>
+  </div>
+
+  <div class="footer">
+    <span>GOAT FC</span> &nbsp;·&nbsp; Club Analytics System &nbsp;·&nbsp; Admin Portal
+  </div>
+</div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   CONFIG
+═══════════════════════════════════════ */
+const CONFIG = {
+  password: "gfc47526",
+  scriptUrl: "https://script.google.com/macros/s/AKfycbzUsBnMBqhA_wlKq8svuciwOXHnvks3BqDfkzHh6gLQwvANr7Uors6AmWvHO2MmiyeF/exec",
+  referees: {
+    Main:    ["Joy das","Arniv Rahman","Md Shah Newaj","Sofi-ullah Sofi","Ishmam Wahid","Md Rashedul Hasan"],
+    Academy: ["Ahmed Samir","Sheikh Imtiaz","Rahul Swaccho","Tanbir Hossain","Rian Forhad","Empty Slot"],
+    Youth:   ["Empty Slot","Empty Slot","Empty Slot","Empty Slot","Empty Slot","Empty Slot"],
+  }
+};
+CONFIG.referees.Overall = [...new Set([...CONFIG.referees.Main,...CONFIG.referees.Academy,...CONFIG.referees.Youth])];
+
+/* ═══════════════════════════════════════
+   normalizeUnicode
+   Converts bold/italic mathematical unicode → plain ASCII
+   So /GOAT/i works on 𝐆𝐎𝐀𝐓, 𝗚𝗢𝗔𝗧, 𝑮𝑶𝑨𝑻 etc.
+═══════════════════════════════════════ */
+function normalizeUnicode(str) {
+  return str.replace(/[\u{1D400}-\u{1D7FF}]/gu, function(ch) {
+    const cp = ch.codePointAt(0);
+    // Bold Capital A-Z
+    if (cp >= 0x1D400 && cp <= 0x1D419) return String.fromCharCode(cp - 0x1D400 + 65);
+    // Bold Small a-z
+    if (cp >= 0x1D41A && cp <= 0x1D433) return String.fromCharCode(cp - 0x1D41A + 97);
+    // Bold Italic Capital A-Z
+    if (cp >= 0x1D468 && cp <= 0x1D481) return String.fromCharCode(cp - 0x1D468 + 65);
+    // Bold Italic Small a-z
+    if (cp >= 0x1D482 && cp <= 0x1D49B) return String.fromCharCode(cp - 0x1D482 + 97);
+    // Sans Bold Capital A-Z
+    if (cp >= 0x1D5D4 && cp <= 0x1D5ED) return String.fromCharCode(cp - 0x1D5D4 + 65);
+    // Sans Bold Small a-z
+    if (cp >= 0x1D5EE && cp <= 0x1D607) return String.fromCharCode(cp - 0x1D5EE + 97);
+    // Sans Bold Italic Capital A-Z
+    if (cp >= 0x1D608 && cp <= 0x1D621) return String.fromCharCode(cp - 0x1D608 + 65);
+    // Sans Bold Italic Small a-z
+    if (cp >= 0x1D622 && cp <= 0x1D63B) return String.fromCharCode(cp - 0x1D622 + 97);
+    return ch;
+  });
+}
+
+/* ═══════════════════════════════════════
+   GATE
+═══════════════════════════════════════ */
+function checkPass() {
+  const val = document.getElementById("passInput").value;
+  if (val === CONFIG.password) {
+    document.getElementById("gate").style.display = "none";
+    document.getElementById("app").style.display  = "block";
+    const d = new Date();
+    document.getElementById("topbarDate").textContent =
+      d.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"});
+    renderRefGrid();
+  } else {
+    document.getElementById("gateErr").classList.add("show");
+    document.getElementById("passInput").style.borderColor = "var(--red)";
+    setTimeout(() => {
+      document.getElementById("gateErr").classList.remove("show");
+      document.getElementById("passInput").style.borderColor = "";
+    }, 2500);
+  }
+}
+function toggleEye() {
+  const inp = document.getElementById("passInput"), isP = inp.type === "password";
+  inp.type = isP ? "text" : "password";
+  document.getElementById("eyeOpen").style.display   = isP ? "none"  : "block";
+  document.getElementById("eyeClosed").style.display = isP ? "block" : "none";
+}
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("matchText").addEventListener("input", function() {
+    document.getElementById("charCount").textContent = this.value.length + " chars";
+  });
+  document.getElementById("passInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") checkPass();
+  });
+});
+
+/* ═══════════════════════════════════════
+   REFEREES
+═══════════════════════════════════════ */
+let selectedRefs = new Set();
+
+function onTeamTypeChange() {
+  selectedRefs.clear();
+  renderRefGrid();
+  updateRefDisplay();
+  clearRefError();
+  document.getElementById("previewPanel").classList.remove("show");
+  document.getElementById("submitBtn").classList.remove("show");
+  clearStatus();
+}
+
+function renderRefGrid() {
+  const type = document.getElementById("teamType").value;
+  const list = CONFIG.referees[type] || [];
+  const grid = document.getElementById("refGrid");
+  if (!list.length) { grid.innerHTML = '<div class="ref-empty">No referees configured.</div>'; return; }
+  grid.innerHTML = list.map(n => `
+    <div class="ref-chip" id="rc_${esc(n)}" onclick="toggleRef('${esc(n)}')">
+      <div class="ref-check">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#06080D" stroke-width="3" width="10" height="10">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      ${esc(n)}
+    </div>`).join("");
+}
+
+function toggleRef(n) {
+  if (selectedRefs.has(n)) selectedRefs.delete(n); else selectedRefs.add(n);
+  const c = document.getElementById("rc_" + n);
+  if (c) c.classList.toggle("selected", selectedRefs.has(n));
+  updateRefDisplay();
+  if (selectedRefs.size > 0) clearRefError();
+}
+
+function updateRefDisplay() {
+  const arr = [...selectedRefs];
+  document.getElementById("refCountBadge").textContent = arr.length ? arr.length + " selected" : "";
+  const d = document.getElementById("refSelectedDisplay");
+  if (arr.length) {
+    d.innerHTML = arr.map(r =>
+      `<span style="display:inline-block;background:rgba(255,215,0,.08);border:1px solid var(--border-g);color:var(--gold);border-radius:20px;padding:2px 9px;font-size:11px;margin:2px 3px 2px 0;font-family:'JetBrains Mono',monospace;">${esc(r)}</span>`
+    ).join("");
+  } else {
+    d.textContent = "No referee selected";
+    d.style.color = "var(--text3)";
+  }
+}
+
+function showRefError() {
+  document.getElementById("refPanel").classList.add("ref-error");
+  document.getElementById("refRequiredHint").classList.add("show");
+  document.getElementById("refPanel").scrollIntoView({ behavior:"smooth", block:"center" });
+}
+function clearRefError() {
+  document.getElementById("refPanel").classList.remove("ref-error");
+  document.getElementById("refRequiredHint").classList.remove("show");
+}
+
+/* ═══════════════════════════════════════
+   PARSE CORE
+   KEY FIX: normalizeUnicode before detecting GOAT side,
+   so bold 𝐆𝐎𝐀𝐓 𝐅𝐂 is correctly identified.
+═══════════════════════════════════════ */
+
+function detectGoatSide(text) {
+  const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
+  for (const rawLine of lines) {
+    const line = normalizeUnicode(rawLine);   // ← THE FIX
+    if (/GOAT/i.test(line) && /FC/i.test(line)) {
+      const goatIdx = line.search(/GOAT/i);
+      const sepIdx  = line.search(/⚒️|⚔|🆚|\bVS\b/i);
+      if (sepIdx !== -1) return goatIdx < sepIdx ? "left" : "right";
+      return "left";
+    }
+  }
+  return "left";
+}
+
+function extractRound(text) {
+  const head = text.split("\n").map(l => l.trim()).filter(Boolean).slice(0,4).join(" ");
+  const norm = normalizeUnicode(head);
+  const r1 = norm.match(/Round\s+(\d+)\s*\/\s*(\d+)/i);
+  if (r1) return `Round ${r1[1]}/${r1[2]}`;
+  const r2 = norm.match(/\bR(\d+)\s*\/\s*(\d+)/i);
+  if (r2) return `R${r2[1]}/${r2[2]}`;
+  const r3 = norm.match(/GRP[\w\-\/\s\d]+/i);
+  if (r3) return r3[0].trim().replace(/\s+/g," ");
+  return "";
+}
+
+const SESSION_MAP = [
+  {r:/first\s*day/i,         l:"First Day"},
+  {r:/\bstar\b/i,            l:"Star"},
+  {r:/mid[\s_]?night/i,      l:"Mid Night"},
+  {r:/late[\s_]?night/i,     l:"Late Night"},
+  {r:/morning/i,             l:"Morning"},
+  {r:/afternoon/i,           l:"Afternoon"},
+  {r:/evening/i,             l:"Evening"},
+];
+
+function cleanPlayerName(raw) {
+  return raw
+    .replace(/@/g, "")
+    .replace(/👑|🟨|🟥|🔑/gu, "")
+    .replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}]/gu, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+function parseMatches(text) {
+  const goatSide = detectGoatSide(text);   // normalizeUnicode inside
+  const round    = extractRound(text);
+  const lines    = text.split("\n").map(l => l.trim()).filter(Boolean);
+  const results  = [];
+  let session    = "General";
+
+  lines.forEach(line => {
+    // session label?
+    for (const s of SESSION_MAP) { if (s.r.test(line)) { session = s.l; return; } }
+
+    // strip leading bullets, keep 🆚 🔑 👑 🟨 🟥
+    const cleaned = line
+      .replace(/^[#\*\-–—•►▶▷❯»·\s]+/, "")
+      .replace(/(?![\u{1F19A}\u{1F511}\u{1F451}\u{1F7E8}\u{1F7E5}])[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}]/gu, "")
+      .replace(/\s{2,}/g," ")
+      .trim();
+
+    const m = cleaned.match(/^(.+?)\s+(\d+)\s*🆚\s*(\d+)\s+(.+)$/);
+    if (!m) return;
+
+    const leftRaw    = m[1].trim();
+    const leftScore  = parseInt(m[2]);
+    const rightScore = parseInt(m[3]);
+    const rightRaw   = m[4].trim();
+
+    const goatRaw   = goatSide === "left" ? leftRaw    : rightRaw;
+    const oppRaw    = goatSide === "left" ? rightRaw   : leftRaw;
+    const goatScore = goatSide === "left" ? leftScore  : rightScore;
+    const oppScore  = goatSide === "left" ? rightScore : leftScore;
+
+    const goatPlayer = cleanPlayerName(goatRaw);
+    const oppPlayer  = cleanPlayerName(oppRaw);
+    if (!goatPlayer || !oppPlayer) return;
+
+    // icons ONLY from GOAT FC side
+    const motm   = /👑/.test(goatRaw);
+    const yellow = /🟨/.test(goatRaw);
+    const red    = /🟥/.test(goatRaw);
+    const isKey  = /🔑/.test(goatRaw);
+
+    let result = "Draw";
+    if (goatScore > oppScore) result = "Win";
+    else if (goatScore < oppScore) result = "Loss";
+
+    results.push({ goatPlayer, oppPlayer, goatScore, oppScore, result, session, isKey, round, motm, yellow, red });
+  });
+
+  return { matches:results, goatSide, round };
+}
+
+/* ═══════════════════════════════════════
+   HASH (localStorage)
+═══════════════════════════════════════ */
+const HASH_KEY = "goatfc_hashes_v4";
+function loadHashes() { try { return new Set(JSON.parse(localStorage.getItem(HASH_KEY)||"[]")); } catch { return new Set(); } }
+function saveHashes(s) { localStorage.setItem(HASH_KEY, JSON.stringify([...s])); }
+function makeHash(m, tt) {
+  return [
+    m.goatPlayer.toLowerCase().trim(),
+    m.oppPlayer.toLowerCase().trim(),
+    m.goatScore, m.oppScore,
+    m.session.toLowerCase().trim(),
+    tt.toLowerCase().trim(),
+    (m.round||"").toLowerCase().trim()
+  ].join("|");
+}
+
+let newMatches = [];
+
+/* ═══════════════════════════════════════
+   PREVIEW
+═══════════════════════════════════════ */
+function doPreview() {
+  const text = document.getElementById("matchText").value.trim();
+  if (!text) { showStatus("error","Match text paste করো আগে।"); return; }
+  if (selectedRefs.size === 0) { showRefError(); showStatus("error","কমপক্ষে ১ জন referee select করো।"); return; }
+  clearRefError();
+
+  const tt = document.getElementById("teamType").value;
+  const { matches, goatSide, round } = parseMatches(text);
+
+  if (!matches.length) {
+    showStatus("error","কোনো match line detect হয়নি। 🆚 format ঠিক আছে কিনা দেখো।");
+    document.getElementById("previewPanel").classList.remove("show");
+    document.getElementById("submitBtn").classList.remove("show");
+    return;
+  }
+
+  const stored = loadHashes();
+  const dups = [], fresh = [];
+  matches.forEach(m => {
+    const h = makeHash(m, tt);
+    if (stored.has(h)) dups.push(`${m.goatPlayer} vs ${m.oppPlayer} (${m.goatScore}–${m.oppScore})`);
+    else fresh.push(m);
+  });
+  newMatches = fresh;
+
+  document.getElementById("sW").textContent    = fresh.filter(m => m.result === "Win").length;
+  document.getElementById("sD").textContent    = fresh.filter(m => m.result === "Draw").length;
+  document.getElementById("sL").textContent    = fresh.filter(m => m.result === "Loss").length;
+  document.getElementById("sMOTM").textContent = fresh.filter(m => m.motm).length;
+  document.getElementById("sCards").textContent= fresh.filter(m => m.yellow || m.red).length;
+  document.getElementById("matchCountLabel").textContent = fresh.length + " match" + (fresh.length !== 1 ? "es" : "");
+  document.getElementById("goatSideLabel").textContent   = (round ? round + " · " : "") + "GOAT FC → " + (goatSide === "left" ? "left side" : "right side");
+
+  // dup block
+  const db = document.getElementById("dupBlock");
+  if (dups.length) {
+    db.classList.add("show");
+    document.getElementById("dupList").innerHTML = dups.map(d => `<li>${esc(d)}</li>`).join("");
+  } else db.classList.remove("show");
+
+  // ref summary
+  const refArr = [...selectedRefs];
+  document.getElementById("refSummary").classList.add("show");
+  document.getElementById("refSummaryText").textContent =
+    `${refArr.length} referee(s): ${refArr.join(", ")} — 5 pts × ${fresh.length} match(es)`;
+
+  // match list
+  let html = "", lastSess = "";
+  const renderList = fresh.length ? fresh : matches;
+  renderList.forEach((m, i) => {
+    if (m.session !== lastSess) {
+      html += `<div class="session-div">${esc(m.session)}</div>`;
+      lastSess = m.session;
+    }
+    const rc    = m.result.toLowerCase();
+    const isDup = !fresh.includes(m);
+
+    let badges = "";
+    if (m.isKey)  badges += `<span class="badge key">🔑 KEY</span>`;
+    if (m.motm)   badges += `<span class="badge motm">👑 MOTM +2</span>`;
+    if (m.yellow) badges += `<span class="badge yc">🟨 -7</span>`;
+    if (m.red)    badges += `<span class="badge rc">🟥 -14</span>`;
+
+    html += `
+      <div class="match-item${isDup ? " dup-item" : ""}" style="animation-delay:${i*25}ms">
+        <div class="p-goat">
+          <div class="p-goat-name"><strong>${esc(m.goatPlayer)}</strong></div>
+          ${badges ? `<div class="badge-row">${badges}</div>` : ""}
+        </div>
+        <div class="score-box">
+          <div class="sg">${m.goatScore}</div>
+          <div class="ssep">VS</div>
+          <div class="so">${m.oppScore}</div>
+        </div>
+        <div class="p-opp">${esc(m.oppPlayer)}</div>
+        <div class="result-chip ${rc}">${m.result}</div>
+      </div>`;
+  });
+  document.getElementById("matchList").innerHTML = html;
+  document.getElementById("previewPanel").classList.add("show");
+
+  if (fresh.length) {
+    document.getElementById("submitBtn").classList.add("show");
+    clearStatus();
+  } else {
+    document.getElementById("submitBtn").classList.remove("show");
+    showStatus("warn","সব matches আগেই submit হয়েছে।");
+  }
+}
+
+/* ═══════════════════════════════════════
+   SUBMIT
+═══════════════════════════════════════ */
+async function doSubmit() {
+  if (!newMatches.length) { showStatus("warn","কোনো নতুন match নেই।"); return; }
+  if (selectedRefs.size === 0) { showRefError(); showStatus("error","কমপক্ষে ১ জন referee select করো।"); return; }
+
+  const sb = document.getElementById("submitBtn"), pb = document.getElementById("previewBtn");
+  sb.disabled = pb.disabled = true;
+  showStatus("loading","Google Sheet এ submit হচ্ছে…", true);
+
+  const text   = document.getElementById("matchText").value.trim();
+  const tt     = document.getElementById("teamType").value;
+  const refArr = [...selectedRefs];
+
+  try {
+    const body = new URLSearchParams();
+    body.append("text",     text);
+    body.append("teamType", tt);
+    body.append("referees", refArr.join(","));
+
+    await fetch(CONFIG.scriptUrl, {
+      method:"POST",
+      headers:{"Content-Type":"application/x-www-form-urlencoded"},
+      body:body.toString(),
+      mode:"no-cors"
+    });
+
+    const stored = loadHashes();
+    newMatches.forEach(m => stored.add(makeHash(m, tt)));
+    saveHashes(stored);
+
+    showStatus("success",`✓ ${newMatches.length} match${newMatches.length!==1?"es":""} submitted · ${refArr.length} referee(s) logged!`);
+    document.getElementById("submitBtn").classList.remove("show");
+    newMatches = [];
+  } catch(err) {
+    showStatus("error","Submit failed: " + err.message);
+  }
+  sb.disabled = pb.disabled = false;
+}
+
+/* ═══════════════════════════════════════
+   CLEAR + HELPERS
+═══════════════════════════════════════ */
+function doClear() {
+  document.getElementById("matchText").value = "";
+  document.getElementById("charCount").textContent = "0 chars";
+  document.getElementById("previewPanel").classList.remove("show");
+  document.getElementById("submitBtn").classList.remove("show");
+  document.getElementById("dupBlock").classList.remove("show");
+  document.getElementById("refSummary").classList.remove("show");
+  newMatches = [];
+  clearStatus();
+  clearRefError();
+}
+
+function showStatus(type, msg, spin) {
+  const bar = document.getElementById("statusBar"), icon = document.getElementById("statusIcon");
+  document.getElementById("statusMsg").textContent = msg;
+  bar.className = "status show " + type;
+  if (spin)
+    icon.innerHTML = `<span class="spin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></span>`;
+  else if (type==="success")
+    icon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px"><polyline points="20 6 9 17 4 12"/></svg>`;
+  else if (type==="error")
+    icon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
+  else if (type==="warn")
+    icon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+  else icon.innerHTML = "";
+}
+function clearStatus() { document.getElementById("statusBar").className = "status"; }
+function esc(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+</script>
+</body>
+</html>
