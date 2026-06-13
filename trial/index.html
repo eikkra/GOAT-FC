@@ -31,6 +31,22 @@
   --scan:rgba(0,255,180,0.12);
   --footer-bg:#080c18;
 }
+[data-theme="light"]{
+  --bg:#f0f4ff;--bg2:#e8edf8;--bg3:#dde3f2;--bg4:#d2d9ed;
+  --border:rgba(0,180,120,0.12);--border2:rgba(0,180,120,0.28);--border3:rgba(0,180,120,0.45);
+  --neon:#00a878;--neon2:#0099cc;
+  --neon-dim:rgba(0,180,120,0.1);--neon-dim2:rgba(0,153,204,0.1);
+  --white:#111827;--muted:rgba(17,24,39,0.65);--muted2:rgba(17,24,39,0.45);--muted3:rgba(17,24,39,0.2);
+  --glow:0 0 20px rgba(0,180,120,0.2),0 0 60px rgba(0,180,120,0.06);
+  --shadow:0 8px 32px rgba(0,0,0,0.12);
+  --header-bg:rgba(240,244,255,0.92);
+  --card-bg:#ffffff;--card-border:rgba(0,180,120,0.15);
+  --input-bg:#f8faff;--input-border:rgba(0,180,120,0.2);--input-focus:rgba(0,180,120,0.4);
+  --grid-line:rgba(0,180,120,0.025);
+  --orb1:rgba(0,180,120,0.07);--orb2:rgba(0,153,204,0.06);--orb3:rgba(123,47,255,0.04);
+  --scan:rgba(0,180,120,0.1);
+  --footer-bg:#e8edf8;
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--white);font-family:var(--ff-ui);font-size:16px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
@@ -63,7 +79,7 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .home-btn:hover{color:var(--neon);border-color:var(--border2);background:var(--neon-dim)}
 @media(max-width:480px){.nav-tag{display:none}.home-btn span{display:none}}
 
-/* ── TAB NAV (below header) ── */
+/* ── TAB NAV ── */
 #tab-nav{position:sticky;top:58px;z-index:800;background:var(--header-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 clamp(1rem,4vw,2rem);display:none}
 .tab-row{display:flex;gap:4px;padding:8px 0;overflow-x:auto;scrollbar-width:none}
 .tab-row::-webkit-scrollbar{display:none}
@@ -71,7 +87,6 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .tab-btn i{font-size:.75rem}
 .tab-btn:hover{color:var(--white);background:var(--bg3);border-color:var(--border2)}
 .tab-btn.active{color:var(--neon);background:var(--neon-dim);border-color:var(--border2)}
-.tab-dot{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.6}
 
 /* ── PAGES ── */
 .page{display:none;position:relative;z-index:1;min-height:calc(100vh - 58px)}
@@ -117,7 +132,7 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .f-hint{font-family:var(--ff-mono);font-size:.55rem;color:var(--muted2);margin-top:5px;letter-spacing:.05em}
 .f-hint em{color:var(--neon2);font-style:normal}
 
-/* Skill checkboxes — 2×2 compact grid */
+/* Skill checkboxes */
 .skill-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
 .sk-item{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--bg3);border:1px solid var(--input-border);border-radius:8px;cursor:pointer;transition:all .18s;user-select:none}
 .sk-item:hover{border-color:var(--border2);background:var(--bg4)}
@@ -129,7 +144,7 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .sk-item.on .sk-label{color:var(--white)}
 .skill-note{font-family:var(--ff-mono);font-size:.54rem;color:var(--muted2);margin-bottom:8px;letter-spacing:.06em}
 
-/* Rating matrix — compact */
+/* Rating matrix */
 .r-matrix{width:100%}
 .r-matrix-head{display:grid;grid-template-columns:1fr repeat(4,44px);gap:4px;margin-bottom:4px}
 .r-matrix-head span{font-family:var(--ff-mono);font-size:.5rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted2);text-align:center}
@@ -163,7 +178,6 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .stat-lbl{font-family:var(--ff-mono);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);margin-top:4px}
 @media(max-width:520px){.sum-stats{grid-template-columns:repeat(2,1fr)}}
 
-/* Player/admin cards for mobile — stacked */
 .data-cards{display:flex;flex-direction:column;gap:10px}
 .d-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:14px 16px;transition:border-color .2s}
 .d-card:hover{border-color:var(--border2)}
@@ -237,7 +251,7 @@ footer p{font-family:var(--ff-mono);font-size:.58rem;color:var(--muted2);letter-
   </div>
 </header>
 
-<!-- TAB NAV (shown after login) -->
+<!-- TAB NAV -->
 <nav id="tab-nav">
   <div class="tab-row">
     <button class="tab-btn active" onclick="showTab('form',this)">
@@ -427,7 +441,7 @@ footer p{font-family:var(--ff-mono);font-size:.58rem;color:var(--muted2);letter-
         <div class="stat-card"><div class="stat-val">—</div><div class="stat-lbl">Last Trial</div></div>
       </div>
       <div class="data-cards" id="adminCards">
-        <div class="empty-box"><span class="spin"></span>&nbsp; Loading…</div>
+        <div class="empty-box">No Apps Script URL configured yet.</div>
       </div>
     </div>
   </div>
@@ -440,7 +454,7 @@ footer p{font-family:var(--ff-mono);font-size:.58rem;color:var(--muted2);letter-
         <input class="filter-inp" type="text" id="playerQ" placeholder="🔍 Search player…" oninput="filterPlayers()"/>
       </div>
       <div class="data-cards" id="playerCards">
-        <div class="empty-box"><span class="spin"></span>&nbsp; Loading…</div>
+        <div class="empty-box">No Apps Script URL configured yet.</div>
       </div>
     </div>
   </div>
@@ -458,39 +472,25 @@ footer p{font-family:var(--ff-mono);font-size:.58rem;color:var(--muted2);letter-
 <script>
 // ============================================================
 //  CONFIG — Replace with your deployed Apps Script URL
+//  Password: GoatFC@2025
 // ============================================================
 const AS_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
 
-// Password stored as SHA-256 hash — never plain text in source
-// Default: GoatFC@2025
-// To change: run sha256('YourNewPassword') in console and paste hash below
-const PASS_H = '5e7d3b7e4c2a1f8d9b0e6c4a2f7d5b3a9e8c1f4d7b2a5e3c0f6d9b7a4e2c1f8d'; // placeholder — set by Apps Script
-
-// ============================================================
-//  PROTECTION — disable devtools / inspect
-// ============================================================
-(function(){
-  // Disable right-click
-  document.addEventListener('contextmenu',e=>e.preventDefault());
-  // Disable common keyboard shortcuts
-  document.addEventListener('keydown',function(e){
-    if(e.key==='F12')e.preventDefault();
-    if((e.ctrlKey||e.metaKey)&&e.shiftKey&&['I','J','C'].includes(e.key))e.preventDefault();
-    if((e.ctrlKey||e.metaKey)&&e.key==='U')e.preventDefault();
-  });
-  // Devtools size-change detection
-  var t=function(){
-    var w=window.outerWidth-window.innerWidth>160||window.outerHeight-window.innerHeight>160;
-    if(w)document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:monospace;color:#ff4655;background:#04060f;font-size:1rem">⛔ DevTools Detected</div>';
-  };
-  setInterval(t,1000);
-})();
+// SHA-256 hash of "GoatFC@2025"
+const PASS_HASH = '572b2f77b93f4570eae22ee1820747187db41c18e2de28291def69dc65a303c1';
 
 // ============================================================
 //  THEME
 // ============================================================
-(function(){try{var s=localStorage.getItem('gf-th');if(s)document.documentElement.setAttribute('data-theme',s);}catch(e){}})();
-function toggleTheme(){var h=document.documentElement,c=h.getAttribute('data-theme'),n=c==='dark'?'light':'dark';h.setAttribute('data-theme',n);try{localStorage.setItem('gf-th',n);}catch(e){}}
+(function(){
+  try{var s=localStorage.getItem('gf-th');if(s)document.documentElement.setAttribute('data-theme',s);}
+  catch(e){}
+})();
+function toggleTheme(){
+  var h=document.documentElement,c=h.getAttribute('data-theme'),n=c==='dark'?'light':'dark';
+  h.setAttribute('data-theme',n);
+  try{localStorage.setItem('gf-th',n);}catch(e){}
+}
 
 // ============================================================
 //  EYE TOGGLE
@@ -502,22 +502,27 @@ function toggleEye(){
 }
 
 // ============================================================
-//  AUTH — password checked server-side via Apps Script
+//  AUTH — client-side SHA-256 (no server needed)
 // ============================================================
+async function sha256(msg){
+  var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
 async function doUnlock(){
   var pass=document.getElementById('lockPass').value.trim();
   if(!pass)return;
-  try{
-    var res=await fetch(AS_URL+'?action=checkPass&pass='+encodeURIComponent(pass));
-    var d=await res.json();
-    if(d.ok){
-      document.getElementById('lock-screen').style.display='none';
-      document.getElementById('main-app').style.display='block';
-      document.getElementById('tab-nav').style.display='block';
-      loadAdmin();loadPlayers();
-    }else{showErr();}
-  }catch(e){showErr();}
+  var h=await sha256(pass);
+  if(h===PASS_HASH){
+    document.getElementById('lock-screen').style.display='none';
+    document.getElementById('main-app').style.display='block';
+    document.getElementById('tab-nav').style.display='block';
+    if(AS_URL!=='YOUR_APPS_SCRIPT_URL_HERE'){loadAdmin();loadPlayers();}
+  }else{
+    showErr();
+  }
 }
+
 function showErr(){
   var el=document.getElementById('lockErr');
   el.style.display='block';
@@ -557,6 +562,7 @@ function rtScore(r,max){
 //  SUBMIT
 // ============================================================
 async function submitForm(){
+  if(AS_URL==='YOUR_APPS_SCRIPT_URL_HERE')return toast('Apps Script URL not set.','err');
   var name=document.getElementById('f_name').value.trim();
   var fb=document.getElementById('f_fb').value.trim();
   var cid=document.getElementById('f_cid').value.trim().toUpperCase();
@@ -587,6 +593,7 @@ async function submitForm(){
   }catch(e){toast('Network error. Check connection.','err');}
   btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-paper-plane"></i> SUBMIT TRIAL REVIEW';
 }
+
 function resetForm(){
   ['f_name','f_fb','f_cid'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('cidBadge').textContent='GFC-001';
@@ -601,6 +608,7 @@ function resetForm(){
 // ============================================================
 var adminAll=[];
 async function loadAdmin(){
+  if(AS_URL==='YOUR_APPS_SCRIPT_URL_HERE'){document.getElementById('adminCards').innerHTML='<div class="empty-box">⚙️ Set AS_URL to load data.</div>';return;}
   document.getElementById('adminCards').innerHTML='<div class="empty-box"><span class="spin"></span>&nbsp; Loading…</div>';
   try{
     var res=await fetch(AS_URL+'?action=getAdminSummary');
@@ -643,6 +651,7 @@ function filterAdmin(){var q=document.getElementById('adminQ').value.toLowerCase
 // ============================================================
 var playerAll=[];
 async function loadPlayers(){
+  if(AS_URL==='YOUR_APPS_SCRIPT_URL_HERE'){document.getElementById('playerCards').innerHTML='<div class="empty-box">⚙️ Set AS_URL to load data.</div>';return;}
   document.getElementById('playerCards').innerHTML='<div class="empty-box"><span class="spin"></span>&nbsp; Loading…</div>';
   try{
     var res=await fetch(AS_URL+'?action=getPlayerSummary');
@@ -679,7 +688,11 @@ function filterPlayers(){var q=document.getElementById('playerQ').value.toLowerC
 // ============================================================
 //  TOAST
 // ============================================================
-function toast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);}
+function toast(msg,type){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast '+type;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
 </script>
 </body>
 </html>
