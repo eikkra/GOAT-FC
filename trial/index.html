@@ -2,706 +2,506 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
 <title>GOAT FC — Trial Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+<link rel="icon" type="image/png" href="https://i.imgur.com/LY3Bb9m.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&family=Exo+2:wght@600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
 <style>
-  :root {
-    --bg: #0a0c10;
-    --bg2: #0f1218;
-    --bg3: #141820;
-    --card: #1a1f2e;
-    --card2: #1e2535;
-    --border: #2a3350;
-    --border2: #3a4460;
-    --accent: #00d4ff;
-    --accent2: #0099cc;
-    --gold: #ffd700;
-    --green: #00ff88;
-    --red: #ff4444;
-    --orange: #ff8c00;
-    --text: #e8eaf0;
-    --text2: #9aa3b8;
-    --text3: #6b7590;
-    --glow: 0 0 20px rgba(0,212,255,0.3);
-    --glow2: 0 0 40px rgba(0,212,255,0.15);
-    --font-head: 'Orbitron', monospace;
-    --font-body: 'Exo 2', sans-serif;
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-body);
-    min-height: 100vh;
-  }
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+--bg:#060610;
+--s1:#0d0d1a;
+--s2:#111122;
+--s3:#161628;
+--br:#1e1e3a;
+--br2:#252548;
+--cy:#00f0ff;
+--pu:#bf00ff;
+--gn:#00ff88;
+--pk:#ff007a;
+--yw:#f5ff00;
+--tx:#eef0ff;
+--mu:#5a5a80;
+--mu2:#383860;
+--rd:#ff4444;
+--or:#ff8c00;
+}
+@keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+@keyframes rgb{0%{border-color:#00f0ff;box-shadow:0 0 12px #00f0ff40}33%{border-color:#bf00ff;box-shadow:0 0 12px #bf00ff40}66%{border-color:#ff007a;box-shadow:0 0 12px #ff007a40}100%{border-color:#00f0ff;box-shadow:0 0 12px #00f0ff40}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
-  /* ===== TOP HEADER ===== */
-  .site-header {
-    background: linear-gradient(180deg, #0d1117 0%, var(--bg2) 100%);
-    border-bottom: 1px solid var(--border);
-    padding: 0 20px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 20px rgba(0,0,0,0.5);
-  }
-  .header-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 60px;
-    gap: 16px;
-  }
-  .logo-area {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    text-decoration: none;
-  }
-  .logo-icon {
-    width: 36px;
-    height: 36px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    box-shadow: var(--glow);
-  }
-  .logo-text {
-    font-family: var(--font-head);
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--accent);
-    letter-spacing: 2px;
-    text-shadow: var(--glow);
-  }
-  .logo-sub {
-    font-family: var(--font-body);
-    font-size: 10px;
-    color: var(--text3);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-top: 1px;
-  }
-  .header-nav {
-    display: flex;
-    gap: 4px;
-  }
-  .nav-btn {
-    background: transparent;
-    border: 1px solid transparent;
-    color: var(--text2);
-    font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 600;
-    padding: 7px 14px;
-    border-radius: 6px;
-    cursor: pointer;
-    letter-spacing: 0.5px;
-    transition: all 0.2s;
-    text-transform: uppercase;
-  }
-  .nav-btn:hover { background: rgba(0,212,255,0.08); border-color: var(--border2); color: var(--accent); }
-  .nav-btn.active { background: rgba(0,212,255,0.12); border-color: var(--accent); color: var(--accent); }
-  .header-badge {
-    background: rgba(255,215,0,0.15);
-    border: 1px solid var(--gold);
-    color: var(--gold);
-    font-family: var(--font-head);
-    font-size: 9px;
-    padding: 3px 8px;
-    border-radius: 4px;
-    letter-spacing: 1px;
-  }
+html,body{height:100%;-webkit-font-smoothing:antialiased;}
+body{
+background:var(--bg);
+font-family:'Rajdhani',sans-serif;
+color:var(--tx);
+min-height:100vh;
+overflow-x:hidden;
+}
+body::before{
+content:"";position:fixed;inset:0;
+background:
+radial-gradient(ellipse at 15% 10%,rgba(0,240,255,.05) 0%,transparent 50%),
+radial-gradient(ellipse at 85% 90%,rgba(191,0,255,.05) 0%,transparent 50%);
+pointer-events:none;z-index:0;
+}
 
-  /* ===== PAGE WRAPPER ===== */
-  .page { display: none; animation: fadeIn 0.3s ease; }
-  .page.active { display: block; }
-  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+/* ── TOPBAR ── */
+.topbar{
+height:46px;
+display:flex;align-items:center;justify-content:space-between;
+padding:0 14px;
+background:rgba(6,6,16,.97);
+border-bottom:1px solid rgba(0,240,255,.12);
+position:sticky;top:0;z-index:999;
+backdrop-filter:blur(16px);
+-webkit-backdrop-filter:blur(16px);
+box-shadow:0 2px 20px rgba(0,240,255,.05);
+text-decoration:none;
+}
+.top-left{display:flex;align-items:center;gap:8px;}
+.top-logo{width:20px;filter:drop-shadow(0 0 7px #00f0ff) brightness(1.1);}
+.top-title{
+font-family:'Orbitron',sans-serif;
+font-size:12px;font-weight:900;letter-spacing:3px;
+background:linear-gradient(90deg,var(--cy),var(--pu));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.top-right{display:flex;align-items:center;gap:8px;}
+.home-btn{
+width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+border-radius:6px;border:1px solid rgba(0,240,255,.15);color:var(--cy);font-size:11px;
+transition:all .2s;text-decoration:none;
+}
+.home-btn:hover{background:rgba(0,240,255,.08);box-shadow:0 0 10px rgba(0,240,255,.2);}
+.admin-badge{
+font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:1.5px;
+padding:3px 8px;border-radius:4px;
+background:rgba(0,240,255,.1);border:1px solid rgba(0,240,255,.35);color:var(--cy);
+display:none;
+}
 
-  /* ===== PAGE HERO ===== */
-  .page-hero {
-    background: linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
-    border-bottom: 1px solid var(--border);
-    padding: 28px 20px 24px;
-  }
-  .page-hero-inner { max-width: 900px; margin: 0 auto; }
-  .page-hero h1 {
-    font-family: var(--font-head);
-    font-size: clamp(18px,4vw,26px);
-    font-weight: 700;
-    color: var(--accent);
-    letter-spacing: 2px;
-    text-shadow: var(--glow);
-  }
-  .page-hero p { color: var(--text2); font-size: 13px; margin-top: 4px; }
+/* ── LOCK SCREEN ── */
+#lock-screen{
+position:relative;z-index:1;
+min-height:calc(100vh - 46px);
+display:flex;align-items:center;justify-content:center;
+padding:24px 14px;
+}
+.lock-card{
+background:var(--s1);
+border:1px solid rgba(0,240,255,.18);
+border-radius:12px;
+padding:32px 28px;
+width:100%;max-width:360px;
+text-align:center;
+box-shadow:0 8px 40px rgba(0,0,0,.5),0 0 40px rgba(0,240,255,.05);
+animation:fadeUp .4s ease;
+}
+.lock-icon{font-size:36px;color:var(--cy);margin-bottom:12px;text-shadow:0 0 20px rgba(0,240,255,.5);}
+.lock-title{
+font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;letter-spacing:3px;
+background:linear-gradient(90deg,var(--cy),var(--pu));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+margin-bottom:4px;
+}
+.lock-sub{color:var(--mu);font-size:11px;letter-spacing:1px;margin-bottom:22px;}
+.pass-wrap{position:relative;}
+.lock-input{
+width:100%;height:44px;
+background:var(--s2);border:1px solid var(--br2);border-radius:7px;
+color:var(--tx);font-family:'Exo 2',sans-serif;font-size:14px;
+padding:0 40px 0 14px;letter-spacing:3px;text-align:center;outline:none;
+transition:border-color .2s,box-shadow .2s;
+}
+.lock-input:focus{border-color:var(--cy);box-shadow:0 0 0 2px rgba(0,240,255,.1);}
+.eye-btn{
+position:absolute;right:10px;top:50%;transform:translateY(-50%);
+background:none;border:none;color:var(--mu);font-size:13px;cursor:pointer;padding:4px;
+transition:color .2s;
+}
+.eye-btn:hover{color:var(--cy);}
+.lock-btn{
+width:100%;margin-top:12px;height:44px;
+background:linear-gradient(135deg,var(--cy),#0099cc);
+border:none;border-radius:7px;
+color:#000;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;
+letter-spacing:2px;cursor:pointer;
+transition:opacity .2s,transform .1s,box-shadow .2s;
+box-shadow:0 4px 20px rgba(0,240,255,.25);
+}
+.lock-btn:hover{opacity:.9;box-shadow:0 6px 28px rgba(0,240,255,.4);}
+.lock-btn:active{transform:scale(.98);}
+.lock-error{color:var(--rd);font-size:11px;margin-top:8px;display:none;}
 
-  .main-content { max-width: 900px; margin: 0 auto; padding: 28px 20px 60px; }
+/* ── MAIN APP ── */
+#main-app{display:none;position:relative;z-index:1;}
 
-  /* ===== LOCK SCREEN ===== */
-  #lock-screen {
-    min-height: calc(100vh - 60px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-  }
-  .lock-card {
-    background: var(--card);
-    border: 1px solid var(--border2);
-    border-radius: 16px;
-    padding: 40px 36px;
-    width: 100%;
-    max-width: 420px;
-    text-align: center;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.5), var(--glow2);
-  }
-  .lock-icon {
-    font-size: 42px;
-    color: var(--accent);
-    margin-bottom: 16px;
-    text-shadow: var(--glow);
-  }
-  .lock-title {
-    font-family: var(--font-head);
-    font-size: 18px;
-    color: var(--accent);
-    letter-spacing: 2px;
-    margin-bottom: 6px;
-  }
-  .lock-sub { color: var(--text3); font-size: 12px; margin-bottom: 28px; }
-  .lock-input {
-    width: 100%;
-    background: var(--bg3);
-    border: 1px solid var(--border2);
-    border-radius: 8px;
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 14px;
-    padding: 12px 16px;
-    outline: none;
-    transition: border-color 0.2s;
-    letter-spacing: 3px;
-    text-align: center;
-  }
-  .lock-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(0,212,255,0.1); }
-  .lock-btn {
-    width: 100%;
-    margin-top: 14px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border: none;
-    border-radius: 8px;
-    color: #000;
-    font-family: var(--font-head);
-    font-size: 13px;
-    font-weight: 700;
-    padding: 13px;
-    cursor: pointer;
-    letter-spacing: 2px;
-    transition: opacity 0.2s, transform 0.1s;
-  }
-  .lock-btn:hover { opacity: 0.9; }
-  .lock-btn:active { transform: scale(0.98); }
-  .lock-error {
-    color: var(--red);
-    font-size: 12px;
-    margin-top: 10px;
-    display: none;
-  }
+/* ── NAV TABS (below header) ── */
+.nav-tabs{
+display:flex;
+background:rgba(6,6,16,.95);
+border-bottom:1px solid rgba(0,240,255,.1);
+padding:0 14px;
+gap:2px;
+overflow-x:auto;
+scrollbar-width:none;
+-ms-overflow-style:none;
+}
+.nav-tabs::-webkit-scrollbar{display:none;}
+.nav-tab{
+flex:1;min-width:0;
+display:flex;align-items:center;justify-content:center;gap:5px;
+padding:10px 6px;
+font-family:'Exo 2',sans-serif;font-size:10px;font-weight:800;letter-spacing:1.5px;
+color:var(--mu);text-transform:uppercase;
+border:none;background:transparent;cursor:pointer;
+border-bottom:2px solid transparent;
+transition:all .2s;white-space:nowrap;
+}
+.nav-tab i{font-size:11px;}
+.nav-tab:hover{color:var(--tx);}
+.nav-tab.active{color:var(--cy);border-bottom-color:var(--cy);text-shadow:0 0 8px rgba(0,240,255,.5);}
 
-  /* ===== FORM STYLES ===== */
-  .form-section {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 20px;
-  }
-  .form-section-title {
-    font-family: var(--font-head);
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--accent);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .form-section-title i { font-size: 13px; }
+/* ── PAGE ── */
+.page{display:none;animation:fadeUp .3s ease;}
+.page.active{display:block;}
 
-  .form-row { margin-bottom: 18px; }
-  .form-row label {
-    display: block;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text2);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 7px;
-  }
-  .form-row label span.req { color: var(--accent); margin-left: 2px; }
-  .form-input, .form-textarea {
-    width: 100%;
-    background: var(--bg3);
-    border: 1px solid var(--border2);
-    border-radius: 8px;
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 14px;
-    padding: 11px 14px;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  .form-input:focus, .form-textarea:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 2px rgba(0,212,255,0.08);
-  }
-  .form-input::placeholder, .form-textarea::placeholder { color: var(--text3); }
-  .form-textarea { resize: vertical; min-height: 70px; }
-  .input-hint { font-size: 11px; color: var(--text3); margin-top: 5px; }
-  .input-hint span { color: var(--accent); font-weight: 600; }
+/* ── HERO ── */
+.page-hero{
+text-align:center;
+padding:16px 14px 12px;
+border-bottom:1px solid rgba(0,240,255,.07);
+}
+.hero-title{
+font-family:'Orbitron',sans-serif;
+font-size:20px;font-weight:900;letter-spacing:5px;
+background:linear-gradient(90deg,#00f0ff,#bf00ff,#ff007a,#f5ff00,#00f0ff);
+background-size:300% auto;
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+animation:shimmer 4s linear infinite;
+line-height:1;
+}
+.hero-sub{margin-top:5px;font-family:'Exo 2',sans-serif;font-size:9px;font-weight:700;letter-spacing:4px;color:var(--mu);text-transform:uppercase;}
 
-  /* Checkbox group */
-  .checkbox-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 4px;
-  }
-  .checkbox-group .note-text {
-    width: 100%;
-    font-size: 11px;
-    color: var(--text3);
-    font-style: italic;
-    margin-bottom: 4px;
-  }
-  .check-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    padding: 8px 14px;
-    background: var(--bg3);
-    border: 1px solid var(--border2);
-    border-radius: 8px;
-    transition: all 0.2s;
-    user-select: none;
-  }
-  .check-item:hover { border-color: var(--accent2); background: rgba(0,212,255,0.05); }
-  .check-item input[type="checkbox"] {
-    appearance: none;
-    width: 16px;
-    height: 16px;
-    border: 2px solid var(--border2);
-    border-radius: 4px;
-    background: var(--bg);
-    cursor: pointer;
-    position: relative;
-    flex-shrink: 0;
-    transition: all 0.15s;
-  }
-  .check-item input[type="checkbox"]:checked {
-    background: var(--accent);
-    border-color: var(--accent);
-  }
-  .check-item input[type="checkbox"]:checked::after {
-    content: '';
-    position: absolute;
-    left: 3px;
-    top: 0px;
-    width: 6px;
-    height: 10px;
-    border: 2px solid #000;
-    border-top: none;
-    border-left: none;
-    transform: rotate(45deg);
-  }
-  .check-item.checked { border-color: var(--accent); background: rgba(0,212,255,0.08); }
-  .check-label { font-size: 13px; font-weight: 500; color: var(--text); }
+/* ── CONTENT WRAP ── */
+.content{max-width:860px;margin:0 auto;padding:14px 12px 40px;}
 
-  /* Radio row (matrix) */
-  .radio-matrix {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 4px;
-  }
-  .radio-matrix th {
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--text3);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    text-align: center;
-    padding: 8px 10px;
-  }
-  .radio-matrix th:first-child { text-align: left; }
-  .radio-matrix td {
-    padding: 10px 10px;
-    border-top: 1px solid var(--border);
-    text-align: center;
-    font-size: 13px;
-    color: var(--text2);
-  }
-  .radio-matrix td:first-child { text-align: left; padding-left: 0; }
-  .radio-matrix tr:hover td { background: rgba(0,212,255,0.03); }
-  .radio-matrix input[type="radio"] {
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    border: 2px solid var(--border2);
-    border-radius: 50%;
-    background: var(--bg);
-    cursor: pointer;
-    position: relative;
-    transition: all 0.15s;
-    vertical-align: middle;
-  }
-  .radio-matrix input[type="radio"]:checked {
-    border-color: var(--accent);
-    background: var(--accent);
-  }
-  .radio-matrix input[type="radio"]:checked::after {
-    content: '';
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #000;
-  }
+/* ── FORM SECTION ── */
+.fsec{
+background:var(--s1);border:1px solid var(--br);border-radius:10px;
+padding:14px 14px;margin-bottom:12px;
+}
+.fsec-title{
+font-family:'Exo 2',sans-serif;font-size:9px;font-weight:900;
+color:var(--cy);letter-spacing:2.5px;text-transform:uppercase;
+margin-bottom:14px;padding-bottom:10px;
+border-bottom:1px solid rgba(0,240,255,.1);
+display:flex;align-items:center;gap:7px;
+}
+.fsec-title i{font-size:11px;}
+.frow{margin-bottom:12px;}
+.frow:last-child{margin-bottom:0;}
+.frow label{
+display:block;font-family:'Exo 2',sans-serif;
+font-size:9px;font-weight:800;letter-spacing:1.5px;
+color:var(--mu);text-transform:uppercase;margin-bottom:6px;
+}
+.frow label .req{color:var(--cy);}
+.finput,.ftextarea{
+width:100%;background:var(--s2);border:1px solid var(--br2);border-radius:7px;
+color:var(--tx);font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;
+padding:10px 12px;outline:none;transition:border-color .2s,box-shadow .2s;
+}
+.finput::placeholder,.ftextarea::placeholder{color:var(--mu);}
+.finput:focus,.ftextarea:focus{border-color:var(--cy);box-shadow:0 0 0 2px rgba(0,240,255,.08);}
+.ftextarea{resize:vertical;min-height:64px;}
+.fhint{font-size:10px;color:var(--mu);margin-top:4px;}
+.fhint span{color:var(--cy);font-weight:700;}
 
-  /* Mobile radio matrix fallback */
-  @media(max-width: 540px) {
-    .radio-matrix-wrap { overflow-x: auto; }
-    .radio-matrix { min-width: 360px; }
-  }
+/* Skills checkboxes — compact row */
+.skill-row{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:6px;
+margin-top:4px;
+}
+.ck-item{
+display:flex;align-items:center;justify-content:center;gap:5px;
+padding:8px 4px;
+background:var(--s2);border:1px solid var(--br2);border-radius:7px;
+cursor:pointer;transition:all .2s;user-select:none;
+font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;
+color:var(--tx);text-align:center;
+}
+.ck-item:hover{border-color:rgba(0,240,255,.35);background:rgba(0,240,255,.05);}
+.ck-item.on{border-color:var(--cy);background:rgba(0,240,255,.1);color:var(--cy);}
+.ck-item input{display:none;}
+.ck-icon{font-size:13px;}
 
-  /* Club ID input */
-  .club-id-wrap { position: relative; }
-  .club-id-wrap .form-input { padding-right: 100px; font-family: var(--font-head); letter-spacing: 2px; }
-  .club-id-badge {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 10px;
-    color: var(--text3);
-    background: var(--border);
-    padding: 3px 7px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-  }
-  .club-id-valid { color: var(--green) !important; }
-  .club-id-invalid { color: var(--red) !important; }
+/* Rating matrix — compact */
+.rmat{width:100%;border-collapse:separate;border-spacing:0 4px;margin-top:4px;}
+.rmat thead th{
+font-family:'Exo 2',sans-serif;font-size:8px;font-weight:800;
+color:var(--mu);letter-spacing:1px;text-transform:uppercase;
+padding:2px 4px;text-align:center;
+}
+.rmat thead th:first-child{text-align:left;padding-left:0;}
+.rmat tbody tr{transition:background .15s;}
+.rmat tbody td{
+padding:5px 4px;text-align:center;
+font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;color:var(--tx);
+background:var(--s2);border-top:1px solid var(--br);border-bottom:1px solid var(--br);
+}
+.rmat tbody td:first-child{
+text-align:left;padding-left:8px;border-left:1px solid var(--br);border-radius:5px 0 0 5px;color:var(--mu);font-size:11px;
+}
+.rmat tbody td:last-child{border-right:1px solid var(--br);border-radius:0 5px 5px 0;}
+.rmat tbody tr:hover td{background:rgba(0,240,255,.04);}
+.rmat input[type="radio"]{
+appearance:none;width:16px;height:16px;
+border:2px solid var(--br2);border-radius:50%;
+background:var(--bg);cursor:pointer;
+position:relative;transition:all .15s;vertical-align:middle;
+}
+.rmat input[type="radio"]:checked{border-color:var(--cy);background:var(--cy);}
+.rmat input[type="radio"]:checked::after{
+content:'';position:absolute;top:3px;left:3px;
+width:6px;height:6px;border-radius:50%;background:#000;
+}
 
-  /* Submit btn */
-  .submit-btn {
-    width: 100%;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border: none;
-    border-radius: 10px;
-    color: #000;
-    font-family: var(--font-head);
-    font-size: 13px;
-    font-weight: 700;
-    padding: 15px;
-    cursor: pointer;
-    letter-spacing: 2px;
-    transition: opacity 0.2s, transform 0.1s, box-shadow 0.2s;
-    box-shadow: 0 4px 20px rgba(0,212,255,0.25);
-    margin-top: 8px;
-  }
-  .submit-btn:hover { opacity: 0.9; box-shadow: 0 6px 28px rgba(0,212,255,0.4); }
-  .submit-btn:active { transform: scale(0.98); }
-  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+/* Club ID */
+.clubid-wrap{position:relative;}
+.clubid-wrap .finput{padding-right:80px;font-family:'Exo 2',sans-serif;letter-spacing:2px;font-size:13px;}
+.clubid-badge{
+position:absolute;right:8px;top:50%;transform:translateY(-50%);
+font-family:'Exo 2',sans-serif;font-size:9px;font-weight:700;
+background:var(--br);padding:3px 6px;border-radius:4px;color:var(--mu);
+}
+.clubid-ok{color:var(--gn)!important;}
+.clubid-bad{color:var(--rd)!important;}
 
-  /* Toast */
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--card2);
-    border: 1px solid var(--border2);
-    border-radius: 10px;
-    padding: 12px 24px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-    z-index: 9999;
-    transition: transform 0.3s ease;
-    pointer-events: none;
-    white-space: nowrap;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-  .toast.success { border-color: var(--green); color: var(--green); }
-  .toast.error { border-color: var(--red); color: var(--red); }
+/* Submit */
+.submit-btn{
+width:100%;height:46px;margin-top:4px;
+background:linear-gradient(135deg,var(--cy),#0099cc);
+border:none;border-radius:9px;
+color:#000;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;letter-spacing:2px;
+cursor:pointer;
+transition:opacity .2s,transform .1s,box-shadow .2s;
+box-shadow:0 4px 20px rgba(0,240,255,.25);
+display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.submit-btn:hover{opacity:.9;box-shadow:0 6px 28px rgba(0,240,255,.4);}
+.submit-btn:active{transform:scale(.98);}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(0,0,0,.3);border-top-color:#000;border-radius:50%;animation:spin .6s linear infinite;}
 
-  /* ===== SUMMARY PAGES ===== */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 14px;
-    margin-bottom: 28px;
-  }
-  .stat-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-  }
-  .stat-value {
-    font-family: var(--font-head);
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--accent);
-    text-shadow: var(--glow);
-  }
-  .stat-label { font-size: 10px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; margin-top: 6px; }
+/* ── STATS GRID ── */
+.stats-grid{
+display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;
+}
+.stat-card{
+background:var(--s1);border:1px solid var(--br);border-radius:10px;
+padding:14px 10px;text-align:center;
+}
+.stat-val{
+font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;
+color:var(--cy);text-shadow:0 0 14px rgba(0,240,255,.4);
+}
+.stat-lbl{font-family:'Exo 2',sans-serif;font-size:8px;font-weight:800;letter-spacing:1.5px;color:var(--mu);text-transform:uppercase;margin-top:4px;}
 
-  .data-table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
-  .data-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-  }
-  .data-table thead th {
-    background: var(--card);
-    color: var(--text3);
-    font-family: var(--font-head);
-    font-size: 9px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    padding: 12px 14px;
-    border-bottom: 1px solid var(--border2);
-    text-align: left;
-    white-space: nowrap;
-  }
-  .data-table tbody tr {
-    border-bottom: 1px solid var(--border);
-    transition: background 0.15s;
-  }
-  .data-table tbody tr:hover { background: rgba(0,212,255,0.04); }
-  .data-table tbody tr:last-child { border-bottom: none; }
-  .data-table tbody td {
-    padding: 12px 14px;
-    color: var(--text2);
-    vertical-align: top;
-  }
-  .data-table tbody td:first-child { color: var(--text); font-weight: 600; }
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--br);}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;}
+.tbl thead th{
+background:var(--s1);color:var(--mu);
+font-family:'Exo 2',sans-serif;font-size:8px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;
+padding:10px 12px;border-bottom:1px solid var(--br2);text-align:left;white-space:nowrap;
+}
+.tbl tbody tr{border-bottom:1px solid var(--br);transition:background .15s;}
+.tbl tbody tr:hover{background:rgba(0,240,255,.04);}
+.tbl tbody tr:last-child{border-bottom:none;}
+.tbl tbody td{padding:10px 12px;color:var(--mu);vertical-align:middle;}
+.tbl tbody td:first-child{color:var(--tx);font-weight:700;}
 
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 3px 9px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-  }
-  .badge-eligible { background: rgba(0,255,136,0.15); color: var(--green); border: 1px solid rgba(0,255,136,0.3); }
-  .badge-waiting { background: rgba(255,140,0,0.15); color: var(--orange); border: 1px solid rgba(255,140,0,0.3); }
-  .badge-excellent { background: rgba(0,212,255,0.12); color: var(--accent); }
-  .badge-good { background: rgba(0,255,136,0.12); color: var(--green); }
-  .badge-average { background: rgba(255,140,0,0.12); color: var(--orange); }
-  .badge-poor { background: rgba(255,68,68,0.12); color: var(--red); }
+/* Filter / refresh row */
+.ctrl-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.refresh-btn{
+background:var(--s1);border:1px solid var(--br2);color:var(--mu);
+font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;
+padding:7px 14px;border-radius:7px;cursor:pointer;transition:all .2s;
+display:inline-flex;align-items:center;gap:6px;
+}
+.refresh-btn:hover{border-color:var(--cy);color:var(--cy);}
+.filter-inp{
+background:var(--s1);border:1px solid var(--br2);border-radius:7px;
+color:var(--tx);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;
+padding:7px 12px;outline:none;min-width:160px;flex:1;max-width:260px;
+transition:border-color .2s;
+}
+.filter-inp:focus{border-color:var(--cy);}
+.filter-inp::placeholder{color:var(--mu);}
 
-  .score-bar-wrap { display: flex; align-items: center; gap: 10px; }
-  .score-bar {
-    height: 6px;
-    border-radius: 3px;
-    background: var(--border);
-    flex: 1;
-    min-width: 60px;
-    overflow: hidden;
-  }
-  .score-bar-fill {
-    height: 100%;
-    border-radius: 3px;
-    background: linear-gradient(90deg, var(--accent2), var(--accent));
-    transition: width 0.6s ease;
-  }
-  .score-pct { font-family: var(--font-head); font-size: 12px; color: var(--accent); min-width: 36px; }
+/* Badges */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;}
+.badge-eli{background:rgba(0,255,136,.12);color:var(--gn);border:1px solid rgba(0,255,136,.3);}
+.badge-wait{background:rgba(255,140,0,.12);color:var(--or);border:1px solid rgba(255,140,0,.3);}
 
-  .refresh-btn {
-    background: var(--card2);
-    border: 1px solid var(--border2);
-    color: var(--text2);
-    font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 600;
-    padding: 8px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 20px;
-  }
-  .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+/* Score bar */
+.sbar-wrap{display:flex;align-items:center;gap:7px;}
+.sbar{height:5px;border-radius:3px;background:var(--br);flex:1;min-width:50px;overflow:hidden;}
+.sbar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#0099cc,var(--cy));}
+.sbar-pct{font-family:'Orbitron',sans-serif;font-size:11px;color:var(--cy);min-width:34px;}
 
-  .empty-state {
-    text-align: center;
-    padding: 48px 20px;
-    color: var(--text3);
-  }
-  .empty-state i { font-size: 40px; margin-bottom: 12px; display: block; }
-  .empty-state p { font-size: 14px; }
+.empty-state{text-align:center;padding:40px 20px;color:var(--mu);}
+.empty-state i{font-size:28px;margin-bottom:10px;display:block;}
+.loading-row td{text-align:center;padding:28px!important;color:var(--mu);}
 
-  .filter-row {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 18px;
-    align-items: center;
-  }
-  .filter-input {
-    background: var(--card);
-    border: 1px solid var(--border2);
-    border-radius: 8px;
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 13px;
-    padding: 8px 13px;
-    outline: none;
-    min-width: 180px;
-    transition: border-color 0.2s;
-  }
-  .filter-input:focus { border-color: var(--accent); }
+/* Toast */
+.toast{
+position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);
+background:var(--s2);border:1px solid var(--br2);border-radius:8px;
+padding:10px 22px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--tx);
+z-index:9999;transition:transform .3s ease;pointer-events:none;white-space:nowrap;
+box-shadow:0 4px 24px rgba(0,0,0,.5);
+}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.ok{border-color:var(--gn);color:var(--gn);}
+.toast.err{border-color:var(--rd);color:var(--rd);}
 
-  .spinner { display:inline-block; width:20px; height:20px; border:2px solid var(--border2); border-top-color:var(--accent); border-radius:50%; animation:spin 0.6s linear infinite; vertical-align:middle; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .loading-row td { text-align: center; padding: 32px !important; color: var(--text3); }
-
-  /* ===== RESPONSIVE ===== */
-  @media(max-width:600px) {
-    .header-inner { flex-wrap: wrap; height: auto; padding: 10px 0; gap: 8px; }
-    .header-nav { flex-wrap: wrap; }
-    .nav-btn { padding: 6px 10px; font-size: 10px; }
-    .form-section { padding: 16px; }
-    .lock-card { padding: 28px 20px; }
-  }
+/* ── RESPONSIVE ── */
+@media(max-width:480px){
+.hero-title{font-size:15px;letter-spacing:3px;}
+.hero-sub{letter-spacing:2px;}
+.nav-tab{font-size:8px;letter-spacing:1px;padding:8px 4px;}
+.nav-tab span.tab-label{display:none;}
+.stats-grid{grid-template-columns:repeat(2,1fr);}
+.stat-val{font-size:18px;}
+.fsec{padding:12px 10px;}
+.content{padding:10px 8px 32px;}
+.skill-row{grid-template-columns:repeat(4,1fr);gap:4px;}
+.ck-item{padding:7px 2px;font-size:9px;}
+.ck-icon{font-size:12px;}
+}
+@media(max-width:360px){
+.skill-row{grid-template-columns:repeat(2,1fr);}
+}
+@media(min-width:700px){
+.stats-grid{grid-template-columns:repeat(4,1fr);}
+.content{padding:20px 20px 48px;}
+.fsec{padding:18px 20px;}
+}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header class="site-header">
-  <div class="header-inner">
-    <a class="logo-area" href="#">
-      <div class="logo-icon">⚽</div>
-      <div>
-        <div class="logo-text">GOAT FC</div>
-        <div class="logo-sub">Trial Tracker</div>
-      </div>
-    </a>
-    <nav class="header-nav" id="mainNav" style="display:none">
-      <button class="nav-btn active" onclick="showPage('form-page',this)"><i class="fa-solid fa-clipboard-list"></i> Trial Form</button>
-      <button class="nav-btn" onclick="showPage('admin-page',this)"><i class="fa-solid fa-shield-halved"></i> Admin Summary</button>
-      <button class="nav-btn" onclick="showPage('player-page',this)"><i class="fa-solid fa-user-group"></i> Player Summary</button>
-    </nav>
-    <div class="header-badge" id="loggedBadge" style="display:none">ADMIN</div>
+<!-- TOPBAR -->
+<a href="https://goatfcbd.com" class="topbar" style="text-decoration:none;">
+  <div class="top-left">
+    <img src="https://i.imgur.com/LY3Bb9m.png" class="top-logo" alt="GOAT FC"/>
+    <div class="top-title">GOAT FC</div>
   </div>
-</header>
+  <div class="top-right">
+    <div class="admin-badge" id="adminBadge">ADMIN</div>
+    <div class="home-btn"><i class="fa-solid fa-house"></i></div>
+  </div>
+</a>
 
 <!-- LOCK SCREEN -->
 <div id="lock-screen">
   <div class="lock-card">
     <div class="lock-icon"><i class="fa-solid fa-shield-halved"></i></div>
-    <div class="lock-title">ADMIN ACCESS</div>
-    <div class="lock-sub">Enter password to access Trial Tracker</div>
-    <input class="lock-input" type="password" id="lockPass" placeholder="••••••••" maxlength="32" onkeydown="if(event.key==='Enter')doUnlock()"/>
-    <button class="lock-btn" onclick="doUnlock()"><i class="fa-solid fa-unlock"></i> UNLOCK</button>
-    <div class="lock-error" id="lockErr"><i class="fa-solid fa-circle-exclamation"></i> Wrong password. Try again.</div>
+    <div class="lock-title">TRIAL TRACKER</div>
+    <div class="lock-sub">ADMIN ACCESS REQUIRED</div>
+    <div class="pass-wrap">
+      <input class="lock-input" type="password" id="lockPass" placeholder="Password" maxlength="32"
+        onkeydown="if(event.key==='Enter')doUnlock()"/>
+      <button class="eye-btn" id="eyeBtn" onclick="toggleEye()" type="button">
+        <i class="fa-solid fa-eye" id="eyeIcon"></i>
+      </button>
+    </div>
+    <button class="lock-btn" onclick="doUnlock()">
+      <i class="fa-solid fa-unlock"></i>&nbsp; UNLOCK
+    </button>
+    <div class="lock-error" id="lockErr"><i class="fa-solid fa-circle-exclamation"></i> Wrong password.</div>
   </div>
 </div>
 
 <!-- MAIN APP -->
-<div id="main-app" style="display:none">
+<div id="main-app">
 
-  <!-- FORM PAGE -->
-  <div class="page active" id="form-page">
+  <!-- NAV TABS -->
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('p-form',this)">
+      <i class="fa-solid fa-clipboard-list"></i><span class="tab-label">Trial Form</span>
+    </button>
+    <button class="nav-tab" onclick="showPage('p-admin',this)">
+      <i class="fa-solid fa-shield-halved"></i><span class="tab-label">Admin Summary</span>
+    </button>
+    <button class="nav-tab" onclick="showPage('p-player',this)">
+      <i class="fa-solid fa-user-group"></i><span class="tab-label">Player Summary</span>
+    </button>
+  </div>
+
+  <!-- ===== TRIAL FORM PAGE ===== -->
+  <div class="page active" id="p-form">
     <div class="page-hero">
-      <div class="page-hero-inner">
-        <h1><i class="fa-solid fa-clipboard-list"></i> TRIAL PLAYER REVIEW</h1>
-        <p>Submit a new trial player review — all fields marked <span style="color:var(--accent)">*</span> are required.</p>
-      </div>
+      <div class="hero-title">TRIAL REVIEW</div>
+      <div class="hero-sub">SUBMIT NEW TRIAL PLAYER REVIEW</div>
     </div>
-    <div class="main-content">
+    <div class="content">
 
       <!-- Player Info -->
-      <div class="form-section">
-        <div class="form-section-title"><i class="fa-solid fa-user"></i> Player Information</div>
-
-        <div class="form-row">
+      <div class="fsec">
+        <div class="fsec-title"><i class="fa-solid fa-user"></i> Player Information</div>
+        <div class="frow">
           <label>Trial Player Name <span class="req">*</span></label>
-          <input class="form-input" id="f_name" type="text" placeholder="Enter full name (e.g. Md Rakib Hassan)" autocomplete="off"/>
+          <input class="finput" id="f_name" type="text" placeholder="Full name (e.g. Md Rakib Hassan)" autocomplete="off"/>
         </div>
-
-        <div class="form-row">
+        <div class="frow">
           <label>Facebook Profile URL <span class="req">*</span></label>
-          <input class="form-input" id="f_fb" type="url" placeholder="https://facebook.com/username"/>
+          <input class="finput" id="f_fb" type="url" placeholder="https://facebook.com/username"/>
         </div>
       </div>
 
-      <!-- Ingame Skills -->
-      <div class="form-section">
-        <div class="form-section-title"><i class="fa-solid fa-gamepad"></i> In-Game Performance</div>
+      <!-- In-Game Performance -->
+      <div class="fsec">
+        <div class="fsec-title"><i class="fa-solid fa-gamepad"></i> In-Game Performance</div>
 
-        <div class="form-row">
+        <div class="frow">
           <label>Game Play Skills <span class="req">*</span></label>
-          <div class="checkbox-group">
-            <span class="note-text">Select all applicable skills — 1 or more can be selected</span>
-            <label class="check-item" id="ci_def">
-              <input type="checkbox" id="sk_def" onchange="updateCheckStyle(this,'ci_def')"/>
-              <span class="check-label">🛡️ Defensive</span>
+          <div class="skill-row">
+            <label class="ck-item" id="ci_def" onclick="toggleCk('sk_def','ci_def')">
+              <input type="checkbox" id="sk_def"/>
+              <span class="ck-icon">🛡️</span> DEF
             </label>
-            <label class="check-item" id="ci_att">
-              <input type="checkbox" id="sk_att" onchange="updateCheckStyle(this,'ci_att')"/>
-              <span class="check-label">⚔️ Attack</span>
+            <label class="ck-item" id="ci_att" onclick="toggleCk('sk_att','ci_att')">
+              <input type="checkbox" id="sk_att"/>
+              <span class="ck-icon">⚔️</span> ATK
             </label>
-            <label class="check-item" id="ci_dri">
-              <input type="checkbox" id="sk_dri" onchange="updateCheckStyle(this,'ci_dri')"/>
-              <span class="check-label">💨 Dribble</span>
+            <label class="ck-item" id="ci_dri" onclick="toggleCk('sk_dri','ci_dri')">
+              <input type="checkbox" id="sk_dri"/>
+              <span class="ck-icon">💨</span> DRB
             </label>
-            <label class="check-item" id="ci_ski">
-              <input type="checkbox" id="sk_ski" onchange="updateCheckStyle(this,'ci_ski')"/>
-              <span class="check-label">✨ Skill</span>
+            <label class="ck-item" id="ci_ski" onclick="toggleCk('sk_ski','ci_ski')">
+              <input type="checkbox" id="sk_ski"/>
+              <span class="ck-icon">✨</span> SKL
             </label>
           </div>
         </div>
 
-        <div class="form-row">
+        <div class="frow">
           <label>Overall Gameplay <span class="req">*</span></label>
-          <div class="radio-matrix-wrap">
-            <table class="radio-matrix">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Excellent</th>
-                  <th>Good</th>
-                  <th>Average</th>
-                  <th>Poor</th>
-                </tr>
-              </thead>
+          <div style="overflow-x:auto;">
+            <table class="rmat">
+              <thead><tr><th></th><th>Excellent</th><th>Good</th><th>Average</th><th>Poor</th></tr></thead>
               <tbody>
                 <tr>
-                  <td>Overall Gameplay</td>
+                  <td>Overall</td>
                   <td><input type="radio" name="r_gameplay" value="Excellent"/></td>
                   <td><input type="radio" name="r_gameplay" value="Good"/></td>
                   <td><input type="radio" name="r_gameplay" value="Average"/></td>
@@ -713,23 +513,14 @@
         </div>
       </div>
 
-      <!-- Review Matrix -->
-      <div class="form-section">
-        <div class="form-section-title"><i class="fa-solid fa-star"></i> Detailed Review</div>
-
-        <div class="form-row">
+      <!-- Detailed Review -->
+      <div class="fsec">
+        <div class="fsec-title"><i class="fa-solid fa-star"></i> Detailed Review</div>
+        <div class="frow">
           <label>Review Ratings <span class="req">*</span></label>
-          <div class="radio-matrix-wrap">
-            <table class="radio-matrix">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Excellent</th>
-                  <th>Good</th>
-                  <th>Average</th>
-                  <th>Poor</th>
-                </tr>
-              </thead>
+          <div style="overflow-x:auto;">
+            <table class="rmat">
+              <thead><tr><th></th><th>Excellent</th><th>Good</th><th>Average</th><th>Poor</th></tr></thead>
               <tbody>
                 <tr>
                   <td>Konami ID</td>
@@ -753,7 +544,7 @@
                   <td><input type="radio" name="r_internet" value="Poor"/></td>
                 </tr>
                 <tr>
-                  <td>Community Experience</td>
+                  <td>Community</td>
                   <td><input type="radio" name="r_exp" value="Excellent"/></td>
                   <td><input type="radio" name="r_exp" value="Good"/></td>
                   <td><input type="radio" name="r_exp" value="Average"/></td>
@@ -762,94 +553,71 @@
               </tbody>
             </table>
           </div>
-          <p class="input-hint">Community Experience: যদি আগে কোনো community তে না থাকে → <span>Poor</span> select করুন</p>
+          <p class="fhint">Community: আগে কোনো community তে না থাকলে → <span>Poor</span></p>
         </div>
       </div>
 
-      <!-- Admin Club ID -->
-      <div class="form-section">
-        <div class="form-section-title"><i class="fa-solid fa-id-badge"></i> Admin Identification</div>
-
-        <div class="form-row">
+      <!-- Admin ID -->
+      <div class="fsec">
+        <div class="fsec-title"><i class="fa-solid fa-id-badge"></i> Admin Identification</div>
+        <div class="frow">
           <label>Admin Club ID <span class="req">*</span></label>
-          <div class="club-id-wrap">
-            <input class="form-input" id="f_clubid" type="text" placeholder="GFC-001" maxlength="7"
+          <div class="clubid-wrap">
+            <input class="finput" id="f_clubid" type="text" placeholder="GFC-001" maxlength="7"
               oninput="validateClubId(this)" style="text-transform:uppercase"/>
-            <span class="club-id-badge" id="clubIdBadge">e.g. GFC-001</span>
+            <span class="clubid-badge" id="clubIdBadge">GFC-XXX</span>
           </div>
-          <p class="input-hint">Format: <span>GFC-XXX</span> — 3 capital letters, dash, 3 digits (e.g. GFC-001, GFC-128)</p>
+          <p class="fhint">Format: <span>GFC-XXX</span> — e.g. GFC-001, GFC-128</p>
         </div>
       </div>
 
-      <!-- Submit -->
       <button class="submit-btn" id="submitBtn" onclick="submitForm()">
-        <i class="fa-solid fa-paper-plane"></i> &nbsp;SUBMIT TRIAL REVIEW
+        <i class="fa-solid fa-paper-plane"></i> SUBMIT TRIAL REVIEW
       </button>
-
     </div>
   </div>
 
-  <!-- ADMIN SUMMARY PAGE -->
-  <div class="page" id="admin-page">
+  <!-- ===== ADMIN SUMMARY PAGE ===== -->
+  <div class="page" id="p-admin">
     <div class="page-hero">
-      <div class="page-hero-inner">
-        <h1><i class="fa-solid fa-shield-halved"></i> ADMIN SUMMARY</h1>
-        <p>Total trials submitted per admin club, with average review scores.</p>
-      </div>
+      <div class="hero-title">ADMIN SUMMARY</div>
+      <div class="hero-sub">TRIALS PER ADMIN · AVERAGE SCORES</div>
     </div>
-    <div class="main-content">
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:20px;">
-        <button class="refresh-btn" onclick="loadAdminSummary()"><i class="fa-solid fa-rotate"></i> Refresh</button>
-        <input class="filter-input" type="text" id="adminFilter" placeholder="🔍 Filter by Club ID..." oninput="filterAdmin()"/>
+    <div class="content">
+      <div class="stats-grid" id="adminStats">
+        <div class="stat-card"><div class="stat-val">—</div><div class="stat-lbl">Active Admins</div></div>
+        <div class="stat-card"><div class="stat-val">—</div><div class="stat-lbl">Total Trials</div></div>
+        <div class="stat-card"><div class="stat-val">—</div><div class="stat-lbl">Avg Score</div></div>
+        <div class="stat-card"><div class="stat-val" style="font-size:14px">—</div><div class="stat-lbl">Last Trial</div></div>
       </div>
-      <div class="stats-grid" id="adminStats"></div>
-      <div class="data-table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Admin Club ID</th>
-              <th>Total Trials</th>
-              <th>Avg Review Score</th>
-              <th>Last Trial Date</th>
-            </tr>
-          </thead>
-          <tbody id="adminTableBody">
-            <tr class="loading-row"><td colspan="4"><span class="spinner"></span> Loading...</td></tr>
-          </tbody>
+      <div class="ctrl-row">
+        <button class="refresh-btn" onclick="loadAdminSummary()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+        <input class="filter-inp" type="text" id="adminFilter" placeholder="🔍 Filter by Club ID..." oninput="filterAdmin()"/>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th>Admin Club ID</th><th>Total Trials</th><th>Avg Score</th><th>Last Trial</th></tr></thead>
+          <tbody id="adminTBody"><tr class="loading-row"><td colspan="4"><span class="spinner"></span> Loading...</td></tr></tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- PLAYER SUMMARY PAGE -->
-  <div class="page" id="player-page">
+  <!-- ===== PLAYER SUMMARY PAGE ===== -->
+  <div class="page" id="p-player">
     <div class="page-hero">
-      <div class="page-hero-inner">
-        <h1><i class="fa-solid fa-user-group"></i> PLAYER SUMMARY</h1>
-        <p>All trialed players with scores, ratings, and eligibility status.</p>
-      </div>
+      <div class="hero-title">PLAYER SUMMARY</div>
+      <div class="hero-sub">ALL TRIALED PLAYERS · ELIGIBILITY STATUS</div>
     </div>
-    <div class="main-content">
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:20px;">
+    <div class="content">
+      <div class="ctrl-row">
         <button class="refresh-btn" onclick="loadPlayerSummary()"><i class="fa-solid fa-rotate"></i> Refresh</button>
-        <input class="filter-input" type="text" id="playerFilter" placeholder="🔍 Search player name..." oninput="filterPlayers()"/>
+        <input class="filter-inp" type="text" id="playerFilter" placeholder="🔍 Search player name..." oninput="filterPlayers()"/>
       </div>
-      <div class="data-table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Player Name</th>
-              <th>FB Profile</th>
-              <th>Reviews</th>
-              <th>Avg Score</th>
-              <th>Rating</th>
-              <th>Reviewed By</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="playerTableBody">
-            <tr class="loading-row"><td colspan="7"><span class="spinner"></span> Loading...</td></tr>
-          </tbody>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th>Player</th><th>FB</th><th>Reviews</th><th>Score</th><th>Rating</th><th>By</th><th>Status</th></tr></thead>
+          <tbody id="playerTBody"><tr class="loading-row"><td colspan="7"><span class="spinner"></span> Loading...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -857,289 +625,196 @@
 
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ===== CONFIG =====
-// Replace with your deployed Google Apps Script Web App URL
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxqisNTPgFP3DaXFojVFYYdyiupDoezJGPjC6qLB8JlilqnYirmWsRKMZxCpD8fu-c0gg/exec';
+// ── CONFIG ──
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxqisNTPgFP3DaXFojVFYYdyiupDoezJGPjC6qLB8JlilqnYirmWsRKMZxCpD8fu-c0gg/exec';
 
-// Password check is done server-side via Apps Script
-// The stored hash below is the SHA-256 of your chosen password
-// Default password: GoatFC@2025  (change this in Apps Script)
-const PASS_HASH = 'YOUR_PASSWORD_HASH_HERE'; // Will be checked via Apps Script
-
-// ===== AUTH =====
-let isLoggedIn = false;
-
-async function sha256(str) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+// ── EYE TOGGLE ──
+function toggleEye(){
+const inp=document.getElementById('lockPass');
+const ic=document.getElementById('eyeIcon');
+if(inp.type==='password'){inp.type='text';ic.className='fa-solid fa-eye-slash';}
+else{inp.type='password';ic.className='fa-solid fa-eye';}
 }
 
-async function doUnlock() {
-  const pass = document.getElementById('lockPass').value.trim();
-  if (!pass) return;
-
-  try {
-    const res = await fetch(APPS_SCRIPT_URL + '?action=checkPass&pass=' + encodeURIComponent(pass));
-    const data = await res.json();
-    if (data.ok) {
-      isLoggedIn = true;
-      document.getElementById('lock-screen').style.display = 'none';
-      document.getElementById('main-app').style.display = 'block';
-      document.getElementById('mainNav').style.display = 'flex';
-      document.getElementById('loggedBadge').style.display = 'block';
-      loadAdminSummary();
-      loadPlayerSummary();
-    } else {
-      const err = document.getElementById('lockErr');
-      err.style.display = 'block';
-      setTimeout(() => err.style.display='none', 3000);
-    }
-  } catch(e) {
-    // fallback: check against local hash if script not deployed yet
-    showToast('Cannot connect to server. Check Apps Script URL.', 'error');
-  }
+// ── UNLOCK ──
+async function doUnlock(){
+const pass=document.getElementById('lockPass').value.trim();
+if(!pass)return;
+const btn=document.querySelector('.lock-btn');
+btn.disabled=true;btn.innerHTML='<span class="spinner" style="border-color:rgba(0,0,0,.3);border-top-color:#000"></span>';
+try{
+const r=await fetch(SCRIPT_URL+'?action=checkPass&pass='+encodeURIComponent(pass));
+const d=await r.json();
+if(d.ok){
+document.getElementById('lock-screen').style.display='none';
+document.getElementById('main-app').style.display='block';
+document.getElementById('adminBadge').style.display='block';
+loadAdminSummary();loadPlayerSummary();
+}else{
+const e=document.getElementById('lockErr');
+e.style.display='block';
+setTimeout(()=>e.style.display='none',3000);
+}
+}catch(e){showToast('Cannot connect to server.','err');}
+btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-unlock"></i>&nbsp; UNLOCK';
 }
 
-// ===== NAVIGATION =====
-function showPage(id, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+// ── NAV ──
+function showPage(id,btn){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+btn.classList.add('active');
 }
 
-// ===== FORM HELPERS =====
-function updateCheckStyle(cb, labelId) {
-  const lbl = document.getElementById(labelId);
-  if (cb.checked) lbl.classList.add('checked');
-  else lbl.classList.remove('checked');
+// ── SKILL CHECKBOXES ──
+function toggleCk(cbId,labelId){
+const cb=document.getElementById(cbId);
+cb.checked=!cb.checked;
+document.getElementById(labelId).classList.toggle('on',cb.checked);
 }
 
-function validateClubId(inp) {
-  const val = inp.value.toUpperCase();
-  inp.value = val;
-  const badge = document.getElementById('clubIdBadge');
-  const pattern = /^[A-Z]{3}-\d{3}$/;
-  if (val.length === 0) {
-    badge.textContent = 'e.g. GFC-001';
-    badge.className = 'club-id-badge';
-  } else if (pattern.test(val)) {
-    badge.textContent = '✓ Valid';
-    badge.className = 'club-id-badge club-id-valid';
-  } else {
-    badge.textContent = '✗ Invalid';
-    badge.className = 'club-id-badge club-id-invalid';
-  }
+// ── CLUB ID VALIDATE ──
+function validateClubId(inp){
+const v=inp.value.toUpperCase();inp.value=v;
+const badge=document.getElementById('clubIdBadge');
+const ok=/^[A-Z]{3}-\d{3}$/.test(v);
+if(!v){badge.textContent='GFC-XXX';badge.className='clubid-badge';}
+else if(ok){badge.textContent='✓ Valid';badge.className='clubid-badge clubid-ok';}
+else{badge.textContent='✗ Invalid';badge.className='clubid-badge clubid-bad';}
 }
 
-function getRadio(name) {
-  const el = document.querySelector(`input[name="${name}"]:checked`);
-  return el ? el.value : '';
+function getRadio(name){const e=document.querySelector(`input[name="${name}"]:checked`);return e?e.value:'';}
+
+function ratingScore(r,max){
+const poor=max===20?5:Math.max(max-15,0);
+return r==='Excellent'?max:r==='Good'?max-5:r==='Average'?max-10:poor;
 }
 
-function ratingToScore(r, max) {
-  // Excellent=max, Good=max-5, Average=max-10, Poor=max-15
-  const map = { 'Excellent': max, 'Good': max-5, 'Average': max-10, 'Poor': max-5 };
-  // Special: poor = 5 points always for 20-pt categories
-  const poorVal = max === 20 ? 5 : Math.max(max-15, 0);
-  return r === 'Excellent' ? max : r === 'Good' ? max-5 : r === 'Average' ? max-10 : poorVal;
+// ── SUBMIT ──
+async function submitForm(){
+const name=document.getElementById('f_name').value.trim();
+const fb=document.getElementById('f_fb').value.trim();
+const clubId=document.getElementById('f_clubid').value.trim().toUpperCase();
+const skills=[];
+['def','att','dri','ski'].forEach(k=>{if(document.getElementById('sk_'+k).checked)skills.push({def:'Defensive',att:'Attack',dri:'Dribble',ski:'Skill'}[k]);});
+const gameplay=getRadio('r_gameplay'),konami=getRadio('r_konami'),device=getRadio('r_device'),internet=getRadio('r_internet'),exp=getRadio('r_exp');
+
+if(!name)return showToast('Player name required.','err');
+if(!fb)return showToast('Facebook URL required.','err');
+if(!skills.length)return showToast('Select at least one skill.','err');
+if(!gameplay)return showToast('Select Overall Gameplay.','err');
+if(!konami||!device||!internet||!exp)return showToast('Fill all review ratings.','err');
+if(!/^[A-Z]{3}-\d{3}$/.test(clubId))return showToast('Club ID invalid. Use GFC-001 style.','err');
+
+const ingame=skills.length*5,gp=ratingScore(gameplay,20),kon=ratingScore(konami,20),dev=ratingScore(device,10),net=ratingScore(internet,10),ex=ratingScore(exp,20);
+const total=ingame+gp+kon+dev+net+ex;
+
+const btn=document.getElementById('submitBtn');
+btn.disabled=true;btn.innerHTML='<span class="spinner" style="border-color:rgba(0,0,0,.3);border-top-color:#000"></span> Submitting...';
+
+try{
+const r=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'submitTrial',name,fb,skills:skills.join(', '),gameplay,konami,device,internet,exp,clubId,ingameScore:ingame,gameplayScore:gp,konamiScore:kon,deviceScore:dev,internetScore:net,expScore:ex,totalScore:total,timestamp:new Date().toISOString()})});
+const d=await r.json();
+if(d.ok){showToast('Submitted successfully! ✅','ok');resetForm();loadAdminSummary();loadPlayerSummary();}
+else showToast('Failed: '+(d.error||'Unknown'),'err');
+}catch(e){showToast('Network error.','err');}
+btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-paper-plane"></i> SUBMIT TRIAL REVIEW';
 }
 
-// ===== SUBMIT =====
-async function submitForm() {
-  const name = document.getElementById('f_name').value.trim();
-  const fb = document.getElementById('f_fb').value.trim();
-  const clubId = document.getElementById('f_clubid').value.trim().toUpperCase();
-
-  // Collect skills
-  const skills = [];
-  if(document.getElementById('sk_def').checked) skills.push('Defensive');
-  if(document.getElementById('sk_att').checked) skills.push('Attack');
-  if(document.getElementById('sk_dri').checked) skills.push('Dribble');
-  if(document.getElementById('sk_ski').checked) skills.push('Skill');
-
-  const gameplay = getRadio('r_gameplay');
-  const konami   = getRadio('r_konami');
-  const device   = getRadio('r_device');
-  const internet = getRadio('r_internet');
-  const exp      = getRadio('r_exp');
-
-  // Validation
-  if (!name) return showToast('Player name is required.', 'error');
-  if (!fb)   return showToast('Facebook URL is required.', 'error');
-  if (skills.length === 0) return showToast('Select at least one skill.', 'error');
-  if (!gameplay) return showToast('Select Overall Gameplay rating.', 'error');
-  if (!konami || !device || !internet || !exp) return showToast('Please fill all review ratings.', 'error');
-
-  const clubPattern = /^[A-Z]{3}-\d{3}$/;
-  if (!clubPattern.test(clubId)) return showToast('Club ID format invalid. Use GFC-001 style.', 'error');
-
-  // Score calculation
-  const ingameScore = skills.length * 5; // 4 skills × 5pts each = max 20
-  const gameplayScore = ratingToScore(gameplay, 20);
-  const konamiScore   = ratingToScore(konami, 20);
-  const deviceScore   = ratingToScore(device, 10);
-  const internetScore = ratingToScore(internet, 10);
-  const expScore      = ratingToScore(exp, 20);
-  const totalScore = ingameScore + gameplayScore + konamiScore + deviceScore + internetScore + expScore;
-
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> &nbsp;Submitting...';
-
-  const payload = {
-    action: 'submitTrial',
-    name, fb, skills: skills.join(', '), gameplay, konami, device, internet, exp,
-    clubId, ingameScore, gameplayScore, konamiScore, deviceScore, internetScore, expScore, totalScore,
-    timestamp: new Date().toISOString()
-  };
-
-  try {
-    const res = await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    });
-    const data = await res.json();
-    if (data.ok) {
-      showToast('Trial review submitted successfully! ✅', 'success');
-      resetForm();
-      loadAdminSummary();
-      loadPlayerSummary();
-    } else {
-      showToast('Submission failed: ' + (data.error || 'Unknown error'), 'error');
-    }
-  } catch(e) {
-    showToast('Network error. Check your connection.', 'error');
-  }
-
-  btn.disabled = false;
-  btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> &nbsp;SUBMIT TRIAL REVIEW';
+function resetForm(){
+['f_name','f_fb','f_clubid'].forEach(id=>document.getElementById(id).value='');
+document.getElementById('clubIdBadge').textContent='GFC-XXX';
+document.getElementById('clubIdBadge').className='clubid-badge';
+['def','att','dri','ski'].forEach(k=>{
+document.getElementById('sk_'+k).checked=false;
+document.getElementById('ci_'+k).classList.remove('on');
+});
+document.querySelectorAll('input[type="radio"]').forEach(r=>r.checked=false);
 }
 
-function resetForm() {
-  document.getElementById('f_name').value = '';
-  document.getElementById('f_fb').value = '';
-  document.getElementById('f_clubid').value = '';
-  document.getElementById('clubIdBadge').textContent = 'e.g. GFC-001';
-  document.getElementById('clubIdBadge').className = 'club-id-badge';
-  ['sk_def','sk_att','sk_dri','sk_ski'].forEach(id => {
-    document.getElementById(id).checked = false;
-  });
-  ['ci_def','ci_att','ci_dri','ci_ski'].forEach(id => {
-    document.getElementById(id).classList.remove('checked');
-  });
-  document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+// ── ADMIN SUMMARY ──
+let adminData=[];
+async function loadAdminSummary(){
+document.getElementById('adminTBody').innerHTML='<tr class="loading-row"><td colspan="4"><span class="spinner"></span> Loading...</td></tr>';
+try{
+const r=await fetch(SCRIPT_URL+'?action=getAdminSummary');
+const d=await r.json();
+adminData=d.rows||[];
+renderAdminStats(adminData);
+renderAdminTable(adminData);
+}catch(e){document.getElementById('adminTBody').innerHTML='<tr class="loading-row"><td colspan="4">⚠️ Could not load</td></tr>';}
 }
 
-// ===== LOAD ADMIN SUMMARY =====
-let adminData = [];
-async function loadAdminSummary() {
-  document.getElementById('adminTableBody').innerHTML = '<tr class="loading-row"><td colspan="4"><span class="spinner"></span> Loading...</td></tr>';
-  try {
-    const res = await fetch(APPS_SCRIPT_URL + '?action=getAdminSummary');
-    const data = await res.json();
-    adminData = data.rows || [];
-    renderAdminStats(adminData);
-    renderAdminTable(adminData);
-  } catch(e) {
-    document.getElementById('adminTableBody').innerHTML = '<tr class="loading-row"><td colspan="4">⚠️ Could not load data</td></tr>';
-  }
+function renderAdminStats(rows){
+const total=rows.reduce((s,r)=>s+r.totalTrials,0);
+const avg=rows.length?(rows.reduce((s,r)=>s+r.avgScore,0)/rows.length).toFixed(1):0;
+const last=rows.length?[...rows].sort((a,b)=>new Date(b.lastTrial)-new Date(a.lastTrial))[0].lastTrial:'—';
+document.getElementById('adminStats').innerHTML=`
+<div class="stat-card"><div class="stat-val">${rows.length}</div><div class="stat-lbl">Active Admins</div></div>
+<div class="stat-card"><div class="stat-val">${total}</div><div class="stat-lbl">Total Trials</div></div>
+<div class="stat-card"><div class="stat-val">${avg}%</div><div class="stat-lbl">Avg Score</div></div>
+<div class="stat-card"><div class="stat-val" style="font-size:13px">${last}</div><div class="stat-lbl">Last Trial</div></div>`;
 }
 
-function renderAdminStats(rows) {
-  const total = rows.reduce((s,r)=>s+r.totalTrials,0);
-  const avgScore = rows.length ? (rows.reduce((s,r)=>s+r.avgScore,0)/rows.length).toFixed(1) : 0;
-  const lastDate = rows.length ? rows.sort((a,b)=>new Date(b.lastTrial)-new Date(a.lastTrial))[0].lastTrial : '—';
-  document.getElementById('adminStats').innerHTML = `
-    <div class="stat-card"><div class="stat-value">${rows.length}</div><div class="stat-label">Active Admins</div></div>
-    <div class="stat-card"><div class="stat-value">${total}</div><div class="stat-label">Total Trials</div></div>
-    <div class="stat-card"><div class="stat-value">${avgScore}%</div><div class="stat-label">Avg Review Score</div></div>
-    <div class="stat-card"><div class="stat-value" style="font-size:16px">${lastDate}</div><div class="stat-label">Last Trial Date</div></div>
-  `;
+function renderAdminTable(rows){
+if(!rows.length){document.getElementById('adminTBody').innerHTML='<tr class="loading-row"><td colspan="4">No data yet.</td></tr>';return;}
+document.getElementById('adminTBody').innerHTML=rows.map(r=>`
+<tr>
+<td><span style="font-family:'Exo 2',sans-serif;color:var(--cy);font-size:11px;font-weight:800">${r.clubId}</span></td>
+<td>${r.totalTrials}</td>
+<td><div class="sbar-wrap"><div class="sbar"><div class="sbar-fill" style="width:${r.avgScore}%"></div></div><span class="sbar-pct">${r.avgScore}%</span></div></td>
+<td>${r.lastTrial}</td>
+</tr>`).join('');
 }
 
-function renderAdminTable(rows) {
-  if (!rows.length) {
-    document.getElementById('adminTableBody').innerHTML = '<tr class="loading-row"><td colspan="4">No data yet.</td></tr>';
-    return;
-  }
-  document.getElementById('adminTableBody').innerHTML = rows.map(r => `
-    <tr>
-      <td><span style="font-family:var(--font-head);color:var(--accent);font-size:12px">${r.clubId}</span></td>
-      <td>${r.totalTrials}</td>
-      <td>
-        <div class="score-bar-wrap">
-          <div class="score-bar"><div class="score-bar-fill" style="width:${r.avgScore}%"></div></div>
-          <span class="score-pct">${r.avgScore}%</span>
-        </div>
-      </td>
-      <td>${r.lastTrial}</td>
-    </tr>
-  `).join('');
+function filterAdmin(){
+const q=document.getElementById('adminFilter').value.toLowerCase();
+renderAdminTable(adminData.filter(r=>r.clubId.toLowerCase().includes(q)));
 }
 
-function filterAdmin() {
-  const q = document.getElementById('adminFilter').value.toLowerCase();
-  renderAdminTable(adminData.filter(r => r.clubId.toLowerCase().includes(q)));
+// ── PLAYER SUMMARY ──
+let playerData=[];
+async function loadPlayerSummary(){
+document.getElementById('playerTBody').innerHTML='<tr class="loading-row"><td colspan="7"><span class="spinner"></span> Loading...</td></tr>';
+try{
+const r=await fetch(SCRIPT_URL+'?action=getPlayerSummary');
+const d=await r.json();
+playerData=d.rows||[];
+renderPlayerTable(playerData);
+}catch(e){document.getElementById('playerTBody').innerHTML='<tr class="loading-row"><td colspan="7">⚠️ Could not load</td></tr>';}
 }
 
-// ===== LOAD PLAYER SUMMARY =====
-let playerData = [];
-async function loadPlayerSummary() {
-  document.getElementById('playerTableBody').innerHTML = '<tr class="loading-row"><td colspan="7"><span class="spinner"></span> Loading...</td></tr>';
-  try {
-    const res = await fetch(APPS_SCRIPT_URL + '?action=getPlayerSummary');
-    const data = await res.json();
-    playerData = data.rows || [];
-    renderPlayerTable(playerData);
-  } catch(e) {
-    document.getElementById('playerTableBody').innerHTML = '<tr class="loading-row"><td colspan="7">⚠️ Could not load data</td></tr>';
-  }
+function renderPlayerTable(rows){
+if(!rows.length){document.getElementById('playerTBody').innerHTML='<tr class="loading-row"><td colspan="7">No players yet.</td></tr>';return;}
+document.getElementById('playerTBody').innerHTML=rows.map(r=>{
+const sc=r.avgScore;
+const col=sc>=80?'var(--gn)':sc>=60?'var(--cy)':'var(--or)';
+const status=sc>=60?'<span class="badge badge-eli">✅ Eligible</span>':'<span class="badge badge-wait">⏳ Waiting</span>';
+return`<tr>
+<td>${r.name}</td>
+<td><a href="${r.fb}" target="_blank" style="color:var(--cy);text-decoration:none;font-size:11px">🔗 FB</a></td>
+<td style="text-align:center">${r.reviews}</td>
+<td><div class="sbar-wrap"><div class="sbar"><div class="sbar-fill" style="width:${sc}%;background:linear-gradient(90deg,${col}88,${col})"></div></div><span class="sbar-pct" style="color:${col}">${sc}%</span></div></td>
+<td>${r.ratingBadge}</td>
+<td style="font-size:10px;color:var(--mu)">${r.reviewedBy}</td>
+<td>${status}</td>
+</tr>`;}).join('');
 }
 
-function renderPlayerTable(rows) {
-  if (!rows.length) {
-    document.getElementById('playerTableBody').innerHTML = '<tr class="loading-row"><td colspan="7">No players yet.</td></tr>';
-    return;
-  }
-  document.getElementById('playerTableBody').innerHTML = rows.map(r => {
-    const statusBadge = r.avgScore >= 60
-      ? `<span class="badge badge-eligible">✅ Eligible</span>`
-      : `<span class="badge badge-waiting">⏳ Waiting</span>`;
-    const scoreColor = r.avgScore >= 80 ? 'var(--green)' : r.avgScore >= 60 ? 'var(--accent)' : 'var(--orange)';
-    return `<tr>
-      <td>${r.name}</td>
-      <td><a href="${r.fb}" target="_blank" style="color:var(--accent2);text-decoration:none;font-size:12px">🔗 Profile</a></td>
-      <td style="text-align:center">${r.reviews}</td>
-      <td>
-        <div class="score-bar-wrap">
-          <div class="score-bar"><div class="score-bar-fill" style="width:${r.avgScore}%;background:linear-gradient(90deg,${scoreColor}88,${scoreColor})"></div></div>
-          <span class="score-pct" style="color:${scoreColor}">${r.avgScore}%</span>
-        </div>
-      </td>
-      <td>${r.ratingBadge}</td>
-      <td style="font-size:11px;color:var(--text3)">${r.reviewedBy}</td>
-      <td>${statusBadge}</td>
-    </tr>`;
-  }).join('');
+function filterPlayers(){
+const q=document.getElementById('playerFilter').value.toLowerCase();
+renderPlayerTable(playerData.filter(r=>r.name.toLowerCase().includes(q)));
 }
 
-function filterPlayers() {
-  const q = document.getElementById('playerFilter').value.toLowerCase();
-  renderPlayerTable(playerData.filter(r => r.name.toLowerCase().includes(q)));
-}
-
-// ===== TOAST =====
-function showToast(msg, type='') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast ' + type;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3500);
+// ── TOAST ──
+function showToast(msg,type=''){
+const t=document.getElementById('toast');
+t.textContent=msg;t.className='toast '+type;t.classList.add('show');
+setTimeout(()=>t.classList.remove('show'),3500);
 }
 </script>
 </body>
