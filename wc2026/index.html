@@ -30,6 +30,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
 @keyframes borderRgb{0%,100%{border-color:rgba(0,240,255,0.4);}50%{border-color:rgba(191,0,255,0.4);}}
 @keyframes livePulse{0%,100%{box-shadow:0 0 0 0 rgba(0,230,118,0.6);}50%{box-shadow:0 0 0 5px rgba(0,230,118,0);}}
+@keyframes scoreFlash{0%,100%{opacity:1;}50%{opacity:0.6;}}
 
 /* ══ TOPBAR ══ */
 .topbar{height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:rgba(4,4,8,0.98);border-bottom:1px solid rgba(0,240,255,0.12);position:sticky;top:0;z-index:1000;backdrop-filter:blur(16px);}
@@ -115,6 +116,16 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .live-minute{font-size:9px;font-weight:700;color:var(--live);display:flex;align-items:center;gap:3px;font-family:'Orbitron',sans-serif;}
 .live-minute-dot{width:5px;height:5px;border-radius:50%;background:var(--live);animation:pulse 1s ease-in-out infinite;}
 .countdown{font-family:'Orbitron',sans-serif;font-size:9px;color:#7070a0;}
+
+/* ══ LIVE SCOREBOARD ══ */
+.live-scoreboard{display:flex;align-items:center;gap:6px;justify-content:center;}
+.live-score-box{font-family:'Orbitron',sans-serif;font-size:clamp(22px,6vw,34px);font-weight:900;color:var(--live);letter-spacing:6px;white-space:nowrap;line-height:1;text-shadow:0 0 20px rgba(0,230,118,0.5);}
+.live-score-sep{font-family:'Orbitron',sans-serif;font-size:clamp(18px,4vw,26px);font-weight:700;color:rgba(0,230,118,0.5);margin:0 2px;}
+.live-badge-row{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:3px;}
+.live-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.4);border-radius:20px;padding:2px 8px;font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;color:var(--live);letter-spacing:1px;}
+.live-badge .ld{width:5px;height:5px;border-radius:50%;background:var(--live);animation:pulse 1s ease-in-out infinite;}
+.live-min-tag{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;color:var(--live);background:rgba(0,230,118,0.08);border:1px solid rgba(0,230,118,0.25);border-radius:4px;padding:1px 6px;letter-spacing:0.5px;}
+.ht-badge{font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;color:#f0c040;background:rgba(240,192,64,0.1);border:1px solid rgba(240,192,64,0.3);border-radius:20px;padding:2px 8px;letter-spacing:1px;}
 
 /* ══ AET / PEN badge ══ */
 .score-note{font-family:'Orbitron',sans-serif;font-size:7px;font-weight:700;letter-spacing:1px;color:var(--purple);background:rgba(191,0,255,0.12);border:1px solid rgba(191,0,255,0.3);border-radius:4px;padding:2px 6px;margin-top:1px;}
@@ -321,123 +332,99 @@ const GROUPS={
 };
 
 /* ══════════════════════════════════════════
-   SCORE OVERRIDES
-   — যেকোনো match er confirmed score এখানে add করো
-   — format: "matchId": {h: homeScore, a: awayScore, note: "AET"|"PEN"|""}
-   — note optional: "" = normal FT, "AET" = After Extra Time, "PEN" = Penalty shootout
-   — API থেকে score না আসলে এটাই fallback হিসেবে কাজ করবে
+   SCORE OVERRIDES — confirmed final scores
 ══════════════════════════════════════════ */
 const SCORE_OVERRIDES = {
-  // ── June 11 (Opening) ──
-  // "gs_open": {h:0, a:0},  // example
-
-  // ── June 12 ──
-  "gs001": {h:2, a:0},   // Mexico 2–0 South Africa
-  "gs002": {h:2, a:1},   // South Korea 2–1 Czechia
-
-  // ── June 13 ──
-  "gs003": {h:1, a:1},   // Canada 1–1 Bosnia and Herzegovina
-  "gs004": {h:2, a:1},   // USA 2–1 Paraguay
-
-  // ── June 14 ──
-  "gs005": {h:1, a:1},   // Qatar 1–1 Switzerland
-  "gs006": {h:1, a:1},   // Brazil 1–1 Morocco
-  "gs007": {h:0, a:1},   // Haiti 0–1 Scotland
-  "gs008": {h:2, a:0},   // Australia 2–0 Turkey  ← UPDATED
-
-  // gs009 onwards = not yet played (add scores here as matches finish)
-  // "gs009": {h:4, a:0},  // Germany vs Curacao — fill after match
+  "gs001": {h:2, a:0},
+  "gs002": {h:2, a:1},
+  "gs003": {h:1, a:1},
+  "gs004": {h:2, a:1},
+  "gs005": {h:1, a:1},
+  "gs006": {h:1, a:1},
+  "gs007": {h:0, a:1},
+  "gs008": {h:2, a:0},
 };
 
 /* ══════════════════════════════════════════
-   MATCH DATA
-   homeScore / awayScore in the array = legacy (kept for compatibility)
-   Priority: SCORE_OVERRIDES > liveData (API) > hardcoded in array > time-based
+   LIVE SCORE STORE
+   liveScores[matchId] = {home: N, away: N}
+   — এখানে চলমান match এর score realtime store হয়
+   — API থেকে আসলে এখানে save হবে
+   — manually ও add করতে পারবা নিচের LIVE_SCORE_MANUAL তে
 ══════════════════════════════════════════ */
-const GROUP_MATCHES=[
-  // ── June 12 ──
+const LIVE_SCORE_MANUAL = {
+  // চলমান match এর score manually দিতে চাইলে এখানে দাও:
+  // "gs009": {home: 2, away: 0},
+  // "gs010": {home: 1, away: 1},
+};
+
+const MATCH_DATA=[
   {id:"gs001",date:"2026-06-12",time:"01:00",home:"Mexico",away:"South Africa",group:"A",venue:"Mexico City"},
   {id:"gs002",date:"2026-06-12",time:"08:00",home:"South Korea",away:"Czechia",group:"A",venue:"Guadalajara"},
-  // ── June 13 ──
   {id:"gs003",date:"2026-06-13",time:"01:00",home:"Canada",away:"Bosnia and Herzegovina",group:"B",venue:"Toronto"},
   {id:"gs004",date:"2026-06-13",time:"07:00",home:"USA",away:"Paraguay",group:"D",venue:"Los Angeles"},
-  // ── June 14 ──
   {id:"gs005",date:"2026-06-14",time:"01:00",home:"Qatar",away:"Switzerland",group:"B",venue:"San Francisco"},
   {id:"gs006",date:"2026-06-14",time:"04:00",home:"Brazil",away:"Morocco",group:"C",venue:"New Jersey"},
   {id:"gs007",date:"2026-06-14",time:"07:00",home:"Haiti",away:"Scotland",group:"C",venue:"Boston"},
   {id:"gs008",date:"2026-06-14",time:"10:00",home:"Australia",away:"Turkey",group:"D",venue:"Vancouver"},
   {id:"gs009",date:"2026-06-14",time:"23:00",home:"Germany",away:"Curacao",group:"E",venue:"Houston"},
-  // ── June 15 ──
   {id:"gs010",date:"2026-06-15",time:"02:00",home:"Netherlands",away:"Japan",group:"F",venue:"Dallas"},
   {id:"gs011",date:"2026-06-15",time:"05:00",home:"Ivory Coast",away:"Ecuador",group:"E",venue:"Philadelphia"},
   {id:"gs012",date:"2026-06-15",time:"08:00",home:"Sweden",away:"Tunisia",group:"F",venue:"Monterrey"},
   {id:"gs013",date:"2026-06-15",time:"23:00",home:"Spain",away:"Cape Verde",group:"H",venue:"Atlanta"},
-  // ── June 16 ──
   {id:"gs014",date:"2026-06-16",time:"01:00",home:"Belgium",away:"Egypt",group:"G",venue:"Seattle"},
   {id:"gs015",date:"2026-06-16",time:"04:00",home:"Saudi Arabia",away:"Uruguay",group:"H",venue:"Miami"},
   {id:"gs016",date:"2026-06-16",time:"07:00",home:"Iran",away:"New Zealand",group:"G",venue:"Los Angeles"},
-  // ── June 17 ──
   {id:"gs017",date:"2026-06-17",time:"01:00",home:"France",away:"Senegal",group:"I",venue:"New Jersey"},
   {id:"gs018",date:"2026-06-17",time:"04:00",home:"Iraq",away:"Norway",group:"I",venue:"Boston"},
   {id:"gs019",date:"2026-06-17",time:"07:00",home:"Argentina",away:"Algeria",group:"J",venue:"Kansas City"},
   {id:"gs020",date:"2026-06-17",time:"10:00",home:"Austria",away:"Jordan",group:"J",venue:"San Francisco"},
   {id:"gs021",date:"2026-06-17",time:"23:00",home:"Portugal",away:"DR Congo",group:"K",venue:"Houston"},
-  // ── June 18 ──
   {id:"gs022",date:"2026-06-18",time:"02:00",home:"England",away:"Croatia",group:"L",venue:"Dallas"},
   {id:"gs023",date:"2026-06-18",time:"05:00",home:"Ghana",away:"Panama",group:"L",venue:"Toronto"},
   {id:"gs024",date:"2026-06-18",time:"08:00",home:"Uzbekistan",away:"Colombia",group:"K",venue:"Mexico City"},
   {id:"gs025",date:"2026-06-18",time:"23:00",home:"Czechia",away:"South Africa",group:"A",venue:"Atlanta"},
-  // ── June 19 ──
   {id:"gs026",date:"2026-06-19",time:"01:00",home:"Switzerland",away:"Bosnia and Herzegovina",group:"B",venue:"Los Angeles"},
   {id:"gs027",date:"2026-06-19",time:"04:00",home:"Canada",away:"Qatar",group:"B",venue:"Vancouver"},
   {id:"gs028",date:"2026-06-19",time:"07:00",home:"Mexico",away:"South Korea",group:"A",venue:"Guadalajara"},
-  // ── June 20 ──
   {id:"gs029",date:"2026-06-20",time:"01:00",home:"USA",away:"Australia",group:"D",venue:"Seattle"},
   {id:"gs030",date:"2026-06-20",time:"04:00",home:"Scotland",away:"Morocco",group:"C",venue:"Boston"},
   {id:"gs031",date:"2026-06-20",time:"07:00",home:"Brazil",away:"Haiti",group:"C",venue:"Philadelphia"},
   {id:"gs032",date:"2026-06-20",time:"10:00",home:"Turkey",away:"Paraguay",group:"D",venue:"San Francisco"},
   {id:"gs033",date:"2026-06-20",time:"23:00",home:"Netherlands",away:"Sweden",group:"F",venue:"Houston"},
-  // ── June 21 ──
   {id:"gs034",date:"2026-06-21",time:"02:00",home:"Germany",away:"Ivory Coast",group:"E",venue:"Toronto"},
   {id:"gs035",date:"2026-06-21",time:"06:00",home:"Ecuador",away:"Curacao",group:"E",venue:"Kansas City"},
   {id:"gs036",date:"2026-06-21",time:"10:00",home:"Tunisia",away:"Japan",group:"F",venue:"Monterrey"},
   {id:"gs037",date:"2026-06-21",time:"23:00",home:"Spain",away:"Saudi Arabia",group:"H",venue:"Atlanta"},
-  // ── June 22 ──
   {id:"gs038",date:"2026-06-22",time:"01:00",home:"Belgium",away:"Iran",group:"G",venue:"Los Angeles"},
   {id:"gs039",date:"2026-06-22",time:"04:00",home:"Uruguay",away:"Cape Verde",group:"H",venue:"Miami"},
   {id:"gs040",date:"2026-06-22",time:"07:00",home:"New Zealand",away:"Egypt",group:"G",venue:"Vancouver"},
   {id:"gs041",date:"2026-06-22",time:"23:00",home:"Argentina",away:"Austria",group:"J",venue:"Dallas"},
-  // ── June 23 ──
   {id:"gs042",date:"2026-06-23",time:"03:00",home:"France",away:"Iraq",group:"I",venue:"Philadelphia"},
   {id:"gs043",date:"2026-06-23",time:"06:00",home:"Norway",away:"Senegal",group:"I",venue:"New Jersey"},
   {id:"gs044",date:"2026-06-23",time:"09:00",home:"Jordan",away:"Algeria",group:"J",venue:"San Francisco"},
   {id:"gs045",date:"2026-06-23",time:"23:00",home:"Portugal",away:"Uzbekistan",group:"K",venue:"Houston"},
-  // ── June 24 ──
   {id:"gs046",date:"2026-06-24",time:"02:00",home:"England",away:"Ghana",group:"L",venue:"Boston"},
   {id:"gs047",date:"2026-06-24",time:"05:00",home:"Panama",away:"Croatia",group:"L",venue:"Toronto"},
   {id:"gs048",date:"2026-06-24",time:"08:00",home:"Colombia",away:"DR Congo",group:"K",venue:"Guadalajara"},
-  // ── June 25 (simultaneous) ──
   {id:"gs049",date:"2026-06-25",time:"01:00",home:"Switzerland",away:"Canada",group:"B",venue:"Vancouver"},
   {id:"gs050",date:"2026-06-25",time:"01:00",home:"Bosnia and Herzegovina",away:"Qatar",group:"B",venue:"Seattle"},
   {id:"gs051",date:"2026-06-25",time:"04:00",home:"Morocco",away:"Haiti",group:"C",venue:"Atlanta"},
   {id:"gs052",date:"2026-06-25",time:"04:00",home:"Scotland",away:"Brazil",group:"C",venue:"Miami"},
   {id:"gs053",date:"2026-06-25",time:"07:00",home:"South Africa",away:"South Korea",group:"A",venue:"Monterrey"},
   {id:"gs054",date:"2026-06-25",time:"07:00",home:"Czechia",away:"Mexico",group:"A",venue:"Mexico City"},
-  // ── June 26 ──
   {id:"gs055",date:"2026-06-26",time:"02:00",home:"Curacao",away:"Ivory Coast",group:"E",venue:"Philadelphia"},
   {id:"gs056",date:"2026-06-26",time:"02:00",home:"Ecuador",away:"Germany",group:"E",venue:"New Jersey"},
   {id:"gs057",date:"2026-06-26",time:"05:00",home:"Tunisia",away:"Netherlands",group:"F",venue:"Kansas City"},
   {id:"gs058",date:"2026-06-26",time:"05:00",home:"Japan",away:"Sweden",group:"F",venue:"Dallas"},
   {id:"gs059",date:"2026-06-26",time:"08:00",home:"Turkey",away:"USA",group:"D",venue:"Los Angeles"},
   {id:"gs060",date:"2026-06-26",time:"08:00",home:"Paraguay",away:"Australia",group:"D",venue:"San Francisco"},
-  // ── June 27 ──
   {id:"gs061",date:"2026-06-27",time:"01:00",home:"Norway",away:"France",group:"I",venue:"Boston"},
   {id:"gs062",date:"2026-06-27",time:"01:00",home:"Senegal",away:"Iraq",group:"I",venue:"Toronto"},
   {id:"gs063",date:"2026-06-27",time:"06:00",home:"Cape Verde",away:"Saudi Arabia",group:"H",venue:"Houston"},
   {id:"gs064",date:"2026-06-27",time:"06:00",home:"Uruguay",away:"Spain",group:"H",venue:"Guadalajara"},
   {id:"gs065",date:"2026-06-27",time:"09:00",home:"New Zealand",away:"Belgium",group:"G",venue:"Vancouver"},
   {id:"gs066",date:"2026-06-27",time:"09:00",home:"Egypt",away:"Iran",group:"G",venue:"Seattle"},
-  // ── June 28 ──
   {id:"gs067",date:"2026-06-28",time:"03:00",home:"Panama",away:"England",group:"L",venue:"New Jersey"},
   {id:"gs068",date:"2026-06-28",time:"03:00",home:"Croatia",away:"Ghana",group:"L",venue:"Philadelphia"},
   {id:"gs069",date:"2026-06-28",time:"05:30",home:"Colombia",away:"Portugal",group:"K",venue:"Miami"},
@@ -505,40 +492,72 @@ function countdown(date,time){
 }
 
 /* ══════════════════════════════════════════
-   getStatus() — PRIORITY ORDER:
-   1. liveData (API real-time) — live/just-finished
-   2. SCORE_OVERRIDES — confirmed hardcoded scores
-   3. Time-based — upcoming / guessed live
+   getStatus() — UPDATED PRIORITY ORDER:
+   1. liveData (API real-time)
+   2. SCORE_OVERRIDES (confirmed FT scores)
+   3. LIVE_SCORE_MANUAL (manually set live scores)
+   4. Time-based (upcoming / live without score)
 ══════════════════════════════════════════ */
 function getStatus(m){
-  // 1. API live override (real-time)
+  // 1. API live data (real-time)
   if(liveData[m.id]) return liveData[m.id];
 
-  // 2. Manual score override (confirmed results)
+  // 2. Confirmed final score override
   const ov = SCORE_OVERRIDES[m.id];
   if(ov !== undefined){
     return{status:'FT', homeScore:ov.h, awayScore:ov.a, note:ov.note||''};
   }
 
-  // 3. Time-based for unplayed matches
-  const kickoff=matchDT(m.date,m.time);
-  const now=getBDNow();
-  const diff=now-kickoff;
-  if(diff<0) return{status:'NS'};
-  // Matches in first 115 minutes — show as live
-  if(diff<115*60000) return{status:'LIVE',minute:Math.min(Math.floor(diff/60000),90),homeScore:0,awayScore:0};
-  // Past 115 min but no score anywhere — show FT without score
+  // 3. Time-based detection
+  const kickoff = matchDT(m.date, m.time);
+  const now = getBDNow();
+  const diffMs = now - kickoff;
+
+  // Not started yet
+  if(diffMs < 0) return{status:'NS'};
+
+  const diffMin = Math.floor(diffMs / 60000);
+
+  // Half-time window: 45-50 minutes
+  if(diffMin >= 45 && diffMin < 50){
+    const manual = LIVE_SCORE_MANUAL[m.id];
+    const hs = manual ? manual.home : '?';
+    const as = manual ? manual.away : '?';
+    return{status:'HT', homeScore:hs, awayScore:as};
+  }
+
+  // Live: 0-115 minutes (covers normal + extra time)
+  if(diffMin < 115){
+    const manual = LIVE_SCORE_MANUAL[m.id];
+    // Calculate actual displayed minute (cap at 90 for regular, show 90+ for extra time)
+    let displayMin;
+    if(diffMin <= 45) displayMin = diffMin;
+    else if(diffMin <= 60) displayMin = 45; // HT buffer
+    else if(diffMin <= 105) displayMin = diffMin - 15; // 2nd half offset
+    else displayMin = 90; // extra time shows 90+
+    const isExtraTime = diffMin > 100;
+    return{
+      status:'LIVE',
+      minute: Math.min(displayMin, 90),
+      extraTime: isExtraTime,
+      homeScore: manual ? manual.home : null,
+      awayScore: manual ? manual.away : null,
+    };
+  }
+
+  // Match ended but no score data anywhere
   return{status:'FT_NOSCORE'};
 }
 
 function tClass(n){return n.length>14?'team-name long':'team-name';}
 
 /* ══════════════════════════════════════════
-   cardHTML()
+   cardHTML() — UPDATED LIVE DISPLAY
 ══════════════════════════════════════════ */
 function cardHTML(m){
   const st=getStatus(m);
   const isLive=st.status==='LIVE';
+  const isHT=st.status==='HT';
   const isFT=st.status==='FT';
   const isFTNoScore=st.status==='FT_NOSCORE';
   const gc=m.group?GC[m.group]:'#c8a415';
@@ -547,16 +566,43 @@ function cardHTML(m){
   const aWin=isFT&&st.awayScore>st.homeScore;
   const noteTag=st.note?`<div class="score-note">${st.note}</div>`:'';
 
+  // Score display helper — shows ? if score unknown during live
+  const fmtScore = (v) => (v === null || v === undefined) ? '?' : v;
+
   let center='';
+
   if(isLive){
-    center=`<div class="match-score live-score">${st.homeScore??0} – ${st.awayScore??0}</div>
-      <div class="match-status-row"><div class="live-minute"><span class="live-minute-dot"></span>${st.minute}'</div></div>`;
+    const hs = fmtScore(st.homeScore);
+    const as = fmtScore(st.awayScore);
+    const hasScore = st.homeScore !== null && st.homeScore !== undefined;
+    const minLabel = st.extraTime ? `90+` : `${st.minute}'`;
+    center=`
+      <div class="live-scoreboard">
+        <span class="live-score-box" style="${!hasScore?'color:var(--muted);font-size:clamp(16px,4vw,22px);':''}">${hs}</span>
+        <span class="live-score-sep">–</span>
+        <span class="live-score-box" style="${!hasScore?'color:var(--muted);font-size:clamp(16px,4vw,22px);':''}">${as}</span>
+      </div>
+      <div class="live-badge-row">
+        <span class="live-badge"><span class="ld"></span>LIVE</span>
+        <span class="live-min-tag">${minLabel}</span>
+      </div>`;
+  } else if(isHT){
+    const hs = fmtScore(st.homeScore);
+    const as = fmtScore(st.awayScore);
+    center=`
+      <div class="live-scoreboard">
+        <span class="live-score-box" style="color:var(--gold-light)">${hs}</span>
+        <span class="live-score-sep" style="color:rgba(240,192,64,0.5)">–</span>
+        <span class="live-score-box" style="color:var(--gold-light)">${as}</span>
+      </div>
+      <div class="live-badge-row">
+        <span class="ht-badge">⏸ HALF TIME</span>
+      </div>`;
   } else if(isFT){
     center=`<div class="match-score">${st.homeScore} – ${st.awayScore}</div>
       ${noteTag}
       <div class="match-status-row"><span class="status-pill ft">✓ FULL TIME</span></div>`;
   } else if(isFTNoScore){
-    // Match ended but no score available anywhere — show "FT" without score
     center=`<div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:var(--muted);letter-spacing:2px;">— — —</div>
       <div class="match-status-row"><span class="status-pill ft">✓ FULL TIME</span></div>`;
   } else {
@@ -571,7 +617,7 @@ function cardHTML(m){
     :`<span style="background:${gc}18;border:1px solid ${gc}55;color:${gc};border-radius:4px;padding:1px 7px;font-size:8.5px;font-weight:800;font-family:'Orbitron',sans-serif;letter-spacing:1px;">GRP ${m.group}</span>`;
 
   const isFinished=isFT||isFTNoScore;
-  return`<div class="match-card${isLive?' live-card':isFinished?' finished':''}">
+  return`<div class="match-card${isLive||isHT?' live-card':isFinished?' finished':''}">
     ${m.group?`<div class="group-strip" style="background:linear-gradient(180deg,${gc},${gc}80)"></div>`:''}
     <div class="match-card-inner" style="padding-left:${m.group?'18px':'14px'}">
       <div class="team-side home">
@@ -596,7 +642,7 @@ function cardHTML(m){
 function renderFixtures(){
   const q=document.getElementById('searchInput').value.toLowerCase();
   const gf=document.getElementById('groupFilter').value;
-  const filtered=GROUP_MATCHES.filter(m=>{
+  const filtered=MATCH_DATA.filter(m=>{
     const gok=gf==='ALL'||m.group===gf;
     const sok=!q||m.home.toLowerCase().includes(q)||m.away.toLowerCase().includes(q);
     return gok&&sok;
@@ -616,10 +662,10 @@ function renderFixtures(){
 /* ══ RENDER TODAY ══ */
 function renderToday(){
   const today=getBDDateStr();
-  const all=[...GROUP_MATCHES.filter(m=>m.date===today),...KNOCKOUT_MATCHES.filter(m=>m.date===today)];
+  const all=[...MATCH_DATA.filter(m=>m.date===today),...KNOCKOUT_MATCHES.filter(m=>m.date===today)];
   let html='';
   if(!all.length){
-    const up=[...GROUP_MATCHES,...KNOCKOUT_MATCHES].filter(m=>matchDT(m.date,m.time)>getBDNow()).sort((a,b)=>matchDT(a.date,a.time)-matchDT(b.date,b.time)).slice(0,6);
+    const up=[...MATCH_DATA,...KNOCKOUT_MATCHES].filter(m=>matchDT(m.date,m.time)>getBDNow()).sort((a,b)=>matchDT(a.date,a.time)-matchDT(b.date,b.time)).slice(0,6);
     html=up.length?`<div class="date-divider"><i class="fas fa-bolt" style="color:var(--red)"></i>NEXT MATCHES</div>`+up.map(m=>cardHTML(m)).join('')
       :'<div class="no-match"><i class="fas fa-futbol"></i>No matches today. Check Fixtures!</div>';
   } else {
@@ -669,28 +715,32 @@ function renderBracket(){
   function bmCard(m,isFinal){
     const st=getStatus(m);
     const isLive=st.status==='LIVE';
+    const isHT=st.status==='HT';
     const isFT=st.status==='FT';
     const isFTNS=st.status==='FT_NOSCORE';
-    const hasScore=isFT&&st.homeScore!==null;
+    const hasScore=(isFT||isHT)&&st.homeScore!==null;
+    const liveHasScore=isLive&&st.homeScore!==null;
     let hs='·',as='·',hWin=false,aWin=false;
-    if(isLive){hs=st.homeScore??0;as=st.awayScore??0;}
+    if(isLive){hs=st.homeScore!==null?st.homeScore:'?';as=st.awayScore!==null?st.awayScore:'?';}
+    else if(isHT){hs=st.homeScore!=='?'?st.homeScore:'?';as=st.awayScore!=='?'?st.awayScore:'?';}
     else if(hasScore){hs=st.homeScore;as=st.awayScore;hWin=hs>as;aWin=as>hs;}
     else if(isFTNS){hs='-';as='-';}
     const ds=new Date(m.date+'T00:00:00').toLocaleDateString('en-BD',{month:'short',day:'numeric'});
     const dl=isLive?`<span style="color:var(--live)">● LIVE ${st.minute}'</span>`
+      :isHT?`<span style="color:var(--gold)">⏸ HT</span>`
       :(isFT||isFTNS)?`${ds} · <span style="color:var(--gold);font-size:7px;letter-spacing:1px">FT</span>`
       :`${ds} · ${formatTime(m.time)}`;
-    return`<div class="bm-card${isFinal?' is-final':''}${isLive?' is-live':''}${(isFT||isFTNS)?' is-ft':''}">
-      <div class="bm-date${isLive?' live-label':(isFT||isFTNS)?' ft-label':''}">${dl}</div>
+    return`<div class="bm-card${isFinal?' is-final':''}${isLive||isHT?' is-live':''}${(isFT||isFTNS)?' is-ft':''}">
+      <div class="bm-date${isLive||isHT?' live-label':(isFT||isFTNS)?' ft-label':''}">${dl}</div>
       <div class="bm-team">
         <div class="bm-team-flag">${flagImg(m.home,13)}</div>
         <div class="bm-team-name${hWin?' winner':''}">${m.home}</div>
-        <div class="bm-team-score${hWin?' winner':isLive?' live-s':''}">${hs}</div>
+        <div class="bm-team-score${hWin?' winner':(isLive||isHT)?' live-s':''}">${hs}</div>
       </div>
       <div class="bm-team">
         <div class="bm-team-flag">${flagImg(m.away,13)}</div>
         <div class="bm-team-name${aWin?' winner':''}">${m.away}</div>
-        <div class="bm-team-score${aWin?' winner':isLive?' live-s':''}">${as}</div>
+        <div class="bm-team-score${aWin?' winner':(isLive||isHT)?' live-s':''}">${as}</div>
       </div>
     </div>`;
   }
@@ -736,7 +786,6 @@ function setKoView(v){
 
 /* ══════════════════════════════════════════
    LIVE API — TheSportsDB
-   Only picks up scores NOT already in SCORE_OVERRIDES
 ══════════════════════════════════════════ */
 async function fetchLive(){
   let liveCount=0;
@@ -751,9 +800,8 @@ async function fetchLive(){
       const hs=parseInt(ev.intHomeScore);
       const as=parseInt(ev.intAwayScore);
       const st=ev.strStatus||'';
-      const allM=[...GROUP_MATCHES,...KNOCKOUT_MATCHES];
+      const allM=[...MATCH_DATA,...KNOCKOUT_MATCHES];
       allM.forEach(m=>{
-        // Skip if we already have a manual override
         if(SCORE_OVERRIDES[m.id]!==undefined)return;
         const mh=m.home.toLowerCase(),ma=m.away.toLowerCase();
         const hm=hn.includes(mh.slice(0,5))||mh.includes(hn.slice(0,5));
@@ -763,8 +811,11 @@ async function fetchLive(){
         if(['Match Finished','FT','AET','PEN'].includes(st)){
           liveData[m.id]={status:'FT',homeScore:isNaN(hs)?0:hs,awayScore:isNaN(as)?0:as,note};
           liveCount++;
+        } else if(st==='HT'){
+          liveData[m.id]={status:'HT',homeScore:isNaN(hs)?0:hs,awayScore:isNaN(as)?0:as};
+          liveCount++;
         } else if(st&&!isNaN(parseInt(st))){
-          liveData[m.id]={status:'LIVE',minute:parseInt(st),homeScore:isNaN(hs)?0:hs,awayScore:isNaN(as)?0:as};
+          liveData[m.id]={status:'LIVE',minute:parseInt(st),homeScore:isNaN(hs)?null:hs,awayScore:isNaN(as)?null:as};
           liveCount++;
         }
       });
@@ -786,9 +837,9 @@ async function fetchResults(){
       const hs=parseInt(ev.intHomeScore)||0;
       const as=parseInt(ev.intAwayScore)||0;
       const note=['AET'].includes(ev.strStatus)?'AET':['PEN'].includes(ev.strStatus)?'PEN':'';
-      [...GROUP_MATCHES,...KNOCKOUT_MATCHES].forEach(m=>{
+      [...MATCH_DATA,...KNOCKOUT_MATCHES].forEach(m=>{
         if(liveData[m.id])return;
-        if(SCORE_OVERRIDES[m.id]!==undefined)return; // manual override wins
+        if(SCORE_OVERRIDES[m.id]!==undefined)return;
         const mh=m.home.toLowerCase(),ma=m.away.toLowerCase();
         if((hn.includes(mh.slice(0,5))||mh.includes(hn.slice(0,5)))&&
            (an.includes(ma.slice(0,5))||ma.includes(an.slice(0,5)))){
@@ -800,8 +851,8 @@ async function fetchResults(){
 }
 
 function syncLive(){
-  const hasLive=Object.values(liveData).some(d=>d.status==='LIVE')||
-    [...GROUP_MATCHES,...KNOCKOUT_MATCHES].some(m=>getStatus(m).status==='LIVE');
+  const hasLive=Object.values(liveData).some(d=>d.status==='LIVE'||d.status==='HT')||
+    [...MATCH_DATA,...KNOCKOUT_MATCHES].some(m=>{const s=getStatus(m);return s.status==='LIVE'||s.status==='HT';});
   document.getElementById('livePill').style.display=hasLive?'inline-flex':'none';
 }
 
