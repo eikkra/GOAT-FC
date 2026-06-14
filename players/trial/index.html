@@ -68,13 +68,13 @@ body::after{content:"";position:fixed;inset:0;background:repeating-linear-gradie
 .tbl-wrap{overflow-x:auto;}
 .tbl{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed;}
 
-/* Column widths — tight but readable */
-.tbl col.c-rank   { width: 36px; }
-.tbl col.c-player { width: auto; }
-.tbl col.c-trials { width: 60px; }
-.tbl col.c-score  { width: 62px; }
-.tbl col.c-rating { width: 72px; }
-.tbl col.c-status { width: 88px; }
+/* Column widths — fixed so no empty gap on PC */
+.tbl col.c-rank   { width: 40px; }
+.tbl col.c-player { width: 34%; }
+.tbl col.c-trials { width: 12%; }
+.tbl col.c-score  { width: 12%; }
+.tbl col.c-rating { width: 14%; }
+.tbl col.c-status { width: 18%; }
 
 .tbl thead{position:sticky;top:0;z-index:10;}
 .tbl thead tr{background:var(--s2);}
@@ -192,11 +192,12 @@ footer{position:relative;z-index:1;text-align:center;padding:14px;border-top:1px
 @media(max-width:480px){
   .hero-title{font-size:16px;letter-spacing:3px;}
   .stat-num{font-size:15px;}
-  .tbl col.c-rank   { width: 28px; }
-  .tbl col.c-trials { width: 48px; }
-  .tbl col.c-score  { width: 52px; }
-  .tbl col.c-rating { width: 60px; }
-  .tbl col.c-status { width: 76px; }
+  .tbl col.c-rank   { width: 32px; }
+  .tbl col.c-player { width: 30%; }
+  .tbl col.c-trials { width: 11%; }
+  .tbl col.c-score  { width: 12%; }
+  .tbl col.c-rating { width: 14%; }
+  .tbl col.c-status { width: 20%; }
   .tbl thead th,.tbl tbody td{padding:6px 4px;}
   .tbl tbody td.td-player{padding-left:6px;}
   .tbl thead th.th-player{padding-left:6px;}
@@ -258,7 +259,7 @@ footer{position:relative;z-index:1;text-align:center;padding:14px;border-top:1px
         </colgroup>
         <thead>
           <tr>
-            <th><i class="fa-solid fa-hashtag"></i>#</th>
+            <th>#</th>
             <th class="th-player"><i class="fa-solid fa-user-ninja"></i>Player</th>
             <th><i class="fa-solid fa-clipboard-check"></i>Trials</th>
             <th><i class="fa-solid fa-chart-bar"></i>Score</th>
