@@ -22,7 +22,6 @@ body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;mi
 body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 10% 10%,rgba(0,240,255,0.05) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 90% 90%,rgba(191,0,255,0.05) 0%,transparent 60%);pointer-events:none;z-index:0;}
 body>*{position:relative;z-index:1;}
 body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:9998;}
-
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.9);}}
 @keyframes glow{0%,100%{text-shadow:0 0 10px rgba(0,230,118,0.4);}50%{text-shadow:0 0 25px rgba(0,230,118,0.9),0 0 50px rgba(0,230,118,0.3);}}
 @keyframes shimmer{0%{background-position:200% center;}100%{background-position:-200% center;}}
@@ -30,7 +29,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
 @keyframes borderRgb{0%,100%{border-color:rgba(0,240,255,0.4);}50%{border-color:rgba(191,0,255,0.4);}}
 @keyframes livePulse{0%,100%{box-shadow:0 0 0 0 rgba(0,230,118,0.6);}50%{box-shadow:0 0 0 5px rgba(0,230,118,0);}}
-@keyframes scoreFlash{0%,100%{opacity:1;}50%{opacity:0.6;}}
 
 /* ══ TOPBAR ══ */
 .topbar{height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:rgba(4,4,8,0.98);border-bottom:1px solid rgba(0,240,255,0.12);position:sticky;top:0;z-index:1000;backdrop-filter:blur(16px);}
@@ -46,6 +44,20 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .icon-btn:hover{background:rgba(0,240,255,0.1);border-color:rgba(0,240,255,0.3);}
 .icon-btn.gold{border-color:rgba(200,164,21,0.2);color:var(--gold);background:rgba(200,164,21,0.05);}
 .icon-btn.gold:hover{background:rgba(200,164,21,0.12);border-color:rgba(200,164,21,0.35);}
+
+/* ══ API KEY BANNER ══ */
+.key-banner{background:linear-gradient(90deg,rgba(200,164,21,0.08),rgba(0,240,255,0.05));border:1px solid rgba(200,164,21,0.3);border-radius:10px;padding:14px 16px;margin-bottom:14px;display:flex;gap:12px;align-items:flex-start;}
+.key-banner i{color:var(--gold);font-size:18px;margin-top:2px;flex-shrink:0;}
+.key-banner-body{flex:1;}
+.key-banner-title{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;color:var(--gold);letter-spacing:2px;margin-bottom:6px;}
+.key-banner-text{font-size:11px;color:var(--muted);font-family:'Exo 2',sans-serif;line-height:1.6;margin-bottom:10px;}
+.key-input-row{display:flex;gap:8px;flex-wrap:wrap;}
+.key-input{background:rgba(0,0,0,0.4);border:1px solid rgba(0,240,255,0.2);border-radius:7px;padding:9px 13px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;flex:1;min-width:200px;outline:none;transition:all .2s;}
+.key-input:focus{border-color:rgba(0,240,255,0.5);}
+.key-input::placeholder{color:var(--muted);}
+.key-save-btn{background:linear-gradient(135deg,var(--gold),#a07010);border:none;border-radius:7px;padding:9px 18px;color:#000;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;letter-spacing:1px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.key-save-btn:hover{filter:brightness(1.15);}
+.key-ok{display:none;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--live);font-family:'Exo 2',sans-serif;}
 
 /* ══ TABS ══ */
 .tabs-wrap{background:rgba(7,7,16,0.98);border-bottom:1px solid rgba(0,240,255,0.07);position:sticky;top:48px;z-index:999;backdrop-filter:blur(10px);}
@@ -91,7 +103,8 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 /* ══ MATCH CARD ══ */
 .match-card{background:var(--card);border:1px solid rgba(255,255,255,0.06);border-radius:10px;margin-bottom:8px;overflow:hidden;transition:all .22s;position:relative;animation:fadeUp .3s ease both;}
 .match-card:hover{border-color:rgba(0,240,255,0.2);transform:translateY(-1px);box-shadow:0 4px 24px rgba(0,240,255,0.06);}
-.match-card.live-card{border-color:rgba(0,230,118,0.3);box-shadow:0 0 20px rgba(0,230,118,0.08);}
+.match-card.live-card{border-color:rgba(0,230,118,0.35);box-shadow:0 0 24px rgba(0,230,118,0.1);}
+.match-card.ht-card{border-color:rgba(240,192,64,0.35);box-shadow:0 0 18px rgba(240,192,64,0.08);}
 .match-card.finished{border-color:rgba(200,164,21,0.2);background:linear-gradient(135deg,rgba(200,164,21,0.03),var(--card));}
 .match-card-inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:12px 14px 8px;gap:8px;}
 .team-side{display:flex;align-items:center;gap:8px;}
@@ -103,31 +116,31 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .team-name.winner-team{color:var(--gold-light);}
 
 /* ══ MATCH CENTER ══ */
-.match-center{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:90px;}
+.match-center{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:100px;}
 .match-score{font-family:'Orbitron',sans-serif;font-size:clamp(20px,5vw,30px);font-weight:900;color:var(--gold-light);letter-spacing:4px;white-space:nowrap;line-height:1;}
-.match-score.live-score{color:var(--live);animation:glow 2s ease-in-out infinite;}
 .match-time{font-family:'Orbitron',sans-serif;font-size:clamp(13px,3.5vw,18px);font-weight:700;color:var(--text);white-space:nowrap;}
 .match-time.soon{color:var(--gold-light);}
 .match-status-row{display:flex;align-items:center;gap:5px;justify-content:center;}
 .status-pill{border-radius:20px;padding:3px 10px;font-size:8px;font-weight:700;letter-spacing:1px;white-space:nowrap;font-family:'Orbitron',sans-serif;}
-.status-pill.live{background:rgba(0,230,118,0.12);border:1px solid var(--live);color:var(--live);}
 .status-pill.ft{background:rgba(200,164,21,0.1);border:1px solid rgba(200,164,21,0.4);color:var(--gold-light);}
 .status-pill.upcoming{background:rgba(90,90,128,0.1);border:1px solid rgba(90,90,128,0.25);color:#7a7a9a;}
-.live-minute{font-size:9px;font-weight:700;color:var(--live);display:flex;align-items:center;gap:3px;font-family:'Orbitron',sans-serif;}
-.live-minute-dot{width:5px;height:5px;border-radius:50%;background:var(--live);animation:pulse 1s ease-in-out infinite;}
 .countdown{font-family:'Orbitron',sans-serif;font-size:9px;color:#7070a0;}
 
-/* ══ LIVE SCOREBOARD ══ */
-.live-scoreboard{display:flex;align-items:center;gap:6px;justify-content:center;}
-.live-score-box{font-family:'Orbitron',sans-serif;font-size:clamp(22px,6vw,34px);font-weight:900;color:var(--live);letter-spacing:6px;white-space:nowrap;line-height:1;text-shadow:0 0 20px rgba(0,230,118,0.5);}
-.live-score-sep{font-family:'Orbitron',sans-serif;font-size:clamp(18px,4vw,26px);font-weight:700;color:rgba(0,230,118,0.5);margin:0 2px;}
-.live-badge-row{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:3px;}
-.live-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.4);border-radius:20px;padding:2px 8px;font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;color:var(--live);letter-spacing:1px;}
-.live-badge .ld{width:5px;height:5px;border-radius:50%;background:var(--live);animation:pulse 1s ease-in-out infinite;}
-.live-min-tag{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;color:var(--live);background:rgba(0,230,118,0.08);border:1px solid rgba(0,230,118,0.25);border-radius:4px;padding:1px 6px;letter-spacing:0.5px;}
-.ht-badge{font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;color:#f0c040;background:rgba(240,192,64,0.1);border:1px solid rgba(240,192,64,0.3);border-radius:20px;padding:2px 8px;letter-spacing:1px;}
+/* ══ LIVE SCORE DISPLAY ══ */
+.live-score-wrap{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.live-score-row{display:flex;align-items:center;gap:4px;}
+.live-score-num{font-family:'Orbitron',sans-serif;font-size:clamp(24px,6vw,36px);font-weight:900;color:var(--live);line-height:1;text-shadow:0 0 20px rgba(0,230,118,0.5);animation:glow 2s ease-in-out infinite;}
+.live-score-sep{font-family:'Orbitron',sans-serif;font-size:clamp(18px,4vw,26px);font-weight:700;color:rgba(0,230,118,0.4);margin:0 3px;}
+.live-status-bar{display:flex;align-items:center;gap:6px;}
+.live-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.4);border-radius:20px;padding:2px 9px;font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;color:var(--live);letter-spacing:1px;}
+.live-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--live);animation:pulse 1s ease-in-out infinite;}
+.live-min-pill{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;color:var(--live);background:rgba(0,230,118,0.08);border:1px solid rgba(0,230,118,0.2);border-radius:5px;padding:2px 7px;}
+/* Half Time */
+.ht-score-num{font-family:'Orbitron',sans-serif;font-size:clamp(24px,6vw,36px);font-weight:900;color:var(--gold-light);line-height:1;text-shadow:0 0 15px rgba(240,192,64,0.4);}
+.ht-score-sep{font-family:'Orbitron',sans-serif;font-size:clamp(18px,4vw,26px);font-weight:700;color:rgba(240,192,64,0.4);margin:0 3px;}
+.ht-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(240,192,64,0.08);border:1px solid rgba(240,192,64,0.35);border-radius:20px;padding:2px 10px;font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;color:var(--gold-light);letter-spacing:1px;}
 
-/* ══ AET / PEN badge ══ */
+/* ══ AET/PEN badge ══ */
 .score-note{font-family:'Orbitron',sans-serif;font-size:7px;font-weight:700;letter-spacing:1px;color:var(--purple);background:rgba(191,0,255,0.12);border:1px solid rgba(191,0,255,0.3);border-radius:4px;padding:2px 6px;margin-top:1px;}
 
 /* ══ MATCH META ══ */
@@ -161,19 +174,21 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .bm-card:hover{border-color:rgba(0,240,255,0.3);}
 .bm-card.is-final{border-color:rgba(200,164,21,0.4);box-shadow:0 0 20px rgba(200,164,21,0.15);width:150px;}
 .bm-card.is-live{border-color:rgba(0,230,118,0.4);}
+.bm-card.is-ht{border-color:rgba(240,192,64,0.4);}
 .bm-card.is-ft{border-color:rgba(200,164,21,0.2);}
 .bm-date{font-family:'Orbitron',sans-serif;font-size:7.5px;color:var(--muted);text-align:center;padding:4px 6px;background:rgba(255,255,255,0.02);border-bottom:1px solid rgba(255,255,255,0.04);letter-spacing:0.5px;}
 .bm-date.live-label{color:var(--live);}
+.bm-date.ht-label{color:var(--gold-light);}
 .bm-date.ft-label{color:var(--gold);}
 .bm-team{display:flex;align-items:center;gap:5px;padding:5px 7px;border-bottom:1px solid rgba(255,255,255,0.04);}
 .bm-team:last-of-type{border-bottom:none;}
-.bm-team:hover{background:rgba(255,255,255,0.02);}
 .bm-team-flag{width:18px;height:13px;flex-shrink:0;display:flex;align-items:center;}
 .bm-team-name{flex:1;font-family:'Exo 2',sans-serif;font-size:9.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text);}
 .bm-team-name.winner{color:var(--gold-light);}
 .bm-team-score{font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--muted2);width:16px;text-align:center;flex-shrink:0;}
 .bm-team-score.winner{color:var(--gold-light);}
 .bm-team-score.live-s{color:var(--live);}
+.bm-team-score.ht-s{color:var(--gold-light);}
 
 /* ══ FOOTER ══ */
 .footer{text-align:center;padding:28px 20px 20px;border-top:1px solid rgba(0,240,255,0.07);margin-top:40px;}
@@ -183,7 +198,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .footer-links{display:flex;justify-content:center;gap:14px;margin-top:12px;flex-wrap:wrap;}
 .footer-link{color:var(--muted);font-size:12px;text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .2s;}
 .footer-link:hover{color:var(--gold);}
-
 .scroll-top{position:fixed;bottom:18px;right:14px;background:var(--red);color:#fff;border:none;border-radius:50%;width:42px;height:42px;font-size:14px;cursor:pointer;box-shadow:0 4px 18px rgba(200,16,46,0.4);transition:all .2s;display:none;z-index:9997;align-items:center;justify-content:center;}
 .scroll-top.show{display:flex;}
 .scroll-top:hover{background:#a00c24;}
@@ -193,7 +207,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 @media(max-width:480px){
   .match-card-inner{padding:10px 10px 6px;gap:5px;}
   .tab{padding:10px 5px;min-width:62px;font-size:7.5px;}
-  .bm-card{width:118px;} .bm-card.is-final{width:128px;}
+  .bm-card{width:118px;}.bm-card.is-final{width:128px;}
   .bm-team-name{font-size:8.5px;}
 }
 @media(min-width:600px){.bm-card{width:155px;}}
@@ -245,6 +259,23 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
     </div>
   </div>
 
+  <!-- ══ API KEY SETUP BANNER ══ -->
+  <div class="key-banner" id="keyBanner">
+    <i class="fas fa-key"></i>
+    <div class="key-banner-body">
+      <div class="key-banner-title">⚡ LIVE SCORE SETUP — API-FOOTBALL</div>
+      <div class="key-banner-text">
+        Real-time live score পেতে RapidAPI key দরকার।<br>
+        👉 <strong style="color:var(--cyan)">rapidapi.com/api-sports/api/api-football</strong> → Subscribe (Free: 100 req/day) → API Key কপি করো
+      </div>
+      <div class="key-input-row">
+        <input class="key-input" id="apiKeyInput" type="password" placeholder="Paste your RapidAPI key here..."/>
+        <button class="key-save-btn" onclick="saveApiKey()"><i class="fas fa-save"></i> SAVE & START</button>
+      </div>
+      <div class="key-ok" id="keyOk"><i class="fas fa-check-circle"></i> Key saved! Live scores active.</div>
+    </div>
+  </div>
+
   <div id="tab-fixtures">
     <div class="api-status" id="apiStatus">
       <i class="fas fa-satellite-dish"></i>
@@ -289,6 +320,27 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-chevron-up"></i></button>
 
 <script>
+/* ══════════════════════════════════════════
+   API-FOOTBALL CONFIG
+   League ID 1 = FIFA World Cup
+   Season 2026
+══════════════════════════════════════════ */
+const WC_LEAGUE_ID = 1;
+const WC_SEASON    = 2026;
+
+/* API key — localStorage থেকে load হবে */
+let RAPID_API_KEY = localStorage.getItem('wc2026_apikey') || '';
+
+function saveApiKey(){
+  const v = document.getElementById('apiKeyInput').value.trim();
+  if(!v){ alert('Please paste your RapidAPI key!'); return; }
+  RAPID_API_KEY = v;
+  localStorage.setItem('wc2026_apikey', v);
+  document.getElementById('keyOk').style.display = 'flex';
+  document.getElementById('keyBanner').style.borderColor = 'rgba(0,230,118,0.4)';
+  refreshData();
+}
+
 /* ══ FLAG ══ */
 const FLAG_ISO={
   "Mexico":"mx","South Africa":"za","South Korea":"kr","Czechia":"cz",
@@ -333,6 +385,7 @@ const GROUPS={
 
 /* ══════════════════════════════════════════
    SCORE OVERRIDES — confirmed final scores
+   এখানে যোগ করো: "matchId": {h: homeScore, a: awayScore, note:"AET"|"PEN"|""}
 ══════════════════════════════════════════ */
 const SCORE_OVERRIDES = {
   "gs001": {h:2, a:0},
@@ -345,19 +398,7 @@ const SCORE_OVERRIDES = {
   "gs008": {h:2, a:0},
 };
 
-/* ══════════════════════════════════════════
-   LIVE SCORE STORE
-   liveScores[matchId] = {home: N, away: N}
-   — এখানে চলমান match এর score realtime store হয়
-   — API থেকে আসলে এখানে save হবে
-   — manually ও add করতে পারবা নিচের LIVE_SCORE_MANUAL তে
-══════════════════════════════════════════ */
-const LIVE_SCORE_MANUAL = {
-  // চলমান match এর score manually দিতে চাইলে এখানে দাও:
-  // "gs009": {home: 2, away: 0},
-  // "gs010": {home: 1, away: 1},
-};
-
+/* ══ MATCH DATA ══ */
 const MATCH_DATA=[
   {id:"gs001",date:"2026-06-12",time:"01:00",home:"Mexico",away:"South Africa",group:"A",venue:"Mexico City"},
   {id:"gs002",date:"2026-06-12",time:"08:00",home:"South Korea",away:"Czechia",group:"A",venue:"Guadalajara"},
@@ -469,8 +510,33 @@ const KNOCKOUT_MATCHES=[
 ];
 
 /* ══ STATE ══ */
-let liveData={};
-let koView='list';
+// apiData[matchId] = {status, homeScore, awayScore, minute, note}
+// status: 'LIVE' | 'HT' | 'FT' | 'NS'
+let apiData = {};
+let koView = 'list';
+
+/* ══════════════════════════════════════════
+   API-FOOTBALL — team name matching
+   API returns team names that may differ from our data
+   এই map দিয়ে match করা হবে
+══════════════════════════════════════════ */
+const TEAM_ALIAS = {
+  "korea republic":"South Korea","republic of korea":"South Korea","south korea":"South Korea",
+  "czech republic":"Czechia","czechia":"Czechia",
+  "united states":"USA","usa":"USA",
+  "iran":"Iran","ir iran":"Iran",
+  "ivory coast":"Ivory Coast","cote d'ivoire":"Ivory Coast","cote divoire":"Ivory Coast",
+  "cape verde":"Cape Verde","cape verde islands":"Cape Verde",
+  "dr congo":"DR Congo","democratic republic of congo":"DR Congo","congo dr":"DR Congo",
+  "new zealand":"New Zealand","bosnia":"Bosnia and Herzegovina","bosnia herzegovina":"Bosnia and Herzegovina",
+  "saudi arabia":"Saudi Arabia","curacao":"Curacao",
+};
+
+function normalizeTeam(name){
+  if(!name) return '';
+  const low = name.toLowerCase().trim();
+  return TEAM_ALIAS[low] || name.trim();
+}
 
 /* ══ TIME UTILS ══ */
 function getBDNow(){const n=new Date();return new Date(n.getTime()+n.getTimezoneOffset()*60000+6*3600000);}
@@ -492,133 +558,118 @@ function countdown(date,time){
 }
 
 /* ══════════════════════════════════════════
-   getStatus() — UPDATED PRIORITY ORDER:
-   1. liveData (API real-time)
-   2. SCORE_OVERRIDES (confirmed FT scores)
-   3. LIVE_SCORE_MANUAL (manually set live scores)
-   4. Time-based (upcoming / live without score)
+   getStatus() — FINAL PRIORITY:
+   1. apiData (API-Football real-time)
+   2. SCORE_OVERRIDES (hardcoded confirmed results)
+   3. Time-based fallback (no score shown)
 ══════════════════════════════════════════ */
 function getStatus(m){
-  // 1. API live data (real-time)
-  if(liveData[m.id]) return liveData[m.id];
+  // 1. API live data — সবচেয়ে accurate
+  if(apiData[m.id]) return apiData[m.id];
 
-  // 2. Confirmed final score override
+  // 2. Hardcoded confirmed scores
   const ov = SCORE_OVERRIDES[m.id];
   if(ov !== undefined){
-    return{status:'FT', homeScore:ov.h, awayScore:ov.a, note:ov.note||''};
+    return {status:'FT', homeScore:ov.h, awayScore:ov.a, note:ov.note||''};
   }
 
-  // 3. Time-based detection
+  // 3. Time-based
   const kickoff = matchDT(m.date, m.time);
   const now = getBDNow();
   const diffMs = now - kickoff;
-
-  // Not started yet
-  if(diffMs < 0) return{status:'NS'};
-
-  const diffMin = Math.floor(diffMs / 60000);
-
-  // Half-time window: 45-50 minutes
-  if(diffMin >= 45 && diffMin < 50){
-    const manual = LIVE_SCORE_MANUAL[m.id];
-    const hs = manual ? manual.home : '?';
-    const as = manual ? manual.away : '?';
-    return{status:'HT', homeScore:hs, awayScore:as};
-  }
-
-  // Live: 0-115 minutes (covers normal + extra time)
-  if(diffMin < 115){
-    const manual = LIVE_SCORE_MANUAL[m.id];
-    // Calculate actual displayed minute (cap at 90 for regular, show 90+ for extra time)
-    let displayMin;
-    if(diffMin <= 45) displayMin = diffMin;
-    else if(diffMin <= 60) displayMin = 45; // HT buffer
-    else if(diffMin <= 105) displayMin = diffMin - 15; // 2nd half offset
-    else displayMin = 90; // extra time shows 90+
-    const isExtraTime = diffMin > 100;
-    return{
-      status:'LIVE',
-      minute: Math.min(displayMin, 90),
-      extraTime: isExtraTime,
-      homeScore: manual ? manual.home : null,
-      awayScore: manual ? manual.away : null,
-    };
-  }
-
-  // Match ended but no score data anywhere
-  return{status:'FT_NOSCORE'};
+  if(diffMs < 0) return {status:'NS'};
+  // 130 min window covers 90min + extra time + injury time
+  if(diffMs < 130*60000) return {status:'LIVE_NOSCR', minute: Math.min(Math.floor(diffMs/60000), 90)};
+  return {status:'FT_NOSCORE'};
 }
 
 function tClass(n){return n.length>14?'team-name long':'team-name';}
 
 /* ══════════════════════════════════════════
-   cardHTML() — UPDATED LIVE DISPLAY
+   cardHTML() — fully updated live display
 ══════════════════════════════════════════ */
 function cardHTML(m){
-  const st=getStatus(m);
-  const isLive=st.status==='LIVE';
-  const isHT=st.status==='HT';
-  const isFT=st.status==='FT';
-  const isFTNoScore=st.status==='FT_NOSCORE';
-  const gc=m.group?GC[m.group]:'#c8a415';
-  const timeStr=formatTime(m.time);
-  const hWin=isFT&&st.homeScore>st.awayScore;
-  const aWin=isFT&&st.awayScore>st.homeScore;
-  const noteTag=st.note?`<div class="score-note">${st.note}</div>`:'';
+  const st = getStatus(m);
+  const isLive = st.status === 'LIVE';
+  const isHT   = st.status === 'HT';
+  const isLiveNS = st.status === 'LIVE_NOSCR'; // live but no API score
+  const isFT   = st.status === 'FT';
+  const isFTNS = st.status === 'FT_NOSCORE';
+  const gc = m.group ? GC[m.group] : '#c8a415';
+  const hWin = isFT && st.homeScore > st.awayScore;
+  const aWin = isFT && st.awayScore > st.homeScore;
+  const noteTag = st.note ? `<div class="score-note">${st.note}</div>` : '';
+  const anyLive = isLive || isHT || isLiveNS;
 
-  // Score display helper — shows ? if score unknown during live
-  const fmtScore = (v) => (v === null || v === undefined) ? '?' : v;
-
-  let center='';
+  let center = '';
 
   if(isLive){
-    const hs = fmtScore(st.homeScore);
-    const as = fmtScore(st.awayScore);
-    const hasScore = st.homeScore !== null && st.homeScore !== undefined;
-    const minLabel = st.extraTime ? `90+` : `${st.minute}'`;
-    center=`
-      <div class="live-scoreboard">
-        <span class="live-score-box" style="${!hasScore?'color:var(--muted);font-size:clamp(16px,4vw,22px);':''}">${hs}</span>
-        <span class="live-score-sep">–</span>
-        <span class="live-score-box" style="${!hasScore?'color:var(--muted);font-size:clamp(16px,4vw,22px);':''}">${as}</span>
-      </div>
-      <div class="live-badge-row">
-        <span class="live-badge"><span class="ld"></span>LIVE</span>
-        <span class="live-min-tag">${minLabel}</span>
+    /* ✅ API থেকে real score আসছে */
+    const minLabel = st.extraTime ? `90+${st.extraMin||''}` : `${st.minute}'`;
+    center = `
+      <div class="live-score-wrap">
+        <div class="live-score-row">
+          <span class="live-score-num">${st.homeScore}</span>
+          <span class="live-score-sep">–</span>
+          <span class="live-score-num">${st.awayScore}</span>
+        </div>
+        <div class="live-status-bar">
+          <span class="live-badge"><span class="live-badge-dot"></span>LIVE</span>
+          <span class="live-min-pill">${minLabel}</span>
+        </div>
       </div>`;
   } else if(isHT){
-    const hs = fmtScore(st.homeScore);
-    const as = fmtScore(st.awayScore);
-    center=`
-      <div class="live-scoreboard">
-        <span class="live-score-box" style="color:var(--gold-light)">${hs}</span>
-        <span class="live-score-sep" style="color:rgba(240,192,64,0.5)">–</span>
-        <span class="live-score-box" style="color:var(--gold-light)">${as}</span>
-      </div>
-      <div class="live-badge-row">
-        <span class="ht-badge">⏸ HALF TIME</span>
+    /* ⏸ Half Time */
+    center = `
+      <div class="live-score-wrap">
+        <div class="live-score-row">
+          <span class="ht-score-num">${st.homeScore}</span>
+          <span class="ht-score-sep">–</span>
+          <span class="ht-score-num">${st.awayScore}</span>
+        </div>
+        <div class="live-status-bar">
+          <span class="ht-badge">⏸ HALF TIME</span>
+        </div>
+      </div>`;
+  } else if(isLiveNS){
+    /* ⚽ Live কিন্তু API score নেই (key নেই বা API miss) */
+    center = `
+      <div class="live-score-wrap">
+        <div class="live-status-bar" style="margin-bottom:4px">
+          <span class="live-badge"><span class="live-badge-dot"></span>LIVE</span>
+          <span class="live-min-pill">${st.minute}'</span>
+        </div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:var(--muted);letter-spacing:1px;">
+          ${RAPID_API_KEY ? 'Fetching score…' : 'Add API key for live score'}
+        </div>
       </div>`;
   } else if(isFT){
-    center=`<div class="match-score">${st.homeScore} – ${st.awayScore}</div>
+    center = `
+      <div class="match-score">${st.homeScore} – ${st.awayScore}</div>
       ${noteTag}
       <div class="match-status-row"><span class="status-pill ft">✓ FULL TIME</span></div>`;
-  } else if(isFTNoScore){
-    center=`<div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:var(--muted);letter-spacing:2px;">— — —</div>
+  } else if(isFTNS){
+    center = `
+      <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:var(--muted);letter-spacing:2px;">— — —</div>
       <div class="match-status-row"><span class="status-pill ft">✓ FULL TIME</span></div>`;
   } else {
-    const cd=countdown(m.date,m.time);
-    center=`<div class="match-time${cd?' soon':''}">${timeStr}</div>
-      ${cd?`<div class="countdown"><i class="far fa-clock"></i> ${cd}</div>`
-          :'<div class="match-status-row"><span class="status-pill upcoming">UPCOMING</span></div>'}`;
+    const cd = countdown(m.date, m.time);
+    center = `
+      <div class="match-time${cd?' soon':''}">${formatTime(m.time)}</div>
+      ${cd ? `<div class="countdown"><i class="far fa-clock"></i> ${cd}</div>`
+           : '<div class="match-status-row"><span class="status-pill upcoming">UPCOMING</span></div>'}`;
   }
 
-  const badge=m.phase
-    ?`<span style="background:rgba(200,164,21,0.1);border:1px solid rgba(200,164,21,0.28);color:var(--gold-light);border-radius:4px;padding:1px 7px;font-size:8.5px;font-weight:700;letter-spacing:1px;font-family:'Orbitron',sans-serif;">${m.phase}</span>`
-    :`<span style="background:${gc}18;border:1px solid ${gc}55;color:${gc};border-radius:4px;padding:1px 7px;font-size:8.5px;font-weight:800;font-family:'Orbitron',sans-serif;letter-spacing:1px;">GRP ${m.group}</span>`;
+  const badge = m.phase
+    ? `<span style="background:rgba(200,164,21,0.1);border:1px solid rgba(200,164,21,0.28);color:var(--gold-light);border-radius:4px;padding:1px 7px;font-size:8.5px;font-weight:700;letter-spacing:1px;font-family:'Orbitron',sans-serif;">${m.phase}</span>`
+    : `<span style="background:${gc}18;border:1px solid ${gc}55;color:${gc};border-radius:4px;padding:1px 7px;font-size:8.5px;font-weight:800;font-family:'Orbitron',sans-serif;letter-spacing:1px;">GRP ${m.group}</span>`;
 
-  const isFinished=isFT||isFTNoScore;
-  return`<div class="match-card${isLive||isHT?' live-card':isFinished?' finished':''}">
-    ${m.group?`<div class="group-strip" style="background:linear-gradient(180deg,${gc},${gc}80)"></div>`:''}
+  const cardCls = anyLive
+    ? (isHT ? 'ht-card' : 'live-card')
+    : (isFT||isFTNS ? 'finished' : '');
+
+  return `<div class="match-card ${cardCls}">
+    ${m.group ? `<div class="group-strip" style="background:linear-gradient(180deg,${gc},${gc}80)"></div>` : ''}
     <div class="match-card-inner" style="padding-left:${m.group?'18px':'14px'}">
       <div class="team-side home">
         <div style="flex-shrink:0">${flagImg(m.home,22)}</div>
@@ -638,16 +689,16 @@ function cardHTML(m){
   </div>`;
 }
 
-/* ══ RENDER FIXTURES ══ */
+/* ══ RENDERS ══ */
 function renderFixtures(){
-  const q=document.getElementById('searchInput').value.toLowerCase();
-  const gf=document.getElementById('groupFilter').value;
-  const filtered=MATCH_DATA.filter(m=>{
-    const gok=gf==='ALL'||m.group===gf;
-    const sok=!q||m.home.toLowerCase().includes(q)||m.away.toLowerCase().includes(q);
-    return gok&&sok;
+  const q  = document.getElementById('searchInput').value.toLowerCase();
+  const gf = document.getElementById('groupFilter').value;
+  const filtered = MATCH_DATA.filter(m=>{
+    const gok = gf==='ALL' || m.group===gf;
+    const sok = !q || m.home.toLowerCase().includes(q) || m.away.toLowerCase().includes(q);
+    return gok && sok;
   });
-  if(!filtered.length){document.getElementById('fixtureList').innerHTML='<div class="no-match"><i class="fas fa-search"></i>No matches found</div>';return;}
+  if(!filtered.length){ document.getElementById('fixtureList').innerHTML='<div class="no-match"><i class="fas fa-search"></i>No matches found</div>'; return; }
   const byDate={};
   filtered.forEach(m=>{(byDate[m.date]=byDate[m.date]||[]).push(m);});
   let html='';
@@ -656,25 +707,24 @@ function renderFixtures(){
     ms.forEach(m=>{html+=cardHTML(m);});
   });
   document.getElementById('fixtureList').innerHTML=html;
-  syncLive();
+  syncLivePill();
 }
 
-/* ══ RENDER TODAY ══ */
 function renderToday(){
   const today=getBDDateStr();
   const all=[...MATCH_DATA.filter(m=>m.date===today),...KNOCKOUT_MATCHES.filter(m=>m.date===today)];
   let html='';
   if(!all.length){
     const up=[...MATCH_DATA,...KNOCKOUT_MATCHES].filter(m=>matchDT(m.date,m.time)>getBDNow()).sort((a,b)=>matchDT(a.date,a.time)-matchDT(b.date,b.time)).slice(0,6);
-    html=up.length?`<div class="date-divider"><i class="fas fa-bolt" style="color:var(--red)"></i>NEXT MATCHES</div>`+up.map(m=>cardHTML(m)).join('')
-      :'<div class="no-match"><i class="fas fa-futbol"></i>No matches today. Check Fixtures!</div>';
+    html = up.length
+      ? `<div class="date-divider"><i class="fas fa-bolt" style="color:var(--red)"></i>NEXT MATCHES</div>`+up.map(m=>cardHTML(m)).join('')
+      : '<div class="no-match"><i class="fas fa-futbol"></i>No matches today. Check Fixtures!</div>';
   } else {
-    html=`<div class="date-divider"><i class="fas fa-bolt" style="color:var(--red)"></i>TODAY – ${formatDate(today)}</div>`+all.map(m=>cardHTML(m)).join('');
+    html = `<div class="date-divider"><i class="fas fa-bolt" style="color:var(--red)"></i>TODAY – ${formatDate(today)}</div>`+all.map(m=>cardHTML(m)).join('');
   }
   document.getElementById('todayList').innerHTML=html;
 }
 
-/* ══ RENDER GROUPS ══ */
 function renderGroups(){
   document.getElementById('groupsGrid').innerHTML=Object.entries(GROUPS).map(([g,teams])=>{
     const gc=GC[g];
@@ -685,7 +735,6 @@ function renderGroups(){
   }).join('');
 }
 
-/* ══ RENDER KNOCKOUT LIST ══ */
 function renderKnockoutList(){
   const phases=['Round of 32','Round of 16','Quarterfinal','Semifinal','3rd Place','Final'];
   const pc={'Round of 32':'#3498db','Round of 16':'#1abc9c','Quarterfinal':'#e67e22','Semifinal':'#9b59b6','3rd Place':'#7f8c8d','Final':'#c8a415'};
@@ -703,7 +752,6 @@ function renderKnockoutList(){
   }).join('');
 }
 
-/* ══ RENDER BRACKET ══ */
 function renderBracket(){
   const phases=[
     {key:'Round of 32',label:'R32',color:'#3498db'},
@@ -714,33 +762,28 @@ function renderBracket(){
   ];
   function bmCard(m,isFinal){
     const st=getStatus(m);
-    const isLive=st.status==='LIVE';
-    const isHT=st.status==='HT';
-    const isFT=st.status==='FT';
-    const isFTNS=st.status==='FT_NOSCORE';
-    const hasScore=(isFT||isHT)&&st.homeScore!==null;
-    const liveHasScore=isLive&&st.homeScore!==null;
+    const isL=st.status==='LIVE', isHT=st.status==='HT';
+    const isFT=st.status==='FT', isFTNS=st.status==='FT_NOSCORE';
+    const hasScore=(isFT||isL||isHT)&&st.homeScore!=null;
     let hs='·',as='·',hWin=false,aWin=false;
-    if(isLive){hs=st.homeScore!==null?st.homeScore:'?';as=st.awayScore!==null?st.awayScore:'?';}
-    else if(isHT){hs=st.homeScore!=='?'?st.homeScore:'?';as=st.awayScore!=='?'?st.awayScore:'?';}
-    else if(hasScore){hs=st.homeScore;as=st.awayScore;hWin=hs>as;aWin=as>hs;}
+    if(hasScore){hs=st.homeScore;as=st.awayScore;if(isFT){hWin=hs>as;aWin=as>hs;}}
     else if(isFTNS){hs='-';as='-';}
     const ds=new Date(m.date+'T00:00:00').toLocaleDateString('en-BD',{month:'short',day:'numeric'});
-    const dl=isLive?`<span style="color:var(--live)">● LIVE ${st.minute}'</span>`
-      :isHT?`<span style="color:var(--gold)">⏸ HT</span>`
-      :(isFT||isFTNS)?`${ds} · <span style="color:var(--gold);font-size:7px;letter-spacing:1px">FT</span>`
+    const dl=isL?`<span style="color:var(--live)">● LIVE ${st.minute}'</span>`
+      :isHT?`<span style="color:var(--gold-light)">⏸ HT</span>`
+      :(isFT||isFTNS)?`${ds} · <span style="color:var(--gold);font-size:7px">FT</span>`
       :`${ds} · ${formatTime(m.time)}`;
-    return`<div class="bm-card${isFinal?' is-final':''}${isLive||isHT?' is-live':''}${(isFT||isFTNS)?' is-ft':''}">
-      <div class="bm-date${isLive||isHT?' live-label':(isFT||isFTNS)?' ft-label':''}">${dl}</div>
+    return`<div class="bm-card${isFinal?' is-final':''}${isL?' is-live':isHT?' is-ht':''}${(isFT||isFTNS)?' is-ft':''}">
+      <div class="bm-date${isL?' live-label':isHT?' ht-label':(isFT||isFTNS)?' ft-label':''}">${dl}</div>
       <div class="bm-team">
         <div class="bm-team-flag">${flagImg(m.home,13)}</div>
         <div class="bm-team-name${hWin?' winner':''}">${m.home}</div>
-        <div class="bm-team-score${hWin?' winner':(isLive||isHT)?' live-s':''}">${hs}</div>
+        <div class="bm-team-score${hWin?' winner':(isL||isHT)?' live-s':''}">${hs}</div>
       </div>
       <div class="bm-team">
         <div class="bm-team-flag">${flagImg(m.away,13)}</div>
         <div class="bm-team-name${aWin?' winner':''}">${m.away}</div>
-        <div class="bm-team-score${aWin?' winner':(isLive||isHT)?' live-s':''}">${as}</div>
+        <div class="bm-team-score${aWin?' winner':(isL||isHT)?' live-s':''}">${as}</div>
       </div>
     </div>`;
   }
@@ -759,12 +802,10 @@ function renderBracket(){
     html+=`</div></div>`;
     if(pi<phases.length-1){
       const nextN=phaseData[pi+1].length;
-      const cSH=totalH/n,nSH=totalH/nextN,tO=30;
-      let paths='';
+      const cSH=totalH/n,tO=30;let paths='';
       for(let ni=0;ni<nextN;ni++){
         const ci1=ni*2,ci2=ni*2+1;
-        const y1=tO+ci1*cSH+cSH/2,y2=tO+ci2*cSH+cSH/2;
-        const midY=(y1+y2)/2;
+        const y1=tO+ci1*cSH+cSH/2,y2=tO+ci2*cSH+cSH/2,midY=(y1+y2)/2;
         paths+=`<path d="M0,${y1} H${COL_GAP/2} V${midY} M${COL_GAP/2},${y2} H0 M${COL_GAP/2},${midY} H${COL_GAP}" fill="none" stroke="rgba(0,240,255,0.18)" stroke-width="1"/>`;
       }
       html+=`<div style="flex-shrink:0;width:${COL_GAP}px;position:relative;"><svg width="${COL_GAP}" height="${totalH+tO}" style="position:absolute;top:0;left:0;overflow:visible;">${paths}</svg></div>`;
@@ -774,109 +815,161 @@ function renderBracket(){
   document.getElementById('bracketView').innerHTML=html;
 }
 
-/* ══ KO TOGGLE ══ */
 function setKoView(v){
   koView=v;
   document.getElementById('listView').style.display=v==='list'?'':'none';
   document.getElementById('bracketView').style.display=v==='bracket'?'block':'none';
   document.getElementById('btnList').className='ko-btn'+(v==='list'?' active':'');
   document.getElementById('btnBracket').className='ko-btn'+(v==='bracket'?' active':'');
-  if(v==='bracket')renderBracket();
+  if(v==='bracket') renderBracket();
 }
 
 /* ══════════════════════════════════════════
-   LIVE API — TheSportsDB
+   API-FOOTBALL FETCH
+   /fixtures?league=1&season=2026&live=all  → live matches
+   /fixtures?league=1&season=2026&date=YYYY-MM-DD → today's matches (includes FT)
 ══════════════════════════════════════════ */
-async function fetchLive(){
-  let liveCount=0;
+async function apiFetch(endpoint){
+  if(!RAPID_API_KEY) return null;
   try{
-    const r=await fetch('https://www.thesportsdb.com/api/v1/json/3/latestsoccer.php',{cache:'no-store'});
-    if(!r.ok)throw new Error();
-    const data=await r.json();
-    const evs=(data&&data.events)||[];
-    evs.forEach(ev=>{
-      const hn=(ev.strHomeTeam||'').toLowerCase();
-      const an=(ev.strAwayTeam||'').toLowerCase();
-      const hs=parseInt(ev.intHomeScore);
-      const as=parseInt(ev.intAwayScore);
-      const st=ev.strStatus||'';
-      const allM=[...MATCH_DATA,...KNOCKOUT_MATCHES];
-      allM.forEach(m=>{
-        if(SCORE_OVERRIDES[m.id]!==undefined)return;
-        const mh=m.home.toLowerCase(),ma=m.away.toLowerCase();
-        const hm=hn.includes(mh.slice(0,5))||mh.includes(hn.slice(0,5));
-        const am=an.includes(ma.slice(0,5))||ma.includes(an.slice(0,5));
-        if(!hm||!am)return;
-        const note=['AET'].includes(st)?'AET':['PEN'].includes(st)?'PEN':'';
-        if(['Match Finished','FT','AET','PEN'].includes(st)){
-          liveData[m.id]={status:'FT',homeScore:isNaN(hs)?0:hs,awayScore:isNaN(as)?0:as,note};
-          liveCount++;
-        } else if(st==='HT'){
-          liveData[m.id]={status:'HT',homeScore:isNaN(hs)?0:hs,awayScore:isNaN(as)?0:as};
-          liveCount++;
-        } else if(st&&!isNaN(parseInt(st))){
-          liveData[m.id]={status:'LIVE',minute:parseInt(st),homeScore:isNaN(hs)?null:hs,awayScore:isNaN(as)?null:as};
-          liveCount++;
-        }
-      });
+    const res = await fetch(`https://api-football-v1.p.rapidapi.com/v3${endpoint}`, {
+      method: 'GET',
+      headers: {
+        'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
+        'x-rapidapi-key': RAPID_API_KEY,
+      },
+      cache: 'no-store',
     });
-  }catch(e){return -1;}
-  return liveCount;
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch(e){
+    console.warn('API-Football error:', e);
+    return null;
+  }
 }
 
-async function fetchResults(){
-  try{
-    const r=await fetch('https://www.thesportsdb.com/api/v1/json/3/eventsseason.php?id=4429&s=2026',{cache:'no-store'});
-    if(!r.ok)throw new Error();
-    const data=await r.json();
-    const evs=(data&&data.events)||[];
-    evs.forEach(ev=>{
-      if(!['Match Finished','FT','AET','PEN'].includes(ev.strStatus))return;
-      const hn=(ev.strHomeTeam||'').toLowerCase();
-      const an=(ev.strAwayTeam||'').toLowerCase();
-      const hs=parseInt(ev.intHomeScore)||0;
-      const as=parseInt(ev.intAwayScore)||0;
-      const note=['AET'].includes(ev.strStatus)?'AET':['PEN'].includes(ev.strStatus)?'PEN':'';
-      [...MATCH_DATA,...KNOCKOUT_MATCHES].forEach(m=>{
-        if(liveData[m.id])return;
-        if(SCORE_OVERRIDES[m.id]!==undefined)return;
-        const mh=m.home.toLowerCase(),ma=m.away.toLowerCase();
-        if((hn.includes(mh.slice(0,5))||mh.includes(hn.slice(0,5)))&&
-           (an.includes(ma.slice(0,5))||ma.includes(an.slice(0,5)))){
-          liveData[m.id]={status:'FT',homeScore:hs,awayScore:as,note};
-        }
-      });
-    });
-  }catch(e){}
+/* API fixture object → our status object */
+function parseFixture(fix){
+  const fs   = fix.fixture?.status?.short || '';  // '1H','HT','2H','ET','BT','P','FT','AET','PEN','NS','PST'
+  const el   = fix.fixture?.status?.elapsed;       // minute
+  const hs   = fix.goals?.home;
+  const as   = fix.goals?.away;
+
+  const LIVE_ST  = ['1H','2H','ET','BT','P','LIVE'];
+  const FT_ST    = ['FT','AET','PEN'];
+  const note     = fs === 'AET' ? 'AET' : fs === 'PEN' ? 'PEN' : '';
+
+  if(fs === 'HT') return {status:'HT', homeScore: hs??0, awayScore: as??0};
+  if(LIVE_ST.includes(fs)) return {
+    status:'LIVE',
+    minute: el ?? 0,
+    extraTime: fs === 'ET' || el > 90,
+    homeScore: hs ?? 0,
+    awayScore: as ?? 0,
+  };
+  if(FT_ST.includes(fs)) return {status:'FT', homeScore: hs??0, awayScore: as??0, note};
+  return null;
 }
 
-function syncLive(){
-  const hasLive=Object.values(liveData).some(d=>d.status==='LIVE'||d.status==='HT')||
-    [...MATCH_DATA,...KNOCKOUT_MATCHES].some(m=>{const s=getStatus(m);return s.status==='LIVE'||s.status==='HT';});
-  document.getElementById('livePill').style.display=hasLive?'inline-flex':'none';
+/* Match fixture home/away team to our MATCH_DATA by team name */
+function matchToOurId(homeTeam, awayTeam){
+  const hn = normalizeTeam(homeTeam).toLowerCase();
+  const an = normalizeTeam(awayTeam).toLowerCase();
+  const allM = [...MATCH_DATA, ...KNOCKOUT_MATCHES];
+  for(const m of allM){
+    const mh = m.home.toLowerCase();
+    const ma = m.away.toLowerCase();
+    // Exact or partial match (first 5 chars is usually enough)
+    const hm = hn === mh || hn.includes(mh.slice(0,5)) || mh.includes(hn.slice(0,5));
+    const am = an === ma || an.includes(ma.slice(0,5)) || ma.includes(an.slice(0,5));
+    if(hm && am) return m.id;
+  }
+  return null;
 }
 
-function updateStatus(msg){document.getElementById('apiStatusText').textContent=msg;}
+async function fetchLiveScores(){
+  const data = await apiFetch(`/fixtures?league=${WC_LEAGUE_ID}&season=${WC_SEASON}&live=all`);
+  if(!data?.response) return 0;
+  let count = 0;
+  for(const fix of data.response){
+    const homeTeam = fix.teams?.home?.name || '';
+    const awayTeam = fix.teams?.away?.name || '';
+    const id = matchToOurId(homeTeam, awayTeam);
+    if(!id) continue;
+    if(SCORE_OVERRIDES[id] !== undefined) continue; // manual override জিতবে
+    const st = parseFixture(fix);
+    if(st){ apiData[id] = st; count++; }
+  }
+  return count;
+}
+
+async function fetchTodayScores(){
+  const today = getBDDateStr();
+  // BD date → UTC date could differ; fetch both just in case
+  const dates = new Set([today]);
+  const utcDate = new Date().toISOString().slice(0,10);
+  dates.add(utcDate);
+  for(const d of dates){
+    const data = await apiFetch(`/fixtures?league=${WC_LEAGUE_ID}&season=${WC_SEASON}&date=${d}`);
+    if(!data?.response) continue;
+    for(const fix of data.response){
+      const homeTeam = fix.teams?.home?.name || '';
+      const awayTeam = fix.teams?.away?.name || '';
+      const id = matchToOurId(homeTeam, awayTeam);
+      if(!id) continue;
+      if(SCORE_OVERRIDES[id] !== undefined) continue;
+      if(apiData[id]?.status === 'LIVE' || apiData[id]?.status === 'HT') continue; // live data wins
+      const st = parseFixture(fix);
+      if(st) apiData[id] = st;
+    }
+  }
+}
+
+function syncLivePill(){
+  const has = [...MATCH_DATA,...KNOCKOUT_MATCHES].some(m=>{
+    const s = getStatus(m);
+    return s.status==='LIVE'||s.status==='HT';
+  });
+  document.getElementById('livePill').style.display = has ? 'inline-flex' : 'none';
+}
+
+function updateStatus(msg){
+  document.getElementById('apiStatusText').textContent = msg;
+}
 
 /* ══ REFRESH ══ */
 async function refreshData(){
-  const icon=document.getElementById('refreshIcon');
+  const icon = document.getElementById('refreshIcon');
   icon.classList.add('fa-spin');
-  updateStatus('Fetching latest scores…');
-  const c=await fetchLive();
-  await fetchResults();
+  const t = getBDNow().toLocaleTimeString('en-BD',{hour:'2-digit',minute:'2-digit'});
+
+  if(!RAPID_API_KEY){
+    updateStatus(`No API key — enter your RapidAPI key above for live scores · ${t}`);
+    renderAll();
+    icon.classList.remove('fa-spin');
+    return;
+  }
+
+  updateStatus('Fetching live scores from API-Football…');
+  const liveCount = await fetchLiveScores();
+  await fetchTodayScores();
   renderAll();
-  const t=getBDNow().toLocaleTimeString('en-BD',{hour:'2-digit',minute:'2-digit'});
-  if(c<0) updateStatus(`API unavailable · Showing confirmed results · ${t}`);
-  else if(c>0) updateStatus(`● ${c} live update(s) · Last sync ${t}`);
-  else updateStatus(`Scores confirmed · Last sync ${t}`);
-  syncLive();
-  setTimeout(()=>icon.classList.remove('fa-spin'),600);
+
+  if(liveCount > 0){
+    updateStatus(`● ${liveCount} match(es) live · API-Football · Synced ${t}`);
+  } else {
+    updateStatus(`Scores up to date · API-Football · Synced ${t}`);
+  }
+  syncLivePill();
+  icon.classList.remove('fa-spin');
 }
 
 function renderAll(){
-  renderFixtures();renderToday();renderGroups();renderKnockoutList();
-  if(koView==='bracket')renderBracket();
+  renderFixtures();
+  renderToday();
+  renderGroups();
+  renderKnockoutList();
+  if(koView==='bracket') renderBracket();
 }
 
 /* ══ TABS ══ */
@@ -891,33 +984,39 @@ function switchTab(tab,el){
 function calcDaysLeft(){
   const diff=new Date('2026-07-19T00:00:00+06:00')-getBDNow();
   const el=document.getElementById('daysLeft');
-  if(el)el.textContent=diff>0?Math.ceil(diff/86400000):'🏆';
+  if(el) el.textContent=diff>0?Math.ceil(diff/86400000):'🏆';
 }
 
 window.addEventListener('scroll',()=>document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300));
 
 /* ══ INIT ══ */
-document.addEventListener('DOMContentLoaded',async()=>{
+document.addEventListener('DOMContentLoaded', async ()=>{
   calcDaysLeft();
+
+  // Key already saved হলে banner ছোট করো
+  if(RAPID_API_KEY){
+    document.getElementById('apiKeyInput').value = '••••••••••••••••••••••••';
+    document.getElementById('keyOk').style.display = 'flex';
+    document.getElementById('keyBanner').style.borderColor = 'rgba(0,230,118,0.3)';
+  }
+
   renderAll();
-  updateStatus('Checking for live updates…');
-  const c=await fetchLive();
-  await fetchResults();
-  renderAll();
-  const t=getBDNow().toLocaleTimeString('en-BD',{hour:'2-digit',minute:'2-digit'});
-  if(c<0) updateStatus(`API unavailable · Showing confirmed results · ${t}`);
-  else if(c>0) updateStatus(`● ${c} live match update(s) · Synced ${t}`);
-  else updateStatus(`All scores up to date · Synced ${t}`);
-  syncLive();
-  setInterval(async()=>{
-    const cv=await fetchLive();
-    renderFixtures();renderToday();
-    if(koView==='bracket')renderBracket();
-    const tv=getBDNow().toLocaleTimeString('en-BD',{hour:'2-digit',minute:'2-digit'});
-    if(cv>0) updateStatus(`● ${cv} live update(s) · Synced ${tv}`);
-    else updateStatus(`Scores up to date · Synced ${tv}`);
-    syncLive();
-  },60000);
+  await refreshData();
+
+  // প্রতি 60 সেকেন্ডে auto-refresh (live থাকলে 30s)
+  setInterval(async ()=>{
+    const hasLive = [...MATCH_DATA,...KNOCKOUT_MATCHES].some(m=>{
+      const s=getStatus(m);return s.status==='LIVE'||s.status==='HT';
+    });
+    const lc = await fetchLiveScores();
+    if(hasLive) await fetchTodayScores();
+    renderFixtures();
+    renderToday();
+    if(koView==='bracket') renderBracket();
+    const t=getBDNow().toLocaleTimeString('en-BD',{hour:'2-digit',minute:'2-digit'});
+    updateStatus(lc>0 ? `● ${lc} match(es) live · Synced ${t}` : `Up to date · Synced ${t}`);
+    syncLivePill();
+  }, 60000);
 });
 </script>
 </body>
