@@ -376,6 +376,14 @@ body::after{content:"";position:fixed;inset:0;background-image:repeating-linear-
   .find-card{padding:14px 10px 13px;gap:8px;}
   .rank-card{flex:0 0 155px;}.admin-card{flex:0 0 145px;}
 }
+
+/* ── FLOATING FOOTBALL BTN ── */
+.float-ball-btn{position:fixed;bottom:18px;right:14px;z-index:9998;width:42px;height:42px;border-radius:50%;border:none;background:transparent;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;text-decoration:none;}
+.float-ball-btn svg{width:42px;height:42px;animation:ballSpin 4s linear infinite;filter:drop-shadow(0 0 6px rgba(0,240,255,0.5));}
+.float-ball-btn:hover svg{filter:drop-shadow(0 0 10px rgba(0,240,255,0.85)) drop-shadow(0 0 20px rgba(191,0,255,0.4));}
+@keyframes ballSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+@media(max-width:480px){.float-ball-btn{width:34px;height:34px;bottom:14px;right:10px;}.float-ball-btn svg{width:34px;height:34px;}}
+
 </style>
 </head>
 <body>
@@ -992,5 +1000,24 @@ fetch(STORE_CSV).then(r=>r.text()).then(csv=>{
   document.getElementById('storeGrid').innerHTML=items.map(item=>'<div class="store-card"><img src="'+item['Image Url']+'" alt="Item"><a class="store-btn" href="'+item['Link Url']+'" target="_blank">'+item['Botton Name']+'</a></div>').join('');
 }).catch(()=>{document.getElementById('storeGrid').innerHTML='<div class="loader-row">Failed to load</div>';});
 </script>
+<a class="float-ball-btn" href="https://goatfcbd.com/wc2026/" target="_blank" rel="noopener" title="World Cup 2026">
+  <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="fbg" cx="35%" cy="30%"><stop offset="0%" stop-color="#1a2a3a"/><stop offset="100%" stop-color="#060610"/></radialGradient>
+      <radialGradient id="fsh" cx="35%" cy="28%"><stop offset="0%" stop-color="rgba(255,255,255,0.25)"/><stop offset="60%" stop-color="transparent"/></radialGradient>
+    </defs>
+    <circle cx="20" cy="20" r="18" fill="url(#fbg)" stroke="#00f0ff" stroke-width="1.2"/>
+    <polygon points="20,13 24.8,16.5 23,22 17,22 15.2,16.5" fill="#00f0ff" opacity="0.85"/>
+    <polygon points="20,6 22.5,9.5 20,13 17.5,9.5" fill="#bf00ff" opacity="0.7"/>
+    <polygon points="26,9 29,13 26.5,16 23.8,13.5 24.8,10" fill="#00f0ff" opacity="0.6"/>
+    <polygon points="30,17 33,20 30.5,23.5 27,22.5 26.5,19" fill="#bf00ff" opacity="0.6"/>
+    <polygon points="26,27 23,30 20,27 22,23 26,23" fill="#00f0ff" opacity="0.6"/>
+    <polygon points="14,27 11,24 13.5,20.5 17.5,21 18.5,25" fill="#bf00ff" opacity="0.6"/>
+    <polygon points="10,17 13.5,15 16,18 14.5,22 11,21" fill="#00f0ff" opacity="0.6"/>
+    <polygon points="14,9 17,10.5 15.5,14 12.5,13 11,10" fill="#bf00ff" opacity="0.6"/>
+    <circle cx="20" cy="20" r="18" fill="url(#fsh)"/>
+    <circle cx="20" cy="20" r="18" fill="none" stroke="rgba(0,240,255,0.35)" stroke-width="0.8"/>
+  </svg>
+</a>
 </body>
 </html>
