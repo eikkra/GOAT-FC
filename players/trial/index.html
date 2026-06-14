@@ -66,20 +66,20 @@ body::after{content:"";position:fixed;inset:0;background:repeating-linear-gradie
 /* TABLE */
 .tbl-container{background:var(--s1);border:1px solid var(--br);border-radius:11px;overflow:hidden;}
 .tbl-wrap{overflow-x:auto;}
-.tbl{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed;}
+.tbl{width:100%;border-collapse:collapse;font-size:11px;table-layout:auto;}
 
-/* Column widths — fixed so no empty gap on PC */
-.tbl col.c-rank   { width: 40px; }
-.tbl col.c-player { width: 34%; }
-.tbl col.c-trials { width: 12%; }
-.tbl col.c-score  { width: 12%; }
-.tbl col.c-rating { width: 14%; }
-.tbl col.c-status { width: 18%; }
+/* min-width hints — browser balances the rest naturally */
+.tbl col.c-rank   { width: 42px; }
+.tbl col.c-player { width: auto; }
+.tbl col.c-trials { min-width: 64px; }
+.tbl col.c-score  { min-width: 64px; }
+.tbl col.c-rating { min-width: 74px; }
+.tbl col.c-status { min-width: 96px; }
 
 .tbl thead{position:sticky;top:0;z-index:10;}
 .tbl thead tr{background:var(--s2);}
 .tbl thead th{
-  padding:8px 6px;
+  padding:10px 14px;
   font-family:'Exo 2',sans-serif;
   font-size:7px;
   font-weight:800;
@@ -89,22 +89,21 @@ body::after{content:"";position:fixed;inset:0;background:repeating-linear-gradie
   border-bottom:1px solid rgba(0,230,118,.18);
   text-align:center;
   white-space:nowrap;
-  overflow:hidden;
 }
-.tbl thead th.th-player{text-align:left;padding-left:8px;}
+.tbl thead th.th-rank{padding:10px 8px;width:42px;}
+.tbl thead th.th-player{text-align:left;padding-left:14px;}
 .tbl thead th i{margin-right:3px;opacity:.7;}
 .tbl tbody tr{border-bottom:1px solid var(--br);transition:background .15s;animation:fadeUp .3s ease both;}
 .tbl tbody tr:last-child{border-bottom:none;}
 .tbl tbody tr:hover{background:rgba(0,230,118,.04);}
 .tbl tbody td{
-  padding:7px 6px;
+  padding:10px 14px;
   color:var(--mu);
   vertical-align:middle;
   text-align:center;
-  overflow:hidden;
-  text-overflow:ellipsis;
 }
-.tbl tbody td.td-player{text-align:left;padding-left:8px;}
+.tbl tbody td.td-rank{padding:10px 8px;width:42px;}
+.tbl tbody td.td-player{text-align:left;padding-left:14px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
 /* Rank */
 .rank-num{
@@ -194,13 +193,14 @@ footer{position:relative;z-index:1;text-align:center;padding:14px;border-top:1px
   .stat-num{font-size:15px;}
   .tbl col.c-rank   { width: 32px; }
   .tbl col.c-player { width: 30%; }
-  .tbl col.c-trials { width: 11%; }
-  .tbl col.c-score  { width: 12%; }
-  .tbl col.c-rating { width: 14%; }
-  .tbl col.c-status { width: 20%; }
-  .tbl thead th,.tbl tbody td{padding:6px 4px;}
-  .tbl tbody td.td-player{padding-left:6px;}
-  .tbl thead th.th-player{padding-left:6px;}
+  .tbl col.c-trials { min-width: 52px; }
+  .tbl col.c-score  { min-width: 52px; }
+  .tbl col.c-rating { min-width: 58px; }
+  .tbl col.c-status { min-width: 76px; }
+  .tbl thead th,.tbl tbody td{padding:8px 8px;}
+  .tbl thead th.th-rank,.tbl tbody td.td-rank{padding:8px 4px;width:32px;}
+  .tbl tbody td.td-player{padding-left:8px;}
+  .tbl thead th.th-player{padding-left:8px;}
   .admin-btn span{display:none;}
   .admin-btn{padding:5px 8px;}
   .player-name{font-size:10px;}
@@ -259,7 +259,7 @@ footer{position:relative;z-index:1;text-align:center;padding:14px;border-top:1px
         </colgroup>
         <thead>
           <tr>
-            <th>#</th>
+            <th class="th-rank">#</th>
             <th class="th-player"><i class="fa-solid fa-user-ninja"></i>Player</th>
             <th><i class="fa-solid fa-clipboard-check"></i>Trials</th>
             <th><i class="fa-solid fa-chart-bar"></i>Score</th>
@@ -390,7 +390,7 @@ function render() {
       ? `<a class="player-name" href="${r.fb}" target="_blank">${r.name || '—'}</a>`
       : `<span class="player-name" style="color:var(--tx);">${r.name || '—'}</span>`;
     return `<tr style="animation-delay:${i * 0.025}s">
-      <td><span class="rank-num">${globalIdx}</span></td>
+      <td class="td-rank"><span class="rank-num">${globalIdx}</span></td>
       <td class="td-player">${nameEl}</td>
       <td><span class="trials-cell">${r.reviews}</span></td>
       <td><span class="score-val" style="color:${col}">${sc}%</span></td>
