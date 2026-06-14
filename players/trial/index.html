@@ -5,24 +5,23 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
 <title>GOAT FC — Trial Tracker</title>
 <link rel="icon" type="image/png" href="https://i.imgur.com/LY3Bb9m.png"/>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&family=Exo+2:wght@600;700;800;900&display=swap" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --bg:#060f08;--s1:#0a140c;--s2:#0e1a10;
+  --bg:#060f08;--s1:#0a140c;--s2:#0e1a10;--s3:#111e13;
   --br:#1a2e1c;--br2:#1f3821;
-  --gn:#00e676;--gn3:#69f0ae;
+  --gn:#00e676;--gn2:#00c853;--gn3:#69f0ae;--gnd:#004d20;
   --tx:#e8f5e9;--mu:#4a7a52;--mu2:#2e5535;
-  --cy:#00e5ff;--rd:#ff5252;--or:#ffab40;
-  --font:'Exo 2',sans-serif;
+  --cy:#00e5ff;--yw:#ccff90;--rd:#ff5252;--or:#ffab40;--wh:#ffffff;
 }
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
 @keyframes borderPulse{0%,100%{border-color:rgba(0,230,118,.2)}50%{border-color:rgba(0,230,118,.55)}}
 html,body{height:100%;-webkit-font-smoothing:antialiased;}
-body{background:var(--bg);font-family:var(--font);color:var(--tx);min-height:100vh;overflow-x:hidden;}
+body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--tx);min-height:100vh;overflow-x:hidden;}
 body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at 20% 0%,rgba(0,230,118,.06) 0%,transparent 55%),radial-gradient(ellipse at 80% 100%,rgba(0,229,255,.04) 0%,transparent 50%);pointer-events:none;z-index:0;}
 body::after{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px);pointer-events:none;z-index:0;opacity:.5;}
 
@@ -31,24 +30,24 @@ body::after{content:"";position:fixed;inset:0;background:repeating-linear-gradie
 .top-left{display:flex;align-items:center;gap:8px;text-decoration:none;}
 .top-logo{width:20px;filter:drop-shadow(0 0 8px rgba(0,230,118,.8)) brightness(1.2);}
 .top-title{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;letter-spacing:3px;color:var(--gn);text-shadow:0 0 12px rgba(0,230,118,.5);}
-.admin-btn{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;border:1px solid rgba(0,230,118,.25);background:rgba(0,230,118,.07);color:var(--gn);font-family:var(--font);font-size:8px;font-weight:800;letter-spacing:1.5px;text-decoration:none;text-transform:uppercase;transition:all .2s;}
+.admin-btn{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;border:1px solid rgba(0,230,118,.25);background:rgba(0,230,118,.07);color:var(--gn);font-family:'Exo 2',sans-serif;font-size:8px;font-weight:800;letter-spacing:1.5px;text-decoration:none;text-transform:uppercase;transition:all .2s;}
 .admin-btn:hover{border-color:rgba(0,230,118,.55);background:rgba(0,230,118,.14);}
 .admin-btn i{font-size:9px;}
 
 /* HERO */
 .hero{position:relative;z-index:1;text-align:center;padding:20px 14px 16px;border-bottom:1px solid rgba(0,230,118,.1);background:linear-gradient(180deg,rgba(0,230,118,.04) 0%,transparent 100%);}
-.hero-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--font);font-size:7px;font-weight:800;letter-spacing:3px;color:var(--gn);text-transform:uppercase;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.22);padding:3px 10px;border-radius:20px;margin-bottom:10px;}
+.hero-badge{display:inline-flex;align-items:center;gap:5px;font-family:'Exo 2',sans-serif;font-size:7px;font-weight:800;letter-spacing:3px;color:var(--gn);text-transform:uppercase;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.22);padding:3px 10px;border-radius:20px;margin-bottom:10px;}
 .hero-badge i{font-size:8px;animation:pulse 2s ease-in-out infinite;}
 .hero-title{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;letter-spacing:5px;color:var(--gn);text-shadow:0 0 30px rgba(0,230,118,.5),0 0 60px rgba(0,230,118,.2);line-height:1;margin-bottom:6px;}
 .hero-title span{color:var(--tx);opacity:.7;}
-.hero-desc{font-family:var(--font);font-size:9px;font-weight:600;letter-spacing:2px;color:var(--mu);text-transform:uppercase;}
+.hero-desc{font-family:'Exo 2',sans-serif;font-size:9px;font-weight:600;letter-spacing:2px;color:var(--mu);text-transform:uppercase;}
 .hero-line{width:50px;height:2px;background:linear-gradient(90deg,transparent,var(--gn),transparent);margin:12px auto 0;}
 
 /* SEARCH */
 .search-wrap{position:sticky;top:44px;z-index:99;background:rgba(6,15,8,.95);border-bottom:1px solid rgba(0,230,118,.1);padding:8px 12px;backdrop-filter:blur(12px);}
-.search-inner{max-width:760px;margin:0 auto;position:relative;}
+.search-inner{max-width:860px;margin:0 auto;position:relative;}
 .search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--mu);font-size:11px;pointer-events:none;}
-.search-inp{width:100%;height:34px;background:var(--s2);border:1px solid var(--br2);border-radius:7px;color:var(--tx);font-family:var(--font);font-size:11px;font-weight:600;padding:0 34px 0 32px;outline:none;transition:border-color .2s,box-shadow .2s;}
+.search-inp{width:100%;height:34px;background:var(--s2);border:1px solid var(--br2);border-radius:7px;color:var(--tx);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;padding:0 34px 0 32px;outline:none;transition:border-color .2s,box-shadow .2s;}
 .search-inp::placeholder{color:var(--mu);}
 .search-inp:focus{border-color:var(--gn);box-shadow:0 0 0 2px rgba(0,230,118,.1);}
 .search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--mu);cursor:pointer;font-size:11px;display:none;padding:4px;transition:color .2s;}
@@ -56,101 +55,157 @@ body::after{content:"";position:fixed;inset:0;background:repeating-linear-gradie
 .search-clear.show{display:block;}
 
 /* CONTENT */
-.content{max-width:760px;margin:0 auto;padding:12px 10px 36px;position:relative;z-index:1;}
+.content{max-width:860px;margin:0 auto;padding:12px 10px 36px;position:relative;z-index:1;}
 
 /* STATS */
 .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:12px;}
 .stat-box{background:var(--s1);border:1px solid var(--br);border-radius:9px;padding:10px 8px;text-align:center;animation:borderPulse 3s ease-in-out infinite;}
 .stat-num{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:var(--gn);text-shadow:0 0 12px rgba(0,230,118,.4);}
-.stat-lbl{font-family:var(--font);font-size:7px;font-weight:800;letter-spacing:1.5px;color:var(--mu);text-transform:uppercase;margin-top:3px;}
+.stat-lbl{font-family:'Exo 2',sans-serif;font-size:7px;font-weight:800;letter-spacing:1.5px;color:var(--mu);text-transform:uppercase;margin-top:3px;}
 
 /* TABLE */
 .tbl-container{background:var(--s1);border:1px solid var(--br);border-radius:11px;overflow:hidden;}
-.tbl{width:100%;border-collapse:collapse;font-family:var(--font);font-size:11px;table-layout:fixed;}
+.tbl-wrap{overflow-x:auto;}
+.tbl{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed;}
 
-/* Column widths — fixed so nothing overflows */
-.col-num   {width:36px;}
-.col-player{width:auto;}
-.col-trials{width:70px;}
-.col-score {width:70px;}
-.col-rating{width:80px;}
-.col-status{width:90px;}
+/* Column widths — tight but readable */
+.tbl col.c-rank   { width: 36px; }
+.tbl col.c-player { width: auto; }
+.tbl col.c-trials { width: 60px; }
+.tbl col.c-score  { width: 62px; }
+.tbl col.c-rating { width: 72px; }
+.tbl col.c-status { width: 88px; }
 
+.tbl thead{position:sticky;top:0;z-index:10;}
 .tbl thead tr{background:var(--s2);}
 .tbl thead th{
-  padding:9px 6px;
-  font-family:var(--font);font-size:8px;font-weight:800;letter-spacing:1px;
-  color:var(--gn);text-transform:uppercase;
+  padding:8px 6px;
+  font-family:'Exo 2',sans-serif;
+  font-size:7px;
+  font-weight:800;
+  letter-spacing:1px;
+  color:var(--gn);
+  text-transform:uppercase;
   border-bottom:1px solid rgba(0,230,118,.18);
-  text-align:center;white-space:nowrap;overflow:hidden;
+  text-align:center;
+  white-space:nowrap;
+  overflow:hidden;
 }
-.tbl thead th.th-player{text-align:left;padding-left:10px;}
+.tbl thead th.th-player{text-align:left;padding-left:8px;}
 .tbl thead th i{margin-right:3px;opacity:.7;}
-
-.tbl tbody tr{border-bottom:1px solid var(--br);transition:background .15s;animation:fadeUp .25s ease both;}
+.tbl tbody tr{border-bottom:1px solid var(--br);transition:background .15s;animation:fadeUp .3s ease both;}
 .tbl tbody tr:last-child{border-bottom:none;}
 .tbl tbody tr:hover{background:rgba(0,230,118,.04);}
 .tbl tbody td{
-  padding:8px 6px;
-  font-family:var(--font);font-size:11px;font-weight:700;
-  color:var(--mu);vertical-align:middle;
-  text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  padding:7px 6px;
+  color:var(--mu);
+  vertical-align:middle;
+  text-align:center;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
-.tbl tbody td.td-num{font-family:var(--font);font-size:10px;color:var(--mu);text-align:center;}
-.tbl tbody td.td-player{text-align:left;padding-left:10px;}
+.tbl tbody td.td-player{text-align:left;padding-left:8px;}
 
-/* Player name link */
+/* Rank */
+.rank-num{
+  font-family:'Exo 2',sans-serif;
+  font-size:10px;
+  font-weight:700;
+  color:var(--mu);
+  display:block;
+}
+
+/* Player name */
 .player-name{
-  font-family:var(--font);font-size:11px;font-weight:700;
-  color:var(--gn3);text-decoration:none;
-  transition:color .2s;display:inline-block;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;
+  font-family:'Exo 2',sans-serif;
+  font-size:11px;
+  font-weight:700;
+  color:var(--gn3);
+  text-decoration:none;
+  transition:color .2s;
+  display:block;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
-.player-name:hover{color:var(--gn);}
-.player-name-plain{font-family:var(--font);font-size:11px;font-weight:700;color:var(--tx);}
+a.player-name:hover{color:var(--gn);}
 
-/* Data cells */
-.trials-val{font-family:var(--font);font-size:11px;font-weight:700;color:var(--cy);}
-.score-val {font-family:var(--font);font-size:11px;font-weight:800;}
-.rtg-excellent{color:var(--gn);}
-.rtg-good     {color:var(--cy);}
-.rtg-average  {color:var(--or);}
-.rtg-poor     {color:var(--rd);}
+/* Trials count */
+.trials-cell{
+  font-family:'Exo 2',sans-serif;
+  font-size:11px;
+  font-weight:700;
+  color:var(--cy);
+}
 
-/* Status */
-.status-eligible{display:inline-flex;align-items:center;gap:4px;font-family:var(--font);font-size:8px;font-weight:800;letter-spacing:.5px;color:var(--gn);background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.3);padding:3px 8px;border-radius:20px;cursor:pointer;transition:all .2s;text-decoration:none;white-space:nowrap;}
+/* Score */
+.score-val{
+  font-family:'Exo 2',sans-serif;
+  font-size:11px;
+  font-weight:800;
+}
+
+/* Rating */
+.rtg-excellent{color:var(--gn);font-family:'Exo 2',sans-serif;font-size:10px;font-weight:800;}
+.rtg-good{color:var(--cy);font-family:'Exo 2',sans-serif;font-size:10px;font-weight:800;}
+.rtg-average{color:var(--or);font-family:'Exo 2',sans-serif;font-size:10px;font-weight:800;}
+.rtg-poor{color:var(--rd);font-family:'Exo 2',sans-serif;font-size:10px;font-weight:800;}
+
+/* Status badge */
+.status-eligible{
+  display:inline-flex;align-items:center;gap:3px;
+  font-family:'Exo 2',sans-serif;font-size:8px;font-weight:800;letter-spacing:.3px;
+  color:var(--gn);background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.3);
+  padding:3px 7px;border-radius:20px;cursor:pointer;transition:all .2s;
+  text-decoration:none;white-space:nowrap;
+}
 .status-eligible:hover{background:rgba(0,230,118,.2);transform:translateY(-1px);}
-.status-eligible i{font-size:8px;}
-.status-waiting{display:inline-flex;align-items:center;gap:4px;font-family:var(--font);font-size:8px;font-weight:800;letter-spacing:.5px;color:var(--or);background:rgba(255,171,64,.08);border:1px solid rgba(255,171,64,.25);padding:3px 8px;border-radius:20px;white-space:nowrap;}
-.status-waiting i{font-size:8px;}
+.status-eligible i{font-size:7px;}
+.status-waiting{
+  display:inline-flex;align-items:center;gap:3px;
+  font-family:'Exo 2',sans-serif;font-size:8px;font-weight:800;letter-spacing:.3px;
+  color:var(--or);background:rgba(255,171,64,.08);border:1px solid rgba(255,171,64,.25);
+  padding:3px 7px;border-radius:20px;white-space:nowrap;
+}
+.status-waiting i{font-size:7px;}
 
 /* PAGINATION */
 .pagination{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:12px;flex-wrap:wrap;}
-.pg-btn{min-width:28px;height:28px;padding:0 6px;background:var(--s1);border:1px solid var(--br2);border-radius:5px;color:var(--mu);font-family:var(--font);font-size:10px;font-weight:800;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;}
+.pg-btn{min-width:28px;height:28px;padding:0 6px;background:var(--s1);border:1px solid var(--br2);border-radius:5px;color:var(--mu);font-family:'Exo 2',sans-serif;font-size:10px;font-weight:800;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;}
 .pg-btn:hover{border-color:rgba(0,230,118,.4);color:var(--gn);}
 .pg-btn.active{border-color:var(--gn);background:rgba(0,230,118,.12);color:var(--gn);}
 .pg-btn:disabled{opacity:.35;cursor:not-allowed;}
-.pg-info{font-family:var(--font);font-size:8px;font-weight:700;color:var(--mu);letter-spacing:1px;text-align:center;margin-top:6px;}
+.pg-info{font-family:'Exo 2',sans-serif;font-size:8px;font-weight:700;color:var(--mu);letter-spacing:1px;text-align:center;margin-top:6px;}
 
-/* EMPTY/LOADING */
+/* EMPTY / LOADING */
 .state-row td{text-align:center;padding:32px 20px!important;color:var(--mu);}
 .state-row i{font-size:20px;display:block;margin-bottom:8px;color:var(--mu2);}
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(0,230,118,.15);border-top-color:var(--gn);border-radius:50%;animation:spin .6s linear infinite;}
 
 /* FOOTER */
 footer{position:relative;z-index:1;text-align:center;padding:14px;border-top:1px solid rgba(0,230,118,.1);background:rgba(6,15,8,.7);}
-.footer-text{font-family:var(--font);font-size:9px;font-weight:700;letter-spacing:2px;color:var(--mu);text-transform:uppercase;}
+.footer-text{font-family:'Exo 2',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;color:var(--mu);text-transform:uppercase;}
 .footer-text span{color:var(--gn);}
 .footer-text a{color:var(--gn);text-decoration:none;}
 .footer-text a:hover{text-shadow:0 0 8px rgba(0,230,118,.5);}
 
-@media(max-width:600px){
+@media(max-width:480px){
   .hero-title{font-size:16px;letter-spacing:3px;}
   .stat-num{font-size:15px;}
+  .tbl col.c-rank   { width: 28px; }
+  .tbl col.c-trials { width: 48px; }
+  .tbl col.c-score  { width: 52px; }
+  .tbl col.c-rating { width: 60px; }
+  .tbl col.c-status { width: 76px; }
+  .tbl thead th,.tbl tbody td{padding:6px 4px;}
+  .tbl tbody td.td-player{padding-left:6px;}
+  .tbl thead th.th-player{padding-left:6px;}
   .admin-btn span{display:none;}
   .admin-btn{padding:5px 8px;}
-  .col-rating{width:60px;}
-  .col-status{width:80px;}
+  .player-name{font-size:10px;}
+  .trials-cell,.score-val{font-size:10px;}
+  .rtg-excellent,.rtg-good,.rtg-average,.rtg-poor{font-size:9px;}
+  .status-eligible,.status-waiting{font-size:7px;padding:2px 5px;}
 }
 </style>
 </head>
@@ -191,29 +246,31 @@ footer{position:relative;z-index:1;text-align:center;padding:14px;border-top:1px
   </div>
 
   <div class="tbl-container">
-    <table class="tbl">
-      <colgroup>
-        <col class="col-num"/>
-        <col class="col-player"/>
-        <col class="col-trials"/>
-        <col class="col-score"/>
-        <col class="col-rating"/>
-        <col class="col-status"/>
-      </colgroup>
-      <thead>
-        <tr>
-          <th><i class="fa-solid fa-hashtag"></i>#</th>
-          <th class="th-player"><i class="fa-solid fa-user-ninja"></i>Player</th>
-          <th><i class="fa-solid fa-clipboard-check"></i>Trials</th>
-          <th><i class="fa-solid fa-chart-bar"></i>Score</th>
-          <th><i class="fa-solid fa-star"></i>Rating</th>
-          <th><i class="fa-solid fa-shield-check"></i>Status</th>
-        </tr>
-      </thead>
-      <tbody id="tBody">
-        <tr class="state-row"><td colspan="6"><span class="spinner"></span> Loading players...</td></tr>
-      </tbody>
-    </table>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <colgroup>
+          <col class="c-rank"/>
+          <col class="c-player"/>
+          <col class="c-trials"/>
+          <col class="c-score"/>
+          <col class="c-rating"/>
+          <col class="c-status"/>
+        </colgroup>
+        <thead>
+          <tr>
+            <th><i class="fa-solid fa-hashtag"></i>#</th>
+            <th class="th-player"><i class="fa-solid fa-user-ninja"></i>Player</th>
+            <th><i class="fa-solid fa-clipboard-check"></i>Trials</th>
+            <th><i class="fa-solid fa-chart-bar"></i>Score</th>
+            <th><i class="fa-solid fa-star"></i>Rating</th>
+            <th><i class="fa-solid fa-shield-check"></i>Status</th>
+          </tr>
+        </thead>
+        <tbody id="tBody">
+          <tr class="state-row"><td colspan="6"><span class="spinner"></span> Loading players...</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <div class="pagination" id="pagination"></div>
@@ -232,6 +289,7 @@ footer{position:relative;z-index:1;text-align:center;padding:14px;border-top:1px
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQo9bp1MIrXbcwCY8z23bLmut7WdoOVvDpBCMO-9ku6REH2l5WgD9tBoA4Wl6ZMCb65ZA_4N06twOr4/pub?gid=725906971&single=true&output=csv';
 const GOATFC_MSG_URL = 'https://www.facebook.com/goatfc.official';
 const PER_PAGE = 20;
+
 let allRows = [], filtered = [], currentPage = 1;
 
 function parseCSV(text) {
@@ -247,6 +305,7 @@ function parseCSV(text) {
       reviews: parseInt(cols[2]?.trim()) || 0,
       avgScore: parseFloat(cols[3]?.trim()) || 0,
       rating: cols[4]?.trim() || '',
+      reviewedBy: cols[5]?.trim() || '',
       status: cols[6]?.trim() || ''
     });
   }
@@ -261,7 +320,8 @@ function splitCSVLine(line) {
     else if (c === ',' && !inQ) { result.push(cur); cur = ''; }
     else { cur += c; }
   }
-  result.push(cur); return result;
+  result.push(cur);
+  return result;
 }
 
 async function loadData() {
@@ -271,9 +331,10 @@ async function loadData() {
     allRows = parseCSV(text);
     filtered = [...allRows];
     currentPage = 1;
-    updateStats(); render();
+    updateStats();
+    render();
   } catch (e) {
-    document.getElementById('tBody').innerHTML = `<tr class="state-row"><td colspan="6"><i class="fa-solid fa-triangle-exclamation"></i>Could not load data.</td></tr>`;
+    document.getElementById('tBody').innerHTML = `<tr class="state-row"><td colspan="6"><i class="fa-solid fa-triangle-exclamation"></i>Could not load data. Please try again.</td></tr>`;
   }
 }
 
@@ -288,15 +349,17 @@ function updateStats() {
 function ratingText(rating) {
   const r = rating.toLowerCase();
   if (r.includes('excellent')) return `<span class="rtg-excellent">Excellent</span>`;
-  if (r.includes('good'))      return `<span class="rtg-good">Good</span>`;
-  if (r.includes('average'))   return `<span class="rtg-average">Average</span>`;
-  if (r.includes('poor'))      return `<span class="rtg-poor">Poor</span>`;
+  if (r.includes('good')) return `<span class="rtg-good">Good</span>`;
+  if (r.includes('average')) return `<span class="rtg-average">Average</span>`;
+  if (r.includes('poor')) return `<span class="rtg-poor">Poor</span>`;
   return `<span class="rtg-average">${rating || '—'}</span>`;
 }
 
 function statusBadge(status) {
-  if (status.toLowerCase().includes('eligible'))
+  const s = status.toLowerCase();
+  if (s.includes('eligible')) {
     return `<a class="status-eligible" href="${GOATFC_MSG_URL}" target="_blank"><i class="fa-solid fa-check-circle"></i>Eligible</a>`;
+  }
   return `<span class="status-waiting"><i class="fa-solid fa-hourglass-half"></i>Waiting</span>`;
 }
 
@@ -316,24 +379,27 @@ function render() {
   if (currentPage > totalPages) currentPage = 1;
   const start = (currentPage - 1) * PER_PAGE;
   const end = Math.min(start + PER_PAGE, filtered.length);
+  const pageRows = filtered.slice(start, end);
 
-  tbody.innerHTML = filtered.slice(start, end).map((r, i) => {
+  tbody.innerHTML = pageRows.map((r, i) => {
+    const globalIdx = start + i + 1;
     const sc = Math.round(r.avgScore);
     const col = scoreColor(sc);
     const nameEl = r.fb
       ? `<a class="player-name" href="${r.fb}" target="_blank">${r.name || '—'}</a>`
-      : `<span class="player-name-plain">${r.name || '—'}</span>`;
-    return `<tr style="animation-delay:${i*.025}s">
-      <td class="td-num">${start + i + 1}</td>
+      : `<span class="player-name" style="color:var(--tx);">${r.name || '—'}</span>`;
+    return `<tr style="animation-delay:${i * 0.025}s">
+      <td><span class="rank-num">${globalIdx}</span></td>
       <td class="td-player">${nameEl}</td>
-      <td><span class="trials-val">${r.reviews}</span></td>
+      <td><span class="trials-cell">${r.reviews}</span></td>
       <td><span class="score-val" style="color:${col}">${sc}%</span></td>
       <td>${ratingText(r.rating)}</td>
       <td>${statusBadge(r.status)}</td>
     </tr>`;
   }).join('');
 
-  renderPagination(totalPages); updateStats();
+  renderPagination(totalPages);
+  updateStats();
 }
 
 function renderPagination(totalPages) {
@@ -344,7 +410,8 @@ function renderPagination(totalPages) {
   const end = Math.min(currentPage * PER_PAGE, filtered.length);
   info.textContent = `Showing ${start}–${end} of ${filtered.length} players`;
   let html = `<button class="pg-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}><i class="fa-solid fa-chevron-left"></i></button>`;
-  paginationRange(currentPage, totalPages).forEach(p => {
+  const range = paginationRange(currentPage, totalPages);
+  range.forEach(p => {
     if (p === '...') html += `<span class="pg-btn" style="cursor:default;opacity:.4">···</span>`;
     else html += `<button class="pg-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
   });
