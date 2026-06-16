@@ -139,7 +139,7 @@ border-radius:6px;overflow:hidden;
 box-shadow:0 0 60px rgba(0,240,255,0.03),0 0 120px rgba(191,0,255,0.03);
 }
 
-/* ── COVER — clear, no blur, shorter ── */
+/* ── COVER ── */
 .cover{
 height:100px;
 position:relative;overflow:hidden;
@@ -151,7 +151,6 @@ width:100%;height:100%;
 object-fit:cover;
 object-position:center 35%;
 opacity:0.88;
-/* NO filter/blur */
 }
 
 .cover-overlay{
@@ -180,7 +179,6 @@ background:linear-gradient(90deg,rgba(0,240,255,0.025),rgba(191,0,255,0.025));
 gap:12px;
 }
 
-/* AVATAR — bigger */
 .avatar-frame{
 flex-shrink:0;
 width:62px;height:62px;
@@ -195,7 +193,6 @@ animation:rgbBorder 4s linear infinite;
 
 .name-stack{min-width:0;flex:1;}
 
-/* PLAYER NAME — gaming font */
 .player-name{
 font-family:'Exo 2',sans-serif;
 font-size:17px;font-weight:900;
@@ -215,7 +212,6 @@ box-shadow:0 0 9px var(--neon-green);
 animation:pulse 1.5s ease-in-out infinite;
 }
 
-/* CLUB ID — pro pill */
 .club-id-pill{
 display:inline-flex;align-items:center;gap:6px;
 margin-top:5px;
@@ -263,7 +259,6 @@ color:var(--neon-cyan);
 box-shadow:0 0 10px rgba(0,240,255,0.2);
 }
 
-/* label bold + light color */
 .rank-label{
 font-family:'Exo 2',sans-serif;
 font-size:8px;font-weight:800;
@@ -299,7 +294,6 @@ text-transform:uppercase;
 margin-bottom:8px;
 }
 
-/* WLD — bold labels, lighter color */
 .wld-row{
 display:grid;grid-template-columns:1fr 1fr 1fr;
 gap:6px;margin-bottom:7px;
@@ -327,7 +321,6 @@ transition:transform .2s;
 .wld-num.l{color:var(--neon-pink);text-shadow:0 0 10px var(--neon-pink);}
 .wld-num.d{color:var(--neon-yellow);text-shadow:0 0 10px var(--neon-yellow);}
 
-/* bold + lighter label */
 .wld-lbl{
 font-family:'Exo 2',sans-serif;
 font-size:8px;font-weight:800;
@@ -336,7 +329,6 @@ color:#93c5fd;
 margin-top:2px;text-transform:uppercase;
 }
 
-/* STAT GRID — common accent color for all numbers */
 .stat-grid{
 display:grid;grid-template-columns:repeat(3,1fr);gap:5px;
 }
@@ -350,7 +342,6 @@ text-align:center;transition:all .2s;
 }
 .stat-cell:hover{background:var(--surface3);transform:translateY(-1px);}
 
-/* all stat numbers same light accent color */
 .stat-num{
 font-family:'Orbitron',sans-serif;
 font-size:17px;font-weight:900;line-height:1;
@@ -358,7 +349,6 @@ color:#02fae9;
 text-shadow:0 0 10px rgba(255,0,122,0.6);
 }
 
-/* bold + lighter label for stat */
 .stat-lbl{
 font-family:'Exo 2',sans-serif;
 font-size:7px;font-weight:800;
@@ -391,7 +381,6 @@ text-shadow:0 0 6px var(--neon-purple);
 border-radius:3px;
 }
 
-/* MATCH ROW */
 .match-row{
 display:grid;
 grid-template-columns:1fr 52px 1fr;
@@ -433,7 +422,6 @@ white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 max-width:100%;letter-spacing:0.3px;
 }
 
-/* Club ID — bigger, bold, single common glow color (cyan) */
 .mp-id{
 font-family:'Exo 2',sans-serif;
 font-size:9px;font-weight:800;
@@ -444,7 +432,6 @@ text-shadow:0 0 8px rgba(0,240,255,0.65);
 white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;
 }
 
-/* SCORE BOX */
 .score-box{display:flex;flex-direction:column;align-items:center;gap:2px;}
 
 .score-badge{
@@ -474,7 +461,6 @@ text-shadow:0 0 8px var(--neon-yellow);
 box-shadow:0 0 10px rgba(245,255,0,0.08);
 }
 
-/* MATCH TYPE — bigger, bold, light color */
 .match-type-lbl{
 font-family:'Exo 2',sans-serif;
 font-size:7.5px;font-weight:800;
@@ -556,7 +542,7 @@ display:block;font-size:22px;margin-bottom:14px;
 <div class="home-btn"><i class="fa-solid fa-house"></i></div>
 </a>
 
-<!-- HERO: no "Player Profile" box, just title + slogan -->
+<!-- HERO -->
 <div class="hero">
 <div class="hero-title">ELITE ATHLETE</div>
 <div class="hero-slogan">BE THE GAME CHANGER</div>
@@ -611,8 +597,9 @@ const id=normalize(r[1]);
 members[id]={name:r[0]||'Unknown',pic:r[4]||'https://i.imgur.com/LY3Bb9m.png',club:r[1]||'N/A'};
 });
 
+// CP sheet columns: Player Club ID(0) | Base CP(1) | Reward(2) | Earn By Bid(3) | Sell CP(4) | Deduct By Bid(5) | Net CP(6) | BDT(7)
 const cpMap={};
-cRows.slice(1).forEach(r=>{if(!r.length)return;cpMap[normalize(r[0])]=r[7]||'0';});
+cRows.slice(1).forEach(r=>{if(!r.length)return;cpMap[normalize(r[0])]=r[6]||'0';});
 
 const board={};const matches=[];
 mRows.slice(1).forEach(r=>{
@@ -656,14 +643,12 @@ const recent=matches.slice().reverse().slice(0,5);
 document.getElementById('app').innerHTML=`
 <div class="profile">
 
-  <!-- COVER: clear HD image, shorter, no blur -->
   <div class="cover">
     <img class="cover-img" src="${COVER_IMG}" alt="Stadium" crossorigin="anonymous" onerror="this.style.display='none'">
     <div class="cover-overlay"></div>
     <div class="cover-grid"></div>
   </div>
 
-  <!-- NAME ROW: avatar bigger, online dot inline after name, LIVE text removed -->
   <div class="name-row">
     <div class="avatar-frame">
       <img crossorigin="anonymous" src="${info.pic}" alt="${info.name}" onerror="this.src='https://i.imgur.com/LY3Bb9m.png'">
@@ -678,7 +663,6 @@ document.getElementById('app').innerHTML=`
     </div>
   </div>
 
-  <!-- RANK + CP: bold labels with light blue color -->
   <div class="rank-strip">
     <div class="rank-cell">
       <div class="rank-icon-box trophy"><i class="fa-solid fa-trophy"></i></div>
@@ -698,7 +682,6 @@ document.getElementById('app').innerHTML=`
 
   <div class="sdiv"></div>
 
-  <!-- STATS: WLD bolds labels, stat grid same color -->
   <div class="stats-section">
     <div class="sec-label">Performance Overview</div>
 
@@ -747,7 +730,6 @@ document.getElementById('app').innerHTML=`
 
   <div class="sdiv"></div>
 
-  <!-- MATCHES: club IDs bigger/bold/same cyan, match type bigger/bold/light -->
   <div class="matches-section">
     <div class="matches-head">
       <div class="matches-title">RECENT MATCHES</div>
