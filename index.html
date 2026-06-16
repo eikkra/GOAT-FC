@@ -158,76 +158,26 @@ body::after{content:"";position:fixed;inset:0;background-image:repeating-linear-
 .hub-icon{font-size:26px;margin-bottom:8px;display:block;}
 .hub-title{font-family:'Exo 2',sans-serif;font-size:11px;font-weight:800;letter-spacing:1px;color:var(--text);text-transform:uppercase;}
 
-/* ── SLIDER WRAPPER (shared: rank + admin) ── */
-.rank-slider-wrap,.admin-slider-wrap{
-  overflow:hidden;position:relative;width:100%;
-  cursor:grab;user-select:none;-webkit-user-select:none;
-  /* GPU layer for wrapper too */
-  -webkit-transform:translateZ(0);
-  transform:translateZ(0);
-}
+/* ── SLIDER WRAPPER ── */
+.rank-slider-wrap,.admin-slider-wrap{overflow:hidden;position:relative;width:100%;cursor:grab;user-select:none;-webkit-user-select:none;-webkit-transform:translateZ(0);transform:translateZ(0);}
 .rank-slider-wrap:active,.admin-slider-wrap:active{cursor:grabbing;}
-.rank-slider-wrap::before,.rank-slider-wrap::after,
-.admin-slider-wrap::before,.admin-slider-wrap::after{
-  content:'';position:absolute;top:0;bottom:0;width:40px;z-index:10;pointer-events:none;
-}
+.rank-slider-wrap::before,.rank-slider-wrap::after,.admin-slider-wrap::before,.admin-slider-wrap::after{content:'';position:absolute;top:0;bottom:0;width:40px;z-index:10;pointer-events:none;}
 .rank-slider-wrap::before,.admin-slider-wrap::before{left:0;background:linear-gradient(90deg,var(--bg),transparent);}
 .rank-slider-wrap::after,.admin-slider-wrap::after{right:0;background:linear-gradient(270deg,var(--bg),transparent);}
 
 /* Tracks */
-.rank-track,.admin-track{
-  display:flex;gap:10px;
-  width:max-content;
-  will-change:transform;
-  /* Force GPU compositing — eliminates jank on mobile */
-  -webkit-transform:translateZ(0);
-  transform:translateZ(0);
-  /* Prevent sub-pixel blur on some Android devices */
-  backface-visibility:hidden;
-  -webkit-backface-visibility:hidden;
-}
+.rank-track,.admin-track{display:flex;gap:10px;width:max-content;will-change:transform;-webkit-transform:translateZ(0);transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden;}
 
-/* ── RANK CARD — compact ── */
-.rank-card{
-  flex:0 0 140px;background:var(--surface);border:1px solid rgba(0,240,255,0.3);
-  border-radius:8px;overflow:hidden;cursor:pointer;text-decoration:none;
-  position:relative;transition:transform .22s,border-color .22s;
-  animation:rankCardGlow 6s linear infinite;
-}
-.rank-card::before{
-  content:"";position:absolute;inset:0;border-radius:8px;padding:1px;
-  background:linear-gradient(90deg,transparent 0%,transparent 30%,#00f0ff 45%,#bf00ff 50%,#00f0ff 55%,transparent 70%,transparent 100%);
-  background-size:300% 300%;
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;mask-composite:exclude;
-  animation:rankBorderScan 4s linear infinite;pointer-events:none;
-}
+/* ── RANK CARD ── */
+.rank-card{flex:0 0 140px;background:var(--surface);border:1px solid rgba(0,240,255,0.3);border-radius:8px;overflow:hidden;cursor:pointer;text-decoration:none;position:relative;transition:transform .22s,border-color .22s;animation:rankCardGlow 6s linear infinite;}
+.rank-card::before{content:"";position:absolute;inset:0;border-radius:8px;padding:1px;background:linear-gradient(90deg,transparent 0%,transparent 30%,#00f0ff 45%,#bf00ff 50%,#00f0ff 55%,transparent 70%,transparent 100%);background-size:300% 300%;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:rankBorderScan 4s linear infinite;pointer-events:none;}
 .rank-card:hover{transform:translateY(-4px) scale(1.03);border-color:rgba(0,240,255,0.6);}
-
-.rank-pic-wrap{
-  width:100%;aspect-ratio:1/1;overflow:hidden;
-  position:relative;background:var(--surface2);
-}
-.rank-pic-wrap img{
-  width:100%;height:100%;
-  object-fit:cover;object-position:center center;
-  display:block;transition:transform .3s;
-}
+.rank-pic-wrap{width:100%;aspect-ratio:1/1;overflow:hidden;position:relative;background:var(--surface2);}
+.rank-pic-wrap img{width:100%;height:100%;object-fit:cover;object-position:center center;display:block;transition:transform .3s;}
 .rank-card:hover .rank-pic-wrap img{transform:scale(1.06);}
-.rank-num-badge{
-  position:absolute;top:5px;left:5px;
-  font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;
-  color:#00f0ff;background:rgba(6,6,16,0.88);
-  padding:2px 6px;border-radius:3px;border:1px solid rgba(0,240,255,0.4);
-  animation:rankNumPulse 2.5s ease-in-out infinite;letter-spacing:1px;
-}
+.rank-num-badge{position:absolute;top:5px;left:5px;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;color:#00f0ff;background:rgba(6,6,16,0.88);padding:2px 6px;border-radius:3px;border:1px solid rgba(0,240,255,0.4);animation:rankNumPulse 2.5s ease-in-out infinite;letter-spacing:1px;}
 .rank-body{padding:6px 7px 8px;}
-.rank-name{
-  font-family:'Exo 2',sans-serif;font-size:9.5px;font-weight:900;
-  color:var(--text);letter-spacing:0.3px;margin-bottom:5px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  text-align:center;
-}
+.rank-name{font-family:'Exo 2',sans-serif;font-size:9.5px;font-weight:900;color:var(--text);letter-spacing:0.3px;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;}
 .rank-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;}
 .rank-stat{background:rgba(0,240,255,0.05);border:1px solid rgba(0,240,255,0.1);border-radius:4px;padding:3px 2px;text-align:center;}
 .rank-stat-val{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;color:var(--neon-cyan);line-height:1;margin-bottom:1px;}
@@ -235,39 +185,15 @@ body::after{content:"";position:fixed;inset:0;background-image:repeating-linear-
 .rank-stat.win .rank-stat-val{color:var(--neon-green);}
 .rank-stat.goal .rank-stat-val{color:var(--neon-yellow);}
 
-/* ── ADMIN CARD — compact ── */
-.admin-card{
-  flex:0 0 130px;background:var(--surface);border:1px solid rgba(0,240,255,0.25);
-  border-radius:8px;overflow:hidden;position:relative;
-  animation:rankCardGlow 6s linear infinite;transition:transform .22s,border-color .22s;
-}
+/* ── ADMIN CARD ── */
+.admin-card{flex:0 0 130px;background:var(--surface);border:1px solid rgba(0,240,255,0.25);border-radius:8px;overflow:hidden;position:relative;animation:rankCardGlow 6s linear infinite;transition:transform .22s,border-color .22s;}
 .admin-card:hover{transform:translateY(-4px) scale(1.03);}
 .admin-card.gold-card{border-color:rgba(255,180,0,0.5) !important;animation:goldGlow 3s ease-in-out infinite !important;}
-.admin-card.gold-card::before{
-  content:"";position:absolute;inset:0;border-radius:8px;padding:1px;
-  background:linear-gradient(90deg,transparent,#ffd700,#ff8c00,#ffd700,transparent);
-  background-size:300% 300%;
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;mask-composite:exclude;
-  animation:goldBorderScan 2.5s linear infinite;pointer-events:none;
-}
-
-.admin-pic-wrap{
-  width:100%;aspect-ratio:1/1;overflow:hidden;
-  position:relative;background:var(--surface2);
-}
-.admin-pic-wrap img{
-  width:100%;height:100%;
-  object-fit:cover;object-position:center center;
-  display:block;transition:transform .3s;
-}
+.admin-card.gold-card::before{content:"";position:absolute;inset:0;border-radius:8px;padding:1px;background:linear-gradient(90deg,transparent,#ffd700,#ff8c00,#ffd700,transparent);background-size:300% 300%;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:goldBorderScan 2.5s linear infinite;pointer-events:none;}
+.admin-pic-wrap{width:100%;aspect-ratio:1/1;overflow:hidden;position:relative;background:var(--surface2);}
+.admin-pic-wrap img{width:100%;height:100%;object-fit:cover;object-position:center center;display:block;transition:transform .3s;}
 .admin-card:hover .admin-pic-wrap img{transform:scale(1.06);}
-.status-badge{
-  position:absolute;top:5px;right:5px;
-  font-family:'Exo 2',sans-serif;font-size:6.5px;font-weight:800;
-  padding:2px 5px;border-radius:3px;letter-spacing:0.5px;text-transform:uppercase;
-  display:flex;align-items:center;gap:3px;
-}
+.status-badge{position:absolute;top:5px;right:5px;font-family:'Exo 2',sans-serif;font-size:6.5px;font-weight:800;padding:2px 5px;border-radius:3px;letter-spacing:0.5px;text-transform:uppercase;display:flex;align-items:center;gap:3px;}
 .status-badge.active{background:rgba(0,255,136,0.15);color:#00ff88;border:1px solid rgba(0,255,136,0.35);}
 .status-badge.busy{background:rgba(255,165,0,0.15);color:#ffaa00;border:1px solid rgba(255,165,0,0.35);}
 .status-badge .s-dot{width:4px;height:4px;border-radius:50%;animation:statusPulse 1.5s ease-in-out infinite;flex-shrink:0;}
@@ -603,402 +529,418 @@ body::after{content:"";position:fixed;inset:0;background-image:repeating-linear-
 </footer>
 
 <script>
-const sheetID="1ZoXNHa5sYiP_HaPRyL5RDML7l3kC2IaGuQCAmYkERf8";
-const MEMBERS_CSV="https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=133947099&single=true&output=csv";
-const LEADER_CSV="https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=1033046915&single=true&output=csv";
-const ADMIN_CSV="https://docs.google.com/spreadsheets/d/e/2PACX-1vS3VQ-e6O8uHjlq8Lsdp5j0vxxOMZH1O17Nbo1ISGXDU_EFsuBEXNWydPbuhJ46lnxqJmevXaN2xPiL/pub?gid=1421931231&single=true&output=csv";
-const STORE_CSV="https://docs.google.com/spreadsheets/d/e/2PACX-1vS3VQ-e6O8uHjlq8Lsdp5j0vxxOMZH1O17Nbo1ISGXDU_EFsuBEXNWydPbuhJ46lnxqJmevXaN2xPiL/pub?gid=1152972554&single=true&output=csv";
+/* ════════════════════════════════════════
+   CONFIG — Sheet IDs & Published CSV URLs
+   ════════════════════════════════════════ */
+const MAIN_SHEET_ID = "1ZoXNHa5sYiP_HaPRyL5RDML7l3kC2IaGuQCAmYkERf8";
+const MAIN_BASE     = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub";
+const CLUB_BASE     = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS3VQ-e6O8uHjlq8Lsdp5j0vxxOMZH1O17Nbo1ISGXDU_EFsuBEXNWydPbuhJ46lnxqJmevXaN2xPiL/pub";
 
-/* ── LOADING BAR ── */
-let loadPct=0;
-const loadBar=document.getElementById('loadBar');
-const loadTimer=setInterval(()=>{loadPct=Math.min(loadPct+Math.random()*8,88);loadBar.style.width=loadPct+'%';},120);
-function finishLoading(){
-  clearInterval(loadTimer);loadBar.style.width='100%';
-  setTimeout(()=>{
+// All CSV URLs — direct Google Sheets pub (no opensheet relay = much faster)
+const CSV = {
+  matches  : MAIN_BASE + "?gid=1588171329&single=true&output=csv",
+  members  : MAIN_BASE + "?gid=133947099&single=true&output=csv",
+  leaders  : MAIN_BASE + "?gid=1033046915&single=true&output=csv",
+  admin    : CLUB_BASE + "?gid=1421931231&single=true&output=csv",
+  store    : CLUB_BASE + "?gid=1152972554&single=true&output=csv",
+};
+
+// opensheet (JSON) used only for SLIDES, LINKS, CHAMPIONS — these have no gid pub URL
+const OS = id => `https://opensheet.elk.sh/${MAIN_SHEET_ID}/${id}`;
+
+/* ═══════════════════════
+   LOADING BAR
+   ═══════════════════════ */
+let loadPct = 0;
+const loadBar = document.getElementById('loadBar');
+const loadTimer = setInterval(() => {
+  loadPct = Math.min(loadPct + Math.random() * 10, 88);
+  loadBar.style.width = loadPct + '%';
+}, 100);
+
+function finishLoading() {
+  clearInterval(loadTimer);
+  loadBar.style.width = '100%';
+  setTimeout(() => {
     document.getElementById('loadingScreen').classList.add('hide');
-    setTimeout(()=>document.getElementById('loadingScreen').remove(),700);
-  },350);
+    setTimeout(() => document.getElementById('loadingScreen').remove(), 700);
+  }, 300);
 }
 
-/* ── CSV PARSER ── */
-function parseCSV(text){
-  const rows=[];let row=[],cell='',inside=false;
-  for(let i=0;i<text.length;i++){
-    const c=text[i],n=text[i+1];
-    if(c==='"'&&inside&&n==='"'){cell+='"';i++;}
-    else if(c==='"'){inside=!inside;}
-    else if(c===','&&!inside){row.push(cell);cell='';}
-    else if((c==='\n'||c==='\r')&&!inside){if(cell||row.length){row.push(cell);rows.push(row);row=[];cell='';}if(c==='\r'&&n==='\n')i++;}
-    else cell+=c;
+/* ═══════════════════════
+   FETCH HELPERS
+   ═══════════════════════ */
+// Fetch with timeout — prevents hanging forever
+function fetchWithTimeout(url, ms = 8000) {
+  const ctrl = new AbortController();
+  const tid   = setTimeout(() => ctrl.abort(), ms);
+  const bust  = url + (url.includes('?') ? '&' : '?') + '_t=' + Date.now();
+  return fetch(bust, { signal: ctrl.signal })
+    .finally(() => clearTimeout(tid));
+}
+
+function fetchCSV(url) {
+  return fetchWithTimeout(url).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); });
+}
+
+function fetchJSON(url) {
+  return fetchWithTimeout(url).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+}
+
+/* ═══════════════════════
+   CSV PARSER
+   ═══════════════════════ */
+function parseCSV(text) {
+  const rows = []; let row = [], cell = '', inside = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i], n = text[i + 1];
+    if (c === '"' && inside && n === '"') { cell += '"'; i++; }
+    else if (c === '"') { inside = !inside; }
+    else if (c === ',' && !inside) { row.push(cell); cell = ''; }
+    else if ((c === '\n' || c === '\r') && !inside) {
+      if (cell || row.length) { row.push(cell); rows.push(row); row = []; cell = ''; }
+      if (c === '\r' && n === '\n') i++;
+    } else cell += c;
   }
-  if(cell||row.length){row.push(cell);rows.push(row);}
-  const headers=rows.shift();
-  return rows.map(r=>Object.fromEntries(headers.map((h,i)=>[h.trim(),(r[i]||'').trim()])));
+  if (cell || row.length) { row.push(cell); rows.push(row); }
+  const headers = rows.shift();
+  if (!headers) return [];
+  return rows.map(r => Object.fromEntries(headers.map((h, i) => [h.trim(), (r[i] || '').trim()])));
 }
 
-function formatBDTime(ds){
-  if(!ds)return'';const d=new Date(ds);if(isNaN(d))return'';
-  return d.toLocaleString('en-BD',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Dhaka'});
+function formatBDTime(ds) {
+  if (!ds) return '';
+  const d = new Date(ds);
+  if (isNaN(d)) return '';
+  return d.toLocaleString('en-BD', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Dhaka' });
 }
 
-/* ── WIN% FORMATTER ── */
-function formatWinPct(val){
-  if(!val||val==='-')return'-';
-  const num=parseFloat(String(val).replace('%',''));
-  if(isNaN(num))return'-';
-  const pct=num<=1?Math.round(num*100):Math.round(num);
-  return pct+'%';
+function formatWinPct(val) {
+  if (!val || val === '-') return '-';
+  const num = parseFloat(String(val).replace('%', ''));
+  if (isNaN(num)) return '-';
+  return (num <= 1 ? Math.round(num * 100) : Math.round(num)) + '%';
 }
 
-/* ════════════════════════════════════════════
-   SMOOTH INFINITE AUTO-SCROLL + MOMENTUM DRAG
-   — butter-smooth on mobile, no lag/jank
-   ════════════════════════════════════════════ */
+/* ═══════════════════════
+   SMOOTH SLIDER
+   ═══════════════════════ */
 function makeSlider(wrapEl, trackEl, autoSpeedPx) {
   if (!wrapEl || !trackEl) return;
+  let pos = 0, velocity = 0, halfW = 0, raf = null, prevTime = null;
+  let dragging = false, moved = false, lastX = 0, prevX = 0, prevT = 0;
+  let hovered = false, touching = false;
 
-  /* --- state --- */
-  let pos         = 0;      // current translateX (negative = scrolled right)
-  let velocity    = 0;      // px/ms — used for momentum after drag release
-  let halfW       = 0;      // half of total track width (one full copy)
-  let raf         = null;
-  let prevTime    = null;
-
-  let dragging    = false;
-  let moved       = false;
-  let lastX       = 0;
-  let lastTouchT  = 0;
-  let prevX       = 0;
-  let prevT       = 0;
-
-  let hovered     = false;  // mouse hover pauses auto-scroll
-  let touching    = false;  // finger down pauses auto-scroll
-
-  /* --- helpers --- */
-  function getHalfW() {
-    // half = one copy of the duplicated content
-    return trackEl.scrollWidth / 2;
-  }
-
+  function getHalfW() { return trackEl.scrollWidth / 2; }
   function wrapPos(p) {
     halfW = getHalfW();
     if (halfW <= 0) return p;
-    // keep pos in range [-halfW, 0)
-    while (p > 0)       p -= halfW;
-    while (p < -halfW)  p += halfW;
+    while (p > 0) p -= halfW;
+    while (p < -halfW) p += halfW;
     return p;
   }
-
   function commit(p) {
     pos = wrapPos(p);
-    // Use matrix3d to stay on GPU compositor thread — zero layout/paint
     trackEl.style.transform = 'translate3d(' + pos + 'px,0,0)';
   }
-
-  /* --- RAF loop --- */
   function loop(ts) {
     raf = requestAnimationFrame(loop);
-
-    const dt = prevTime === null ? 16 : Math.min(ts - prevTime, 50); // clamp to 50ms max
+    const dt = prevTime === null ? 16 : Math.min(ts - prevTime, 50);
     prevTime = ts;
-
-    if (dragging) {
-      // while dragging: position is set directly in event handler, no loop movement
-      return;
-    }
-
+    if (dragging) return;
     if (velocity !== 0) {
-      // momentum deceleration after drag release
       commit(pos + velocity * dt);
-      // friction: exponential decay — feels natural, not abrupt
-      velocity *= Math.pow(0.92, dt / 16); // per-frame at 60fps = 0.92
+      velocity *= Math.pow(0.92, dt / 16);
       if (Math.abs(velocity) < 0.01) velocity = 0;
     } else if (!hovered && !touching) {
-      // normal auto-scroll
       commit(pos - autoSpeedPx * dt / 1000);
     }
   }
-
-  function startRAF() {
-    if (!raf) raf = requestAnimationFrame(loop);
-  }
-
-  /* --- drag start --- */
   function dragStart(clientX) {
-    dragging  = true;
-    moved     = false;
-    velocity  = 0;
-    lastX     = clientX;
-    prevX     = clientX;
-    prevT     = performance.now();
+    dragging = true; moved = false; velocity = 0;
+    lastX = clientX; prevX = clientX; prevT = performance.now();
     wrapEl.style.cursor = 'grabbing';
   }
-
-  /* --- drag move --- */
   function dragMove(clientX) {
     if (!dragging) return;
     const dx = clientX - lastX;
-    if (Math.abs(clientX - (lastX - (pos - pos))) > 3) moved = true; // any delta = moved
     if (Math.abs(dx) > 1) moved = true;
-
     commit(pos + dx);
     lastX = clientX;
-
-    // track velocity for momentum (rolling avg of last move)
-    const now = performance.now();
-    const dt  = now - prevT;
-    if (dt > 0) {
-      const rawV = (clientX - prevX) / dt; // px/ms
-      velocity = velocity * 0.6 + rawV * 0.4; // smooth it
-    }
-    prevX = clientX;
-    prevT = performance.now();
+    const now = performance.now(), dt = now - prevT;
+    if (dt > 0) { const rawV = (clientX - prevX) / dt; velocity = velocity * 0.6 + rawV * 0.4; }
+    prevX = clientX; prevT = performance.now();
   }
-
-  /* --- drag end --- */
   function dragEnd() {
     if (!dragging) return;
-    dragging = false;
-    touching = false;
+    dragging = false; touching = false;
     wrapEl.style.cursor = 'grab';
-    // velocity is already set — momentum loop will handle it
-    // clamp max momentum so it doesn't fly off
-    const maxV = 3; // px/ms
+    const maxV = 3;
     velocity = Math.max(-maxV, Math.min(maxV, velocity));
   }
-
-  /* --- mouse events --- */
   wrapEl.addEventListener('mouseenter', () => { hovered = true; });
   wrapEl.addEventListener('mouseleave', () => { hovered = false; if (!dragging) velocity = 0; });
-
-  wrapEl.addEventListener('mousedown', e => {
-    dragStart(e.clientX);
-    e.preventDefault();
-  });
+  wrapEl.addEventListener('mousedown', e => { dragStart(e.clientX); e.preventDefault(); });
   window.addEventListener('mousemove', e => { if (dragging) dragMove(e.clientX); });
-  window.addEventListener('mouseup',   () => { dragEnd(); });
-
-  /* --- touch events --- */
-  wrapEl.addEventListener('touchstart', e => {
-    touching = true;
-    velocity = 0;
-    dragStart(e.touches[0].clientX);
-    lastTouchT = performance.now();
-  }, { passive: true });
-
-  wrapEl.addEventListener('touchmove', e => {
-    if (!dragging) return;
-    dragMove(e.touches[0].clientX);
-    // only prevent default if horizontal swipe (avoids blocking page scroll on vertical)
-    if (moved) e.preventDefault();
-  }, { passive: false });
-
-  wrapEl.addEventListener('touchend', () => {
-    dragEnd();
-  }, { passive: true });
-
-  wrapEl.addEventListener('touchcancel', () => {
-    dragEnd();
-    velocity = 0;
-  }, { passive: true });
-
-  /* --- block click after drag --- */
-  wrapEl.addEventListener('click', e => {
-    if (moved) { e.preventDefault(); e.stopPropagation(); }
-  }, true);
-
-  startRAF();
+  window.addEventListener('mouseup', () => { dragEnd(); });
+  wrapEl.addEventListener('touchstart', e => { touching = true; velocity = 0; dragStart(e.touches[0].clientX); }, { passive: true });
+  wrapEl.addEventListener('touchmove', e => { if (!dragging) return; dragMove(e.touches[0].clientX); if (moved) e.preventDefault(); }, { passive: false });
+  wrapEl.addEventListener('touchend', () => { dragEnd(); }, { passive: true });
+  wrapEl.addEventListener('touchcancel', () => { dragEnd(); velocity = 0; }, { passive: true });
+  wrapEl.addEventListener('click', e => { if (moved) { e.preventDefault(); e.stopPropagation(); } }, true);
+  raf = requestAnimationFrame(loop);
 }
 
-/* ── HERO SLIDES ── */
-let slides=[],current=0,autoTimer;
-fetch('https://opensheet.elk.sh/'+sheetID+'/SLIDES').then(r=>r.json()).then(data=>{slides=data;renderSlides();startAuto();}).catch(()=>{});
-function renderSlides(){
-  const hero=document.getElementById('heroSlider');
-  let html='<button class="arrow left" onclick="changeSlide(-1)">&#8249;</button><button class="arrow right" onclick="changeSlide(1)">&#8250;</button>';
-  html+=slides.map((s,i)=>'<div class="slide-box '+(i===0?'active':'')+'"><img src="'+s.image+'" alt=""><div class="slide-overlay"></div><div class="slide-grid"></div><div class="slide-content"><h1>'+s.title+'</h1><p>'+s.desc+'</p><a class="slide-btn" href="'+s.link+'" target="_blank"><i class="fa-solid fa-arrow-right"></i>'+s.button+'</a></div></div>').join('');
-  hero.innerHTML=html;
+/* ═══════════════════════
+   HERO SLIDES
+   (opensheet — no direct pub gid for named sheets)
+   ═══════════════════════ */
+let slides = [], current = 0, autoTimer;
+fetchJSON(OS('SLIDES'))
+  .then(data => { slides = data; renderSlides(); startAuto(); })
+  .catch(() => {});
+
+function renderSlides() {
+  const hero = document.getElementById('heroSlider');
+  let html = '<button class="arrow left" onclick="changeSlide(-1)">&#8249;</button><button class="arrow right" onclick="changeSlide(1)">&#8250;</button>';
+  html += slides.map((s, i) =>
+    '<div class="slide-box ' + (i === 0 ? 'active' : '') + '">'
+    + '<img src="' + s.image + '" alt="" loading="eager">'
+    + '<div class="slide-overlay"></div><div class="slide-grid"></div>'
+    + '<div class="slide-content"><h1>' + s.title + '</h1><p>' + s.desc + '</p>'
+    + '<a class="slide-btn" href="' + s.link + '" target="_blank"><i class="fa-solid fa-arrow-right"></i>' + s.button + '</a>'
+    + '</div></div>'
+  ).join('');
+  hero.innerHTML = html;
 }
-function startAuto(){clearInterval(autoTimer);autoTimer=setInterval(()=>changeSlide(1),7000);}
-function changeSlide(dir){const boxes=document.querySelectorAll('.slide-box');if(!boxes.length)return;boxes[current].classList.remove('active');current=(current+dir+boxes.length)%boxes.length;boxes[current].classList.add('active');}
-
-/* ── CLUB HUB ── */
-fetch('https://opensheet.elk.sh/'+sheetID+'/LINKS').then(r=>r.json()).then(data=>{
-  document.getElementById('hubGrid').innerHTML=data.map(l=>'<div class="hub-card" onclick="location.href=\''+l.link+'\'"><span class="hub-ripple"></span><span class="hub-icon">'+l.icon+'</span><div class="hub-title">'+l.title+'</div></div>').join('');
-  document.querySelectorAll('.hub-card').forEach(card=>{
-    function fire(e){
-      const r=card.querySelector('.hub-ripple'),rect=card.getBoundingClientRect();
-      const x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
-      const y=(e.touches?e.touches[0].clientY:e.clientY)-rect.top;
-      r.style.left=x+'px';r.style.top=y+'px';r.style.animation='none';void r.offsetWidth;r.style.animation='';
-    }
-    card.addEventListener('mousedown',fire);
-    card.addEventListener('touchstart',fire,{passive:true});
-  });
-}).catch(()=>{document.getElementById('hubGrid').innerHTML='<div class="loader-row">Failed to load</div>';});
-
-/* ── STAR RATING ── */
-function buildStars(rateStr,isGold){
-  const rate=parseFloat(rateStr)||0;
-  const stars=Math.min(5,rate/20);
-  const full=Math.floor(stars);
-  const half=stars-full>=0.5?1:0;
-  const empty=5-full-half;
-  let html='<div class="admin-stars">';
-  for(let i=0;i<full;i++)html+='<i class="fa-solid fa-star"></i>';
-  if(half)html+='<i class="fa-solid fa-star-half-stroke"></i>';
-  for(let i=0;i<empty;i++)html+='<i class="fa-regular fa-star empty"></i>';
-  html+='</div>';
-  return html;
+function startAuto() { clearInterval(autoTimer); autoTimer = setInterval(() => changeSlide(1), 7000); }
+function changeSlide(dir) {
+  const boxes = document.querySelectorAll('.slide-box');
+  if (!boxes.length) return;
+  boxes[current].classList.remove('active');
+  current = (current + dir + boxes.length) % boxes.length;
+  boxes[current].classList.add('active');
 }
 
-/* ── PLAYER HUB + ADMIN PANEL ── */
+/* ═══════════════════════
+   CLUB HUB
+   (opensheet for named sheet LINKS)
+   ═══════════════════════ */
+fetchJSON(OS('LINKS'))
+  .then(data => {
+    document.getElementById('hubGrid').innerHTML = data.map(l =>
+      '<div class="hub-card" onclick="location.href=\'' + l.link + '\'">'
+      + '<span class="hub-ripple"></span><span class="hub-icon">' + l.icon + '</span>'
+      + '<div class="hub-title">' + l.title + '</div></div>'
+    ).join('');
+    document.querySelectorAll('.hub-card').forEach(card => {
+      function fire(e) {
+        const r = card.querySelector('.hub-ripple'), rect = card.getBoundingClientRect();
+        const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+        const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+        r.style.left = x + 'px'; r.style.top = y + 'px';
+        r.style.animation = 'none'; void r.offsetWidth; r.style.animation = '';
+      }
+      card.addEventListener('mousedown', fire);
+      card.addEventListener('touchstart', fire, { passive: true });
+    });
+  })
+  .catch(() => { document.getElementById('hubGrid').innerHTML = '<div class="loader-row">Failed to load</div>'; });
+
+/* ═══════════════════════
+   STAR RATING
+   ═══════════════════════ */
+function buildStars(rateStr) {
+  const rate = parseFloat(rateStr) || 0;
+  const stars = Math.min(5, rate / 20);
+  const full = Math.floor(stars), half = stars - full >= 0.5 ? 1 : 0, empty = 5 - full - half;
+  let html = '<div class="admin-stars">';
+  for (let i = 0; i < full; i++) html += '<i class="fa-solid fa-star"></i>';
+  if (half) html += '<i class="fa-solid fa-star-half-stroke"></i>';
+  for (let i = 0; i < empty; i++) html += '<i class="fa-regular fa-star empty"></i>';
+  return html + '</div>';
+}
+
+/* ═══════════════════════════════════════════════════
+   PLAYER HUB + ADMIN PANEL
+   — all 3 CSVs fetched in parallel via Promise.all
+   ═══════════════════════════════════════════════════ */
 Promise.all([
-  fetch(LEADER_CSV+'&t='+Date.now()).then(r=>r.text()),
-  fetch(MEMBERS_CSV+'&t='+Date.now()).then(r=>r.text()),
-  fetch(ADMIN_CSV+'&t='+Date.now()).then(r=>r.text())
-]).then(([lCSV,mCSV,aCSV])=>{
-  const leaders=parseCSV(lCSV);
-  const members=parseCSV(mCSV);
-  const admins=parseCSV(aCSV);
+  fetchCSV(CSV.leaders),
+  fetchCSV(CSV.members),
+  fetchCSV(CSV.admin),
+]).then(([lCSV, mCSV, aCSV]) => {
+  const leaders = parseCSV(lCSV);
+  const members = parseCSV(mCSV);
+  const admins  = parseCSV(aCSV);
 
-  const memberMap={};
-  members.forEach(m=>{
-    const id=(m['Club ID Number']||'').trim();
-    if(id) memberMap[id]=m;
+  // Build member lookup by Club ID
+  const memberMap = {};
+  members.forEach(m => {
+    const id = (m['Club ID Number'] || '').trim();
+    if (id) memberMap[id] = m;
   });
 
-  /* ── PLAYER HUB ── */
-  const sorted=[...leaders]
-    .filter(p=>{
-      const rank=parseInt(p['Overall Rank']||'');
-      const pl=parseInt(p['Overall_PL']||'0');
-      return !isNaN(rank)&&rank>0&&pl>0;
+  /* -- PLAYER HUB -- */
+  const sorted = [...leaders]
+    .filter(p => {
+      const rank = parseInt(p['Overall Rank'] || '');
+      const pl   = parseInt(p['Overall_PL'] || '0');
+      return !isNaN(rank) && rank > 0 && pl > 0;
     })
-    .sort((a,b)=>parseInt(a['Overall Rank'])-parseInt(b['Overall Rank']));
+    .sort((a, b) => parseInt(a['Overall Rank']) - parseInt(b['Overall Rank']));
 
-  if(sorted.length){
-    const cards=sorted.map(p=>{
-      const id=(p['Club_ID']||'').trim();
-      const mem=memberMap[id]||{};
-      const name=(mem['Full Name']||id||'Unknown').trim();
-      const pic=(mem['Profile Picture (For Web)']||'').trim();
-      const rank=p['Overall Rank']||'-';
-      const pl=p['Overall_PL']||'-';
-      const winPct=formatWinPct(p['Overall_Win%']||'-');
-      const gf=p['Total GF']||'-';
-      const profileLink='https://goatfcbd.com/players/profile/?id='+encodeURIComponent(id);
-      const imgHtml=pic
-        ?'<img src="'+pic+'" alt="'+name+'" loading="lazy" onerror="this.style.display=\'none\';this.parentNode.querySelector(\'.rfall\').style.display=\'flex\'"><div class="rfall" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;background:var(--surface3);"><i class="fa-solid fa-user-shield" style="font-size:24px;color:var(--muted2);"></i></div>'
-        :'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--surface3);"><i class="fa-solid fa-user-shield" style="font-size:24px;color:var(--muted2);"></i></div>';
-      return '<a class="rank-card" href="'+profileLink+'" target="_blank" rel="noopener">'
-        +'<div class="rank-pic-wrap" style="position:relative;">'+imgHtml
-        +'<div class="rank-num-badge">#'+rank+'</div></div>'
-        +'<div class="rank-body">'
-        +'<div class="rank-name">'+name+'</div>'
-        +'<div class="rank-stats">'
-        +'<div class="rank-stat"><div class="rank-stat-val">'+pl+'</div><div class="rank-stat-lbl">Matches</div></div>'
-        +'<div class="rank-stat win"><div class="rank-stat-val">'+winPct+'</div><div class="rank-stat-lbl">Win%</div></div>'
-        +'<div class="rank-stat goal"><div class="rank-stat-val">'+gf+'</div><div class="rank-stat-lbl">Goals</div></div>'
-        +'</div></div></a>';
+  if (sorted.length) {
+    const cards = sorted.map(p => {
+      const id   = (p['Club_ID'] || '').trim();
+      const mem  = memberMap[id] || {};
+      const name = (mem['Full Name'] || id || 'Unknown').trim();
+      const pic  = (mem['Profile Picture (For Web)'] || '').trim();
+      const rank = p['Overall Rank'] || '-';
+      const pl   = p['Overall_PL'] || '-';
+      const winP = formatWinPct(p['Overall_Win%'] || '-');
+      const gf   = p['Total GF'] || '-';
+      const link = 'https://goatfcbd.com/players/profile/?id=' + encodeURIComponent(id);
+      const imgH = pic
+        ? '<img src="' + pic + '" alt="' + name + '" loading="lazy" onerror="this.style.display=\'none\';this.parentNode.querySelector(\'.rfall\').style.display=\'flex\'">'
+          + '<div class="rfall" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;background:var(--surface3);"><i class="fa-solid fa-user-shield" style="font-size:24px;color:var(--muted2);"></i></div>'
+        : '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--surface3);"><i class="fa-solid fa-user-shield" style="font-size:24px;color:var(--muted2);"></i></div>';
+      return '<a class="rank-card" href="' + link + '" target="_blank" rel="noopener">'
+        + '<div class="rank-pic-wrap" style="position:relative;">' + imgH
+        + '<div class="rank-num-badge">#' + rank + '</div></div>'
+        + '<div class="rank-body"><div class="rank-name">' + name + '</div>'
+        + '<div class="rank-stats">'
+        + '<div class="rank-stat"><div class="rank-stat-val">' + pl + '</div><div class="rank-stat-lbl">Matches</div></div>'
+        + '<div class="rank-stat win"><div class="rank-stat-val">' + winP + '</div><div class="rank-stat-lbl">Win%</div></div>'
+        + '<div class="rank-stat goal"><div class="rank-stat-val">' + gf + '</div><div class="rank-stat-lbl">Goals</div></div>'
+        + '</div></div></a>';
     }).join('');
     document.getElementById('rankTrack').innerHTML = cards + cards;
     makeSlider(document.getElementById('rankWrap'), document.getElementById('rankTrack'), 30);
   } else {
-    document.getElementById('rankTrack').innerHTML='<div style="padding:20px;font-family:\'Exo 2\',sans-serif;font-size:10px;color:var(--muted);">No ranked players yet</div>';
+    document.getElementById('rankTrack').innerHTML = '<div style="padding:20px;font-family:\'Exo 2\',sans-serif;font-size:10px;color:var(--muted);">No ranked players yet</div>';
   }
 
-  /* ── ADMIN PANEL ── */
-  if(admins.length){
-    const adminCards=admins.map(a=>{
-      const id=(a['Club ID']||'').trim();
-      const mem=memberMap[id]||{};
-      const name=(mem['Full Name']||id||'Unknown').trim();
-      const pic=(mem['Profile Picture (For Web)']||'').trim();
-      const role=(a['Role']||'Admin').trim();
-      const rate=parseFloat(a['Rate']||'0');
-      const status=(a['Status']||'active').trim().toLowerCase();
-      const isGold=rate>100;
-      const isActive=status==='active';
-      const imgHtml=pic
-        ?'<img src="'+pic+'" alt="'+name+'" loading="lazy" onerror="this.style.display=\'none\';this.parentNode.querySelector(\'.afall\').style.display=\'flex\'"><div class="afall" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;background:var(--surface3);"><i class="fa-solid fa-user-tie" style="font-size:24px;color:var(--muted2);"></i></div>'
-        :'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--surface3);"><i class="fa-solid fa-user-tie" style="font-size:24px;color:var(--muted2);"></i></div>';
-      return '<div class="admin-card'+(isGold?' gold-card':'')+'">'
-        +'<div class="admin-pic-wrap" style="position:relative;">'+imgHtml
-        +'<div class="status-badge '+(isActive?'active':'busy')+'"><span class="s-dot"></span>'+(isActive?'Active':'Busy')+'</div></div>'
-        +'<div class="admin-body">'
-        +'<div class="admin-name">'+name+'</div>'
-        +'<div class="admin-role">'+role+'</div>'
-        +buildStars(rate,isGold)
-        +'</div></div>';
+  /* -- ADMIN PANEL -- */
+  if (admins.length) {
+    const adminCards = admins.map(a => {
+      const id     = (a['Club ID'] || '').trim();
+      const mem    = memberMap[id] || {};
+      const name   = (mem['Full Name'] || id || 'Unknown').trim();
+      const pic    = (mem['Profile Picture (For Web)'] || '').trim();
+      const role   = (a['Role'] || 'Admin').trim();
+      const rate   = parseFloat(a['Rate'] || '0');
+      const status = (a['Status'] || 'active').trim().toLowerCase();
+      const isGold = rate > 100;
+      const isActive = status === 'active';
+      const imgH = pic
+        ? '<img src="' + pic + '" alt="' + name + '" loading="lazy" onerror="this.style.display=\'none\';this.parentNode.querySelector(\'.afall\').style.display=\'flex\'">'
+          + '<div class="afall" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;background:var(--surface3);"><i class="fa-solid fa-user-tie" style="font-size:24px;color:var(--muted2);"></i></div>'
+        : '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--surface3);"><i class="fa-solid fa-user-tie" style="font-size:24px;color:var(--muted2);"></i></div>';
+      return '<div class="admin-card' + (isGold ? ' gold-card' : '') + '">'
+        + '<div class="admin-pic-wrap" style="position:relative;">' + imgH
+        + '<div class="status-badge ' + (isActive ? 'active' : 'busy') + '"><span class="s-dot"></span>' + (isActive ? 'Active' : 'Busy') + '</div></div>'
+        + '<div class="admin-body"><div class="admin-name">' + name + '</div>'
+        + '<div class="admin-role">' + role + '</div>'
+        + buildStars(rate) + '</div></div>';
     }).join('');
     document.getElementById('adminTrack').innerHTML = adminCards + adminCards;
     makeSlider(document.getElementById('adminWrap'), document.getElementById('adminTrack'), 28);
   } else {
-    document.getElementById('adminTrack').innerHTML='<div style="padding:20px;font-family:\'Exo 2\',sans-serif;font-size:10px;color:var(--muted);">No data</div>';
+    document.getElementById('adminTrack').innerHTML = '<div style="padding:20px;font-family:\'Exo 2\',sans-serif;font-size:10px;color:var(--muted);">No data</div>';
   }
 
-}).catch(e=>{
-  console.error(e);
-  document.getElementById('rankTrack').innerHTML='<div style="padding:20px;font-family:\'Exo 2\',sans-serif;font-size:10px;color:var(--muted);">Failed to load</div>';
-  document.getElementById('adminTrack').innerHTML='<div style="padding:20px;font-family:\'Exo 2\',sans-serif;font-size:10px;color:var(--muted);">Failed to load</div>';
+}).catch(e => {
+  console.error('Player/Admin load error:', e);
+  document.getElementById('rankTrack').innerHTML  = '<div style="padding:20px;font-family:\'Exo 2\',sans-serif;font-size:10px;color:var(--muted);">Failed to load</div>';
+  document.getElementById('adminTrack').innerHTML = '<div style="padding:20px;font-family:\'Exo 2\',sans-serif;font-size:10px;color:var(--muted);">Failed to load</div>';
 });
 
-/* ── LIVE SCORE ── */
+/* ═══════════════════════
+   LIVE SCORE
+   ═══════════════════════ */
 Promise.all([
-  fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=1588171329&single=true&output=csv&t="+Date.now()).then(r=>r.text()),
-  fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=133947099&single=true&output=csv&t="+Date.now()).then(r=>r.text()),
-  fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=1033046915&single=true&output=csv&t="+Date.now()).then(r=>r.text())
-]).then(([mCSV,mbCSV,lCSV])=>{
-  const matches=parseCSV(mCSV).filter(m=>m.Approved?.toLowerCase()==='yes'&&!isNaN(parseFloat(m.P1_Score))&&!isNaN(parseFloat(m.P2_Score))).slice(-10).reverse();
-  const nameMap={};parseCSV(mbCSV).forEach(m=>nameMap[m["Club ID Number"]]=m["Full Name"]);
-  const rankMap={};parseCSV(lCSV).forEach(r=>{rankMap[r["Club_ID"]]=r["Overall Rank"];});
-  if(!matches.length){
-    document.getElementById('liveTrack').innerHTML='<div style="min-width:100%;text-align:center;padding:20px;font-family:\'Exo 2\',sans-serif;font-size:10px;color:var(--muted);">No recent matches</div>';
-    finishLoading();return;
+  fetchCSV(CSV.matches),
+  fetchCSV(CSV.members),
+  fetchCSV(CSV.leaders),
+]).then(([mCSV, mbCSV, lCSV]) => {
+  const matches = parseCSV(mCSV)
+    .filter(m => m.Approved?.toLowerCase() === 'yes' && !isNaN(parseFloat(m.P1_Score)) && !isNaN(parseFloat(m.P2_Score)))
+    .slice(-10).reverse();
+  const nameMap = {}, rankMap = {};
+  parseCSV(mbCSV).forEach(m => { nameMap[m['Club ID Number']] = m['Full Name']; });
+  parseCSV(lCSV).forEach(r  => { rankMap[r['Club_ID']] = r['Overall Rank']; });
+
+  if (!matches.length) {
+    document.getElementById('liveTrack').innerHTML = '<div style="min-width:100%;text-align:center;padding:20px;font-family:\'Exo 2\',sans-serif;font-size:10px;color:var(--muted);">No recent matches</div>';
+    finishLoading(); return;
   }
-  document.getElementById('liveTrack').innerHTML=matches.map(m=>{
-    const p1=nameMap[m.P1_ID]||m.P1_ID,p2=nameMap[m.P2_ID]||m.P2_ID;
-    const p1r=rankMap[m.P1_ID]?'#'+rankMap[m.P1_ID]:'',p2r=rankMap[m.P2_ID]?'#'+rankMap[m.P2_ID]:'';
-    let s1='s-draw',s2='s-draw';
-    if(+m.P1_Score>+m.P2_Score){s1='s-win';s2='s-loss';}else if(+m.P1_Score<+m.P2_Score){s1='s-loss';s2='s-win';}
-    return'<div class="live-card"><div class="live-mid">'
-      +'<div class="lm-player"><div class="lm-rank">'+p1r+'</div><div class="lm-name">'+p1+'</div><div class="lm-id">'+m.P1_ID+'</div></div>'
-      +'<div class="lm-center"><div class="match-type-pill">'+m.Match_Type+'</div><div class="score-box"><span class="'+s1+'">'+m.P1_Score+'</span><span class="s-sep">—</span><span class="'+s2+'">'+m.P2_Score+'</span></div><div class="match-date">'+formatBDTime(m.Match_Date)+'</div></div>'
-      +'<div class="lm-player"><div class="lm-rank">'+p2r+'</div><div class="lm-name">'+p2+'</div><div class="lm-id">'+m.P2_ID+'</div></div>'
-      +'</div></div>';
+  document.getElementById('liveTrack').innerHTML = matches.map(m => {
+    const p1 = nameMap[m.P1_ID] || m.P1_ID, p2 = nameMap[m.P2_ID] || m.P2_ID;
+    const p1r = rankMap[m.P1_ID] ? '#' + rankMap[m.P1_ID] : '';
+    const p2r = rankMap[m.P2_ID] ? '#' + rankMap[m.P2_ID] : '';
+    let s1 = 's-draw', s2 = 's-draw';
+    if (+m.P1_Score > +m.P2_Score) { s1 = 's-win'; s2 = 's-loss'; }
+    else if (+m.P1_Score < +m.P2_Score) { s1 = 's-loss'; s2 = 's-win'; }
+    return '<div class="live-card"><div class="live-mid">'
+      + '<div class="lm-player"><div class="lm-rank">' + p1r + '</div><div class="lm-name">' + p1 + '</div><div class="lm-id">' + m.P1_ID + '</div></div>'
+      + '<div class="lm-center"><div class="match-type-pill">' + m.Match_Type + '</div>'
+      + '<div class="score-box"><span class="' + s1 + '">' + m.P1_Score + '</span><span class="s-sep">—</span><span class="' + s2 + '">' + m.P2_Score + '</span></div>'
+      + '<div class="match-date">' + formatBDTime(m.Match_Date) + '</div></div>'
+      + '<div class="lm-player"><div class="lm-rank">' + p2r + '</div><div class="lm-name">' + p2 + '</div><div class="lm-id">' + m.P2_ID + '</div></div>'
+      + '</div></div>';
   }).join('');
   finishLoading();
-}).catch(()=>finishLoading());
+}).catch(() => finishLoading());
 
 /* Live track auto-scroll */
-setInterval(()=>{
-  const track=document.getElementById('liveTrack');
-  const card=track.querySelector('.live-card');if(!card)return;
-  const cardW=card.offsetWidth+10,maxScroll=track.scrollWidth-track.clientWidth;
-  if(track.scrollLeft+cardW>=maxScroll-10){setTimeout(()=>track.scrollTo({left:0,behavior:'smooth'}),400);}
-  else{track.scrollBy({left:cardW,behavior:'smooth'});}
-},4000);
+setInterval(() => {
+  const track = document.getElementById('liveTrack');
+  const card  = track.querySelector('.live-card');
+  if (!card) return;
+  const cardW = card.offsetWidth + 10;
+  const maxSc = track.scrollWidth - track.clientWidth;
+  if (track.scrollLeft + cardW >= maxSc - 10) setTimeout(() => track.scrollTo({ left: 0, behavior: 'smooth' }), 400);
+  else track.scrollBy({ left: cardW, behavior: 'smooth' });
+}, 4000);
 
-/* ── CHAMPIONS ── */
-fetch('https://opensheet.elk.sh/'+sheetID+'/CHAMPIONS').then(r=>r.json()).then(data=>{
-  document.getElementById('champGrid').innerHTML=data.map(c=>'<div class="champ-card"><img src="'+c.image+'" alt="'+c.title+'"><div class="champ-info"><div class="champ-title">'+c.title+'</div><div class="champ-sub">'+c.subtitle+'</div></div></div>').join('');
-  document.getElementById('champDesc').innerHTML='<i class="fa-solid fa-trophy" style="color:#ffcc00;margin-right:6px;"></i>This zone represents champions, top scorers, and elite performers of Goat FC.';
-}).catch(()=>{});
+/* ═══════════════════════
+   COMING SOON
+   ═══════════════════════ */
+fetchCSV(CSV.store)
+  .then(csv => {
+    const items = parseCSV(csv);
+    document.getElementById('storeGrid').innerHTML = items.map(item =>
+      '<div class="store-card">'
+      + '<img src="' + item['Image Url'] + '" alt="Item" loading="lazy">'
+      + '<a class="store-btn" href="' + item['Link Url'] + '" target="_blank">' + item['Botton Name'] + '</a>'
+      + '</div>'
+    ).join('');
+  })
+  .catch(() => { document.getElementById('storeGrid').innerHTML = '<div class="loader-row">Failed to load</div>'; });
 
-/* ── FIND US (scroll reveal) ── */
-const findCards=document.querySelectorAll('.find-card');
-const findObs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');findObs.unobserve(e.target);}});
-},{threshold:0.1});
-findCards.forEach(c=>findObs.observe(c));
+/* ═══════════════════════
+   CHAMPIONS
+   (opensheet for named sheet)
+   ═══════════════════════ */
+fetchJSON(OS('CHAMPIONS'))
+  .then(data => {
+    document.getElementById('champGrid').innerHTML = data.map(c =>
+      '<div class="champ-card"><img src="' + c.image + '" alt="' + c.title + '" loading="lazy">'
+      + '<div class="champ-info"><div class="champ-title">' + c.title + '</div><div class="champ-sub">' + c.subtitle + '</div></div></div>'
+    ).join('');
+    document.getElementById('champDesc').innerHTML = '<i class="fa-solid fa-trophy" style="color:#ffcc00;margin-right:6px;"></i>This zone represents champions, top scorers, and elite performers of Goat FC.';
+  })
+  .catch(() => {});
 
-/* ── COMING SOON ── */
-fetch(STORE_CSV).then(r=>r.text()).then(csv=>{
-  const items=parseCSV(csv);
-  document.getElementById('storeGrid').innerHTML=items.map(item=>'<div class="store-card"><img src="'+item['Image Url']+'" alt="Item"><a class="store-btn" href="'+item['Link Url']+'" target="_blank">'+item['Botton Name']+'</a></div>').join('');
-}).catch(()=>{document.getElementById('storeGrid').innerHTML='<div class="loader-row">Failed to load</div>';});
+/* ═══════════════════════
+   FIND US (scroll reveal)
+   ═══════════════════════ */
+const findCards = document.querySelectorAll('.find-card');
+const findObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); findObs.unobserve(e.target); } });
+}, { threshold: 0.1 });
+findCards.forEach(c => findObs.observe(c));
 </script>
 
 <a class="float-ball-btn" href="https://goatfcbd.com/wc2026/" target="_blank" rel="noopener" title="World Cup 2026">
