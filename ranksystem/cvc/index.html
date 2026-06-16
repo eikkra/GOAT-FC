@@ -493,6 +493,7 @@ const CSV={
   members:      'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqRJZskk_f4F0Xgx7eLadfVhLmjipE8bpbU9oFV5BYumJc1MKuU1LA4WjEKouVq67wEQ3-lo7VbkQ6/pub?gid=133947099&single=true&output=csv'
 };
 const PROXY='https://corsproxy.io/?', POTW_PP=10;
+const PTS_WIN=3,PTS_DRAW=1,PTS_MOTM=2,PTS_YELLOW=-7,PTS_RED=-14;
 const S={tab:'ranking',period:'weekly',team:'all',potwTeam:'all',potwPage:0,weekKey:null,monthKey:null,players:[],matches:[],refs:[],members:[],weeks:[],months:[],weeklyHistory:[],loaded:false};
 
 function parseCSV(t){const l=t.trim().split('\n');if(l.length<2)return[];const h=sl(l[0]);const o=[];for(let i=1;i<l.length;i++){const v=sl(l[i]);const r={};let ok=false;for(let j=0;j<h.length;j++){const val=(v[j]||'').trim();r[h[j].trim()]=val;if(val)ok=true;}if(ok)o.push(r);}return o;}
@@ -520,7 +521,34 @@ function getRefData(name,id){const r=S.refs.find(x=>(x.Player&&x.Player.trim().t
 
 function buildEnrichedPlayers(){return S.players.filter(p=>p.Player).map(p=>{const name=(p.Player||'').trim(),clubId=(p['Club ID']||'').trim();const{pts:refPts,isRef}=getRefData(name,clubId);const basePts=parseFloat(p.Points||0)||0;return{name,clubId,teamType:(p['Team Type']||'').trim(),matches:+p.Matches||0,wins:+p.Wins||0,draws:+p.Draws||0,losses:+p.Losses||0,gf:+p['Goals For']||0,ga:+p['Goals Against']||0,gd:+p['Goal Diff']||0,motm:+p.MOTM||0,yellow:+(p.Yellow||p['Yellow Card']||0)||0,red:+(p.Red||p['Red Card']||0)||0,basePts,refPts,totalPts:basePts+refPts,pic:getMemberPic(clubId),isRef};}).sort((a,b)=>b.totalPts-a.totalPts||b.gd-a.gd).map((p,i)=>({...p,rank:i+1}));}
 
-function computeFromMatches(ms){const pm={};ms.forEach(m=>{const player=(m['GOAT FC Player']||'').trim();if(!player)return;if(!pm[player])pm[player]={name:player,matches:0,wins:0,draws:0,losses:0,gf:0,ga:0,gd:0,motm:0,yellow:0,red:0,basePts:0};const r=pm[player];r.matches++;const res=(m.Result||'').trim().toLowerCase();const gs=+m['GOAT Score']||0,os=+m['Opp Score']||0;r.gf+=gs;r.ga+=os;r.gd+=gs-os;if(res==='win'||res==='w'){r.wins++;r.basePts+=3;}else if(res==='draw'||res==='d'){r.draws++;r.basePts+=1;}else r.losses++;r.motm+=+m.MOTM||0;r.yellow+=+m['Yellow Card']||0;r.red+=+m['Red Card']||0;});return Object.values(pm).map(p=>{const sp=S.players.find(x=>x.Player&&x.Player.trim().toLowerCase()===p.name.toLowerCase());const clubId=sp?(sp['Club ID']||'').trim():'';const teamType=sp?(sp['Team Type']||'').trim():'';const{pts:refPts,isRef}=getRefData(p.name,clubId);return{...p,clubId,teamType,refPts,totalPts:p.basePts+refPts,pic:getMemberPic(clubId),isRef};}).sort((a,b)=>b.totalPts-a.totalPts||b.gd-a.gd).map((p,i)=>({...p,rank:i+1}));}
+function computeFromMatches(ms){
+  const pm={};
+  ms.forEach(m=>{
+    const player=(m['GOAT FC Player']||'').trim();if(!player)return;
+    if(!pm[player])pm[player]={name:player,matches:0,wins:0,draws:0,losses:0,gf:0,ga:0,gd:0,motm:0,yellow:0,red:0,basePts:0};
+    const r=pm[player];r.matches++;
+    const res=(m.Result||'').trim().toLowerCase();
+    const gs=+m['GOAT Score']||0,os=+m['Opp Score']||0;
+    r.gf+=gs;r.ga+=os;r.gd+=gs-os;
+    if(res==='win'||res==='w')r.wins++;
+    else if(res==='draw'||res==='d')r.draws++;
+    else r.losses++;
+    r.motm+=+m['MOTM']||0;
+    r.yellow+=+m['Yellow Card']||0;
+    r.red+=+m['Red Card']||0;
+  });
+  // apply Apps-Script point formula (same as backend): Win 3, Draw 1, MOTM +2, Yellow -7, Red -14
+  Object.values(pm).forEach(r=>{
+    r.basePts=(r.wins*PTS_WIN)+(r.draws*PTS_DRAW)+(r.motm*PTS_MOTM)+(r.yellow*PTS_YELLOW)+(r.red*PTS_RED);
+  });
+  return Object.values(pm).map(p=>{
+    const sp=S.players.find(x=>x.Player&&x.Player.trim().toLowerCase()===p.name.toLowerCase());
+    const clubId=sp?(sp['Club ID']||'').trim():'';
+    const teamType=sp?(sp['Team Type']||'').trim():'';
+    const{pts:refPts,isRef}=getRefData(p.name,clubId);
+    return{...p,clubId,teamType,refPts,totalPts:p.basePts+refPts,pic:getMemberPic(clubId),isRef};
+  }).sort((a,b)=>b.totalPts-a.totalPts||b.gd-a.gd).map((p,i)=>({...p,rank:i+1}));
+}
 
 function matchesInWeek(wk){return S.matches.filter(m=>{const d=new Date(m.Timestamp||'');return!isNaN(d)&&getWeekKey(d)===wk;});}
 function matchesInMonth(mk){return S.matches.filter(m=>{const d=new Date(m.Timestamp||'');return!isNaN(d)&&getMonthKey(d)===mk;});}
