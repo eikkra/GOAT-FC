@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>FIFA World Cup 2026 – Powered by GOAT FC</title>
+<link rel="icon" type="image/png" href="https://i.imgur.com/LY3Bb9m.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet"/>
@@ -71,6 +72,19 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 /* ══ API STATUS ══ */
 .api-status{background:rgba(0,240,255,0.04);border:1px solid rgba(0,240,255,0.1);border-radius:8px;padding:8px 12px;font-size:11px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:8px;margin-bottom:12px;font-family:'Exo 2',sans-serif;}
 .api-status i{color:var(--cyan);font-size:12px;}
+
+/* ══ API KEY BANNER ══ */
+.apikey-banner{background:linear-gradient(135deg,rgba(200,164,21,0.1),rgba(0,240,255,0.04));border:1px solid rgba(200,164,21,0.3);border-radius:10px;padding:12px 14px;margin-bottom:14px;display:flex;flex-direction:column;gap:8px;}
+.apikey-banner-head{display:flex;align-items:center;gap:8px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:800;letter-spacing:1px;color:var(--gold-light);}
+.apikey-banner-desc{font-size:11.5px;color:var(--muted);font-family:'Exo 2',sans-serif;line-height:1.5;}
+.apikey-banner-desc a{color:var(--cyan);text-decoration:none;}
+.apikey-row{display:flex;gap:8px;flex-wrap:wrap;}
+.apikey-input{flex:1;min-width:160px;background:var(--card);border:1px solid rgba(200,164,21,0.25);border-radius:7px;padding:9px 12px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;outline:none;}
+.apikey-input:focus{border-color:rgba(200,164,21,0.6);}
+.apikey-btn{background:linear-gradient(90deg,var(--gold),var(--gold-light));color:#1a1404;border:none;border-radius:7px;padding:9px 16px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:800;letter-spacing:1px;cursor:pointer;transition:all .2s;}
+.apikey-btn:hover{filter:brightness(1.1);}
+.apikey-clear{background:transparent;border:1px solid rgba(200,16,46,0.4);color:var(--red);border-radius:7px;padding:9px 14px;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;cursor:pointer;}
+.apikey-saved{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--live);font-family:'Exo 2',sans-serif;font-weight:600;}
 
 /* ══ FILTER ══ */
 .filter-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
@@ -230,6 +244,8 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
     </div>
   </div>
 
+  <div id="apikeyBannerWrap"></div>
+
   <div id="tab-fixtures">
     <div class="api-status" id="apiStatus">
       <i class="fas fa-satellite-dish"></i>
@@ -315,6 +331,25 @@ const GROUPS={
   K:["Portugal","Colombia","Uzbekistan","DR Congo"],
   L:["England","Croatia","Panama","Ghana"],
 };
+
+/* ══ TEAM NAME ALIASES (API-Football name → our internal name) ══ */
+const TEAM_ALIASES={
+  "USA":"USA","United States":"USA",
+  "South Korea":"South Korea","Korea Republic":"South Korea",
+  "Ivory Coast":"Ivory Coast","Côte d'Ivoire":"Ivory Coast","Cote d'Ivoire":"Ivory Coast",
+  "DR Congo":"DR Congo","Congo DR":"DR Congo","DR Congo (Zaire)":"DR Congo",
+  "Czechia":"Czechia","Czech Republic":"Czechia",
+  "Bosnia and Herzegovina":"Bosnia and Herzegovina","Bosnia":"Bosnia and Herzegovina","Bosnia & Herzegovina":"Bosnia and Herzegovina",
+  "Curacao":"Curacao","Curaçao":"Curacao",
+  "Cape Verde":"Cape Verde","Cabo Verde":"Cape Verde",
+  "Saudi Arabia":"Saudi Arabia","KSA":"Saudi Arabia",
+  "England":"England","Scotland":"Scotland","Wales":"Wales",
+};
+function normalizeTeamName(apiName){
+  if(!apiName) return apiName;
+  if(TEAM_ALIASES[apiName]) return TEAM_ALIASES[apiName];
+  return apiName;
+}
 
 /* ══════════════════════════════════════════
    MATCH DATA
@@ -452,6 +487,8 @@ const KNOCKOUT_MATCHES=[
 /* ══ STATE ══ */
 let liveData={};
 let koView='list';
+const APIKEY_STORAGE_KEY='goatfc_rapidapi_key';
+const API_HOST='api-football-v1.p.rapidapi.com';
 
 /* ══ TIME UTILS ══ */
 function getBDNow(){const n=new Date();return new Date(n.getTime()+n.getTimezoneOffset()*60000+6*3600000);}
@@ -475,12 +512,12 @@ function countdown(date,time){
 /* ══════════════════════════════════════════
    getStatus() — FINAL LOGIC
    Priority:
-   1. API live data (liveData) if available
+   1. API live data (liveData) if available (LIVE while running, FT once API confirms it ended)
    2. Hardcoded score (homeScore !== null) → always FT
    3. Time-based: >115min → FT (no score), in-progress → LIVE, future → NS
 ══════════════════════════════════════════ */
 function getStatus(m){
-  // 1. API override (live or just-finished)
+  // 1. API override (live or just-finished, fetched from API-Football)
   if(liveData[m.id]) return liveData[m.id];
 
   // 2. Hardcoded confirmed score → show as FT immediately
@@ -495,7 +532,7 @@ function getStatus(m){
   const diff=now-kickoff;
   if(diff<0) return{status:'NS'};
   if(diff<115*60000) return{status:'LIVE',minute:Math.min(Math.floor(diff/60000),90),homeScore:0,awayScore:0};
-  // >115 min but no score available
+  // >115 min but no score available from anywhere yet
   return{status:'FT',homeScore:null,awayScore:null};
 }
 
@@ -503,6 +540,10 @@ function tClass(n){return n.length>14?'team-name long':'team-name';}
 
 /* ══════════════════════════════════════════
    cardHTML()
+   Once a match is FT, we show the final score
+   directly in place of the kickoff time — no
+   "FT" badge text, just a small "Match Ended"
+   tag next to the score for context.
 ══════════════════════════════════════════ */
 function cardHTML(m){
   const st=getStatus(m);
@@ -521,11 +562,11 @@ function cardHTML(m){
   } else if(isFT){
     if(hasScore){
       center=`<div class="match-score">${st.homeScore} – ${st.awayScore}</div>
-        <div class="match-status-row"><span class="status-pill ft">✓ FULL TIME</span></div>`;
+        <div class="match-status-row"><span class="status-pill ft"><i class="fas fa-check" style="font-size:7px;margin-right:3px"></i>Match Ended</span></div>`;
     } else {
-      // >115min but no score from anywhere — show FT without score
-      center=`<div style="font-family:'Orbitron',sans-serif;font-size:13px;color:var(--muted);letter-spacing:2px;">— FT —</div>
-        <div class="match-status-row"><span class="status-pill ft">✓ FULL TIME</span></div>`;
+      // >115min but no score from anywhere — show ended without score
+      center=`<div style="font-family:'Orbitron',sans-serif;font-size:13px;color:var(--muted);letter-spacing:2px;">— · —</div>
+        <div class="match-status-row"><span class="status-pill ft">Match Ended</span></div>`;
     }
   } else {
     const cd=countdown(m.date,m.time);
@@ -644,7 +685,7 @@ function renderBracket(){
     else if(isFT){hs='-';as='-';}
     const ds=new Date(m.date+'T00:00:00').toLocaleDateString('en-BD',{month:'short',day:'numeric'});
     const dl=isLive?`<span style="color:var(--live)">● LIVE ${st.minute}'</span>`
-      :isFT?`${ds} · <span style="color:var(--gold);font-size:7px;letter-spacing:1px">FT</span>`
+      :isFT?`${ds} · <span style="color:var(--gold);font-size:7px;letter-spacing:1px">ENDED</span>`
       :`${ds} · ${formatTime(m.time)}`;
     return`<div class="bm-card${isFinal?' is-final':''}${isLive?' is-live':''}${isFT?' is-ft':''}">
       <div class="bm-date${isLive?' live-label':isFT?' ft-label':''}">${dl}</div>
@@ -701,67 +742,153 @@ function setKoView(v){
 }
 
 /* ══════════════════════════════════════════
-   LIVE API — TheSportsDB (browser-side, no key)
-   Only used to pick up scores not yet hardcoded
+   API KEY BANNER (RapidAPI / API-Football)
 ══════════════════════════════════════════ */
-async function fetchLive(){
+function getApiKey(){return localStorage.getItem(APIKEY_STORAGE_KEY)||'';}
+function setApiKey(k){localStorage.setItem(APIKEY_STORAGE_KEY,k);}
+function clearApiKey(){localStorage.removeItem(APIKEY_STORAGE_KEY);}
+
+function renderApiKeyBanner(){
+  const key=getApiKey();
+  const wrap=document.getElementById('apikeyBannerWrap');
+  if(key){
+    wrap.innerHTML=`<div class="apikey-banner">
+      <div class="apikey-saved"><i class="fas fa-circle-check"></i> RapidAPI key connected — live scores enabled
+        <button class="apikey-clear" style="margin-left:auto" onclick="onClearApiKey()">DISCONNECT</button>
+      </div>
+    </div>`;
+  } else {
+    wrap.innerHTML=`<div class="apikey-banner">
+      <div class="apikey-banner-head"><i class="fas fa-key"></i> CONNECT LIVE SCORES (API-Football)</div>
+      <div class="apikey-banner-desc">Paste your RapidAPI key for <strong>API-Football</strong> to enable real-time scores and auto-updated final results. Get a free key at <a href="https://rapidapi.com/api-sports/api/api-football" target="_blank">rapidapi.com/api-sports/api-football</a>.</div>
+      <div class="apikey-row">
+        <input class="apikey-input" id="apikeyInput" type="password" placeholder="Paste your RapidAPI key here..."/>
+        <button class="apikey-btn" onclick="onSaveApiKey()">SAVE KEY</button>
+      </div>
+    </div>`;
+  }
+}
+function onSaveApiKey(){
+  const v=document.getElementById('apikeyInput').value.trim();
+  if(!v){return;}
+  setApiKey(v);
+  renderApiKeyBanner();
+  refreshData();
+}
+function onClearApiKey(){
+  clearApiKey();
+  liveData={};
+  renderApiKeyBanner();
+  updateStatus('API key removed · Showing confirmed/hardcoded results only');
+  renderAll();
+}
+
+/* ══════════════════════════════════════════
+   LIVE API — API-Football (via RapidAPI)
+   Replaces TheSportsDB. Used both for live
+   in-progress scores AND for picking up the
+   final score the moment a match ends.
+══════════════════════════════════════════ */
+function parseFixture(fx){
+  // fx = one element of response.fixture/teams/goals from API-Football
+  const statusShort=fx.fixture && fx.fixture.status ? fx.fixture.status.short : null;
+  const elapsed=fx.fixture && fx.fixture.status ? fx.fixture.status.elapsed : null;
+  const homeGoals=fx.goals?fx.goals.home:null;
+  const awayGoals=fx.goals?fx.goals.away:null;
+  const homeName=normalizeTeamName(fx.teams?fx.teams.home?.name:null);
+  const awayName=normalizeTeamName(fx.teams?fx.teams.away?.name:null);
+
+  // Map API-Football status codes → our internal status
+  const LIVE_CODES=['1H','2H','HT','ET','BT','P','SUSP','INT','LIVE'];
+  const FT_CODES=['FT','AET','PEN','PST','CANC','ABD','AWD','WO'];
+
+  let status='NS';
+  if(LIVE_CODES.includes(statusShort)) status='LIVE';
+  else if(FT_CODES.includes(statusShort)) status='FT';
+
+  return{
+    homeName,awayName,status,
+    minute:elapsed,
+    homeScore:homeGoals,
+    awayScore:awayGoals,
+  };
+}
+
+function matchTeams(apiHome,apiAway,m){
+  const mh=m.home.toLowerCase(),ma=m.away.toLowerCase();
+  const ah=(apiHome||'').toLowerCase(),aa=(apiAway||'').toLowerCase();
+  const hm=ah===mh||ah.includes(mh)||mh.includes(ah);
+  const am=aa===ma||aa.includes(ma)||ma.includes(aa);
+  return hm&&am;
+}
+
+async function apiFootballFetch(path){
+  const key=getApiKey();
+  if(!key) return null;
+  const res=await fetch(`https://${API_HOST}${path}`,{
+    method:'GET',
+    headers:{
+      'x-rapidapi-key':key,
+      'x-rapidapi-host':API_HOST,
+    },
+    cache:'no-store',
+  });
+  if(!res.ok) throw new Error('API request failed: '+res.status);
+  return res.json();
+}
+
+// Fetch all currently live fixtures
+async function fetchLiveFixtures(){
   let liveCount=0;
-  try{
-    const r=await fetch('https://www.thesportsdb.com/api/v1/json/3/latestsoccer.php',{cache:'no-store'});
-    if(!r.ok)throw new Error();
-    const data=await r.json();
-    const evs=(data&&data.events)||[];
-    evs.forEach(ev=>{
-      const hn=(ev.strHomeTeam||'').toLowerCase();
-      const an=(ev.strAwayTeam||'').toLowerCase();
-      const hs=parseInt(ev.intHomeScore);
-      const as=parseInt(ev.intAwayScore);
-      const st=ev.strStatus||'';
-      const allM=[...GROUP_MATCHES,...KNOCKOUT_MATCHES];
-      allM.forEach(m=>{
-        const mh=m.home.toLowerCase(),ma=m.away.toLowerCase();
-        const hm=hn.includes(mh.slice(0,5))||mh.includes(hn.slice(0,5));
-        const am=an.includes(ma.slice(0,5))||ma.includes(an.slice(0,5));
-        if(!hm||!am)return;
-        if(['Match Finished','FT','AET','PEN'].includes(st)){
-          // Only update if we don't already have a hardcoded score
-          if(m.homeScore===null||m.homeScore===undefined){
-            liveData[m.id]={status:'FT',homeScore:isNaN(hs)?0:hs,awayScore:isNaN(as)?0:as};
-          }
-          liveCount++;
-        } else if(st&&!isNaN(parseInt(st))){
-          liveData[m.id]={status:'LIVE',minute:parseInt(st),homeScore:isNaN(hs)?0:hs,awayScore:isNaN(as)?0:as};
-          liveCount++;
-        }
-      });
+  const data=await apiFootballFetch('/v3/fixtures?live=all');
+  const list=(data&&data.response)||[];
+  const allM=[...GROUP_MATCHES,...KNOCKOUT_MATCHES];
+  list.forEach(fx=>{
+    const p=parseFixture(fx);
+    allM.forEach(m=>{
+      if(!matchTeams(p.homeName,p.awayName,m))return;
+      if(p.status==='LIVE'){
+        liveData[m.id]={status:'LIVE',minute:p.minute??0,homeScore:p.homeScore??0,awayScore:p.awayScore??0};
+        liveCount++;
+      } else if(p.status==='FT'){
+        liveData[m.id]={status:'FT',homeScore:p.homeScore,awayScore:p.awayScore};
+        liveCount++;
+      }
     });
-  }catch(e){return -1;}
+  });
   return liveCount;
 }
 
-async function fetchResults(){
-  try{
-    const r=await fetch('https://www.thesportsdb.com/api/v1/json/3/eventsseason.php?id=4429&s=2026',{cache:'no-store'});
-    if(!r.ok)throw new Error();
-    const data=await r.json();
-    const evs=(data&&data.events)||[];
-    evs.forEach(ev=>{
-      if(!['Match Finished','FT','AET','PEN'].includes(ev.strStatus))return;
-      const hn=(ev.strHomeTeam||'').toLowerCase();
-      const an=(ev.strAwayTeam||'').toLowerCase();
-      const hs=parseInt(ev.intHomeScore)||0;
-      const as=parseInt(ev.intAwayScore)||0;
-      [...GROUP_MATCHES,...KNOCKOUT_MATCHES].forEach(m=>{
-        if(liveData[m.id])return;
-        if(m.homeScore!==null&&m.homeScore!==undefined)return; // already hardcoded
-        const mh=m.home.toLowerCase(),ma=m.away.toLowerCase();
-        if((hn.includes(mh.slice(0,5))||mh.includes(hn.slice(0,5)))&&
-           (an.includes(ma.slice(0,5))||ma.includes(an.slice(0,5)))){
-          liveData[m.id]={status:'FT',homeScore:hs,awayScore:as};
-        }
-      });
+// Fetch fixtures for a given date to catch finished results (and confirm final scores)
+async function fetchFixturesByDate(dateStr){
+  const data=await apiFootballFetch(`/v3/fixtures?date=${dateStr}`);
+  const list=(data&&data.response)||[];
+  const allM=[...GROUP_MATCHES,...KNOCKOUT_MATCHES];
+  list.forEach(fx=>{
+    const p=parseFixture(fx);
+    allM.forEach(m=>{
+      if(m.date!==dateStr)return;
+      if(!matchTeams(p.homeName,p.awayName,m))return;
+      if(p.status==='FT'){
+        // Match has ended — store the confirmed final score
+        liveData[m.id]={status:'FT',homeScore:p.homeScore,awayScore:p.awayScore};
+        // Also bake it permanently into the match record so it survives even
+        // if the API call fails on a later refresh
+        m.homeScore=p.homeScore;
+        m.awayScore=p.awayScore;
+      } else if(p.status==='LIVE'){
+        liveData[m.id]={status:'LIVE',minute:p.minute??0,homeScore:p.homeScore??0,awayScore:p.awayScore??0};
+      }
     });
-  }catch(e){}
+  });
+}
+
+// Pull today's (BD time) date plus yesterday's, since US kickoffs can span the BD date boundary
+async function fetchResults(){
+  const today=getBDDateStr();
+  const y=new Date(getBDNow().getTime()-86400000).toISOString().slice(0,10);
+  try{ await fetchFixturesByDate(today); }catch(e){}
+  try{ await fetchFixturesByDate(y); }catch(e){}
 }
 
 function syncLive(){
@@ -776,9 +903,20 @@ function updateStatus(msg){document.getElementById('apiStatusText').textContent=
 async function refreshData(){
   const icon=document.getElementById('refreshIcon');
   icon.classList.add('fa-spin');
+  if(!getApiKey()){
+    updateStatus('No API key set · Showing confirmed/hardcoded results only');
+    renderAll();
+    setTimeout(()=>icon.classList.remove('fa-spin'),600);
+    return;
+  }
   updateStatus('Fetching latest scores…');
-  const c=await fetchLive();
-  await fetchResults();
+  let c=0;
+  try{
+    c=await fetchLiveFixtures();
+    await fetchResults();
+  }catch(e){
+    c=-1;
+  }
   renderAll();
   const t=getBDNow().toLocaleTimeString('en-BD',{hour:'2-digit',minute:'2-digit'});
   if(c<0) updateStatus(`API unavailable · Showing confirmed results · ${t}`);
@@ -813,23 +951,45 @@ window.addEventListener('scroll',()=>document.getElementById('scrollTop').classL
 /* ══ INIT ══ */
 document.addEventListener('DOMContentLoaded',async()=>{
   calcDaysLeft();
+  renderApiKeyBanner();
   renderAll(); // First render with hardcoded scores immediately
+
+  if(!getApiKey()){
+    updateStatus('No API key set · Showing confirmed/hardcoded results only');
+    syncLive();
+    return;
+  }
+
   updateStatus('Checking for live updates…');
-  const c=await fetchLive();
-  await fetchResults();
+  let c=0;
+  try{
+    c=await fetchLiveFixtures();
+    await fetchResults();
+  }catch(e){
+    c=-1;
+  }
   renderAll(); // Re-render with any API updates
   const t=getBDNow().toLocaleTimeString('en-BD',{hour:'2-digit',minute:'2-digit'});
   if(c<0) updateStatus(`API unavailable · Showing confirmed results · ${t}`);
   else if(c>0) updateStatus(`● ${c} live match update(s) · Synced ${t}`);
   else updateStatus(`All scores up to date · Synced ${t}`);
   syncLive();
+
   // Auto-refresh every 60s
   setInterval(async()=>{
-    const cv=await fetchLive();
-    renderFixtures();renderToday();
+    if(!getApiKey())return;
+    let cv=0;
+    try{
+      cv=await fetchLiveFixtures();
+      await fetchResults();
+    }catch(e){
+      cv=-1;
+    }
+    renderFixtures();renderToday();renderKnockoutList();
     if(koView==='bracket')renderBracket();
     const tv=getBDNow().toLocaleTimeString('en-BD',{hour:'2-digit',minute:'2-digit'});
-    if(cv>0) updateStatus(`● ${cv} live update(s) · Synced ${tv}`);
+    if(cv<0) updateStatus(`API unavailable · Showing confirmed results · ${tv}`);
+    else if(cv>0) updateStatus(`● ${cv} live update(s) · Synced ${tv}`);
     else updateStatus(`Scores up to date · Synced ${tv}`);
     syncLive();
   },60000);
