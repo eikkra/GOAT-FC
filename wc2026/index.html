@@ -73,19 +73,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .api-status{background:rgba(0,240,255,0.04);border:1px solid rgba(0,240,255,0.1);border-radius:8px;padding:8px 12px;font-size:11px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:8px;margin-bottom:12px;font-family:'Exo 2',sans-serif;}
 .api-status i{color:var(--cyan);font-size:12px;}
 
-/* ══ API KEY BANNER ══ */
-.apikey-banner{background:linear-gradient(135deg,rgba(200,164,21,0.1),rgba(0,240,255,0.04));border:1px solid rgba(200,164,21,0.3);border-radius:10px;padding:12px 14px;margin-bottom:14px;display:flex;flex-direction:column;gap:8px;}
-.apikey-banner-head{display:flex;align-items:center;gap:8px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:800;letter-spacing:1px;color:var(--gold-light);}
-.apikey-banner-desc{font-size:11.5px;color:var(--muted);font-family:'Exo 2',sans-serif;line-height:1.5;}
-.apikey-banner-desc a{color:var(--cyan);text-decoration:none;}
-.apikey-row{display:flex;gap:8px;flex-wrap:wrap;}
-.apikey-input{flex:1;min-width:160px;background:var(--card);border:1px solid rgba(200,164,21,0.25);border-radius:7px;padding:9px 12px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;outline:none;}
-.apikey-input:focus{border-color:rgba(200,164,21,0.6);}
-.apikey-btn{background:linear-gradient(90deg,var(--gold),var(--gold-light));color:#1a1404;border:none;border-radius:7px;padding:9px 16px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:800;letter-spacing:1px;cursor:pointer;transition:all .2s;}
-.apikey-btn:hover{filter:brightness(1.1);}
-.apikey-clear{background:transparent;border:1px solid rgba(200,16,46,0.4);color:var(--red);border-radius:7px;padding:9px 14px;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;cursor:pointer;}
-.apikey-saved{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--live);font-family:'Exo 2',sans-serif;font-weight:600;}
-
 /* ══ FILTER ══ */
 .filter-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
 .filter-input{background:var(--card);border:1px solid rgba(0,240,255,0.12);border-radius:7px;padding:10px 14px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;flex:1;min-width:120px;outline:none;transition:all .2s;}
@@ -243,8 +230,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
       <div class="hero-stat"><div class="hero-stat-val" id="daysLeft">—</div><div class="hero-stat-label">DAYS TO FINAL</div></div>
     </div>
   </div>
-
-  <div id="apikeyBannerWrap"></div>
 
   <div id="tab-fixtures">
     <div class="api-status" id="apiStatus">
@@ -487,7 +472,15 @@ const KNOCKOUT_MATCHES=[
 /* ══ STATE ══ */
 let liveData={};
 let koView='list';
-const APIKEY_STORAGE_KEY='goatfc_rapidapi_key';
+
+/* ══════════════════════════════════════════
+   RAPIDAPI KEY — paste your API-Football key
+   from RapidAPI here. Once set, live scores
+   and auto "Match Ended" detection turn on
+   automatically — no banner, no manual steps.
+   Get a free key: rapidapi.com/api-sports/api/api-football
+══════════════════════════════════════════ */
+const API_KEY="";
 const API_HOST='api-football-v1.p.rapidapi.com';
 
 /* ══ TIME UTILS ══ */
@@ -551,23 +544,16 @@ function cardHTML(m){
   const isFT=st.status==='FT';
   const gc=m.group?GC[m.group]:'#c8a415';
   const timeStr=formatTime(m.time);
-  const hasScore=isFT&&st.homeScore!==null&&st.awayScore!==null;
-  const hWin=hasScore&&st.homeScore>st.awayScore;
-  const aWin=hasScore&&st.awayScore>st.homeScore;
 
   let center='';
   if(isLive){
     center=`<div class="match-score live-score">${st.homeScore??0} – ${st.awayScore??0}</div>
       <div class="match-status-row"><div class="live-minute"><span class="live-minute-dot"></span>${st.minute}'</div></div>`;
   } else if(isFT){
-    if(hasScore){
-      center=`<div class="match-score">${st.homeScore} – ${st.awayScore}</div>
-        <div class="match-status-row"><span class="status-pill ft"><i class="fas fa-check" style="font-size:7px;margin-right:3px"></i>Match Ended</span></div>`;
-    } else {
-      // >115min but no score from anywhere — show ended without score
-      center=`<div style="font-family:'Orbitron',sans-serif;font-size:13px;color:var(--muted);letter-spacing:2px;">— · —</div>
-        <div class="match-status-row"><span class="status-pill ft">Match Ended</span></div>`;
-    }
+    // Match has ended — keep the kickoff time/date visible, just label it Ended.
+    // No score, no pill/badge — plain text only, per request.
+    center=`<div class="match-time">${timeStr}</div>
+      <div class="match-status-row" style="color:var(--muted);font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.5px;">Match Ended</div>`;
   } else {
     const cd=countdown(m.date,m.time);
     center=`<div class="match-time${cd?' soon':''}">${timeStr}</div>
@@ -584,12 +570,12 @@ function cardHTML(m){
     <div class="match-card-inner" style="padding-left:${m.group?'18px':'14px'}">
       <div class="team-side home">
         <div style="flex-shrink:0">${flagImg(m.home,22)}</div>
-        <div class="team-info"><div class="${tClass(m.home)}${hWin?' winner-team':''}">${m.home}</div></div>
+        <div class="team-info"><div class="${tClass(m.home)}">${m.home}</div></div>
       </div>
       <div class="match-center">${center}</div>
       <div class="team-side away">
         <div style="flex-shrink:0">${flagImg(m.away,22)}</div>
-        <div class="team-info"><div class="${tClass(m.away)}${aWin?' winner-team':''}">${m.away}</div></div>
+        <div class="team-info"><div class="${tClass(m.away)}">${m.away}</div></div>
       </div>
     </div>
     <div class="match-meta">
@@ -678,11 +664,9 @@ function renderBracket(){
     const st=getStatus(m);
     const isLive=st.status==='LIVE';
     const isFT=st.status==='FT';
-    const hasScore=isFT&&st.homeScore!==null;
-    let hs='·',as='·',hWin=false,aWin=false;
+    let hs='·',as='·';
     if(isLive){hs=st.homeScore??0;as=st.awayScore??0;}
-    else if(hasScore){hs=st.homeScore;as=st.awayScore;hWin=hs>as;aWin=as>hs;}
-    else if(isFT){hs='-';as='-';}
+    // FT: no score shown, per design — just the "ENDED" label in the date row
     const ds=new Date(m.date+'T00:00:00').toLocaleDateString('en-BD',{month:'short',day:'numeric'});
     const dl=isLive?`<span style="color:var(--live)">● LIVE ${st.minute}'</span>`
       :isFT?`${ds} · <span style="color:var(--gold);font-size:7px;letter-spacing:1px">ENDED</span>`
@@ -691,13 +675,13 @@ function renderBracket(){
       <div class="bm-date${isLive?' live-label':isFT?' ft-label':''}">${dl}</div>
       <div class="bm-team">
         <div class="bm-team-flag">${flagImg(m.home,13)}</div>
-        <div class="bm-team-name${hWin?' winner':''}">${m.home}</div>
-        <div class="bm-team-score${hWin?' winner':isLive?' live-s':''}">${hs}</div>
+        <div class="bm-team-name">${m.home}</div>
+        <div class="bm-team-score${isLive?' live-s':''}">${hs}</div>
       </div>
       <div class="bm-team">
         <div class="bm-team-flag">${flagImg(m.away,13)}</div>
-        <div class="bm-team-name${aWin?' winner':''}">${m.away}</div>
-        <div class="bm-team-score${aWin?' winner':isLive?' live-s':''}">${as}</div>
+        <div class="bm-team-name">${m.away}</div>
+        <div class="bm-team-score${isLive?' live-s':''}">${as}</div>
       </div>
     </div>`;
   }
@@ -741,47 +725,8 @@ function setKoView(v){
   if(v==='bracket')renderBracket();
 }
 
-/* ══════════════════════════════════════════
-   API KEY BANNER (RapidAPI / API-Football)
-══════════════════════════════════════════ */
-function getApiKey(){return localStorage.getItem(APIKEY_STORAGE_KEY)||'';}
-function setApiKey(k){localStorage.setItem(APIKEY_STORAGE_KEY,k);}
-function clearApiKey(){localStorage.removeItem(APIKEY_STORAGE_KEY);}
-
-function renderApiKeyBanner(){
-  const key=getApiKey();
-  const wrap=document.getElementById('apikeyBannerWrap');
-  if(key){
-    wrap.innerHTML=`<div class="apikey-banner">
-      <div class="apikey-saved"><i class="fas fa-circle-check"></i> RapidAPI key connected — live scores enabled
-        <button class="apikey-clear" style="margin-left:auto" onclick="onClearApiKey()">DISCONNECT</button>
-      </div>
-    </div>`;
-  } else {
-    wrap.innerHTML=`<div class="apikey-banner">
-      <div class="apikey-banner-head"><i class="fas fa-key"></i> CONNECT LIVE SCORES (API-Football)</div>
-      <div class="apikey-banner-desc">Paste your RapidAPI key for <strong>API-Football</strong> to enable real-time scores and auto-updated final results. Get a free key at <a href="https://rapidapi.com/api-sports/api/api-football" target="_blank">rapidapi.com/api-sports/api-football</a>.</div>
-      <div class="apikey-row">
-        <input class="apikey-input" id="apikeyInput" type="password" placeholder="Paste your RapidAPI key here..."/>
-        <button class="apikey-btn" onclick="onSaveApiKey()">SAVE KEY</button>
-      </div>
-    </div>`;
-  }
-}
-function onSaveApiKey(){
-  const v=document.getElementById('apikeyInput').value.trim();
-  if(!v){return;}
-  setApiKey(v);
-  renderApiKeyBanner();
-  refreshData();
-}
-function onClearApiKey(){
-  clearApiKey();
-  liveData={};
-  renderApiKeyBanner();
-  updateStatus('API key removed · Showing confirmed/hardcoded results only');
-  renderAll();
-}
+/* ══ API KEY ACCESSOR ══ */
+function getApiKey(){return API_KEY;}
 
 /* ══════════════════════════════════════════
    LIVE API — API-Football (via RapidAPI)
@@ -951,7 +896,6 @@ window.addEventListener('scroll',()=>document.getElementById('scrollTop').classL
 /* ══ INIT ══ */
 document.addEventListener('DOMContentLoaded',async()=>{
   calcDaysLeft();
-  renderApiKeyBanner();
   renderAll(); // First render with hardcoded scores immediately
 
   if(!getApiKey()){
